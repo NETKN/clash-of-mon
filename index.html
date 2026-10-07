@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="ศึกหกธาตุ เกมดวลมอนสเตอร์ธาตุผสม 1 ต่อ 1 แบบเรียลไทม์ เล่นออนไลน์กับเพื่อนได้บนมือถือและคอมพิวเตอร์">
+<meta name="description" content="Clash of Mon: realtime 1-on-1 monster showdown. เกมดวลมอนสเตอร์ธาตุผสม เล่นออนไลน์กับเพื่อนได้บนมือถือและคอมพิวเตอร์">
 <meta name="theme-color" content="#14121f">
-<title>ศึกหกธาตุ</title>
+<title>Clash of Mon</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Silkscreen:wght@400;700&display=swap">
 <style>
@@ -85,7 +85,12 @@ kbd{font-family:var(--f-px);font-size:11px;background:var(--panel2);border:1px s
   padding:env(safe-area-inset-top,0px) 16px env(safe-area-inset-bottom,0px)}
 #sp{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
 #splash>*:not(canvas){position:relative}
-#splash h1{margin:0;font-size:clamp(52px,15vw,128px);line-height:.95;font-weight:700;color:var(--gold);text-shadow:5px 5px 0 #000,0 0 40px rgba(0,0,0,.9)}
+#splash h1{margin:0;line-height:0;width:min(94vw,760px,118vh)}
+.logo{display:block;width:100%;height:auto;image-rendering:pixelated}
+#logoBig .logo{animation:glow 2.4s ease-in-out infinite}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 10px rgba(255,170,40,.35))}50%{filter:drop-shadow(0 0 26px rgba(255,200,80,.8))}}
+#logoSm{line-height:0;width:min(60vw,250px);text-shadow:none}
+#splash p.tag{font-family:var(--f-px);letter-spacing:.14em;color:#fff;font-size:clamp(11px,2.9vw,18px)}
 #splash p{margin:0;font-size:clamp(14px,3.4vw,19px);text-shadow:2px 2px 0 #000;max-width:30em}
 #bStart{font-family:var(--f-px);font-size:clamp(22px,6vw,34px);padding:12px 40px;background:var(--gold);color:#14121f;border:3px solid #000;border-radius:6px;box-shadow:0 6px 0 #000;animation:pulse 1.1s ease-in-out infinite}
 #bStart:active{transform:translateY(4px);box-shadow:0 2px 0 #000}
@@ -140,15 +145,15 @@ kbd{font-family:var(--f-px);font-size:11px;background:var(--panel2);border:1px s
 #over{position:absolute;inset:0;background:rgba(8,7,14,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:16px}
 #over h3{margin:0;font-size:clamp(34px,9vw,64px);line-height:1;text-shadow:4px 4px 0 #000}
 #over p{margin:0;color:var(--dim)}
-@media (prefers-reduced-motion:reduce){.bar u{transition:none}#bStart,.ab.ult.on{animation:none}}
+@media (prefers-reduced-motion:reduce){.bar u{transition:none}#bStart,.ab.ult.on,#logoBig .logo{animation:none}}
 </style>
 </head>
 <body>
 
 <div id="splash">
   <canvas id="sp"></canvas>
-  <h1>ศึกหกธาตุ</h1>
-  <p>ดวลมอนสเตอร์ธาตุผสม 1 ต่อ 1 แบบเรียลไทม์</p>
+  <h1 id="logoBig" aria-label="Clash of Mon"></h1>
+  <p class="tag">REALTIME 1-ON-1 MONSTER SHOWDOWN</p>
   <button id="bStart">START</button>
   <form id="nameBox" hidden>
     <label for="nick">ตั้งชื่อผู้เล่นสำหรับรอบนี้</label>
@@ -159,7 +164,7 @@ kbd{font-family:var(--f-px);font-size:11px;background:var(--panel2);border:1px s
 
 <div id="menu" class="wrap" hidden>
   <header class="brand">
-    <h1>ศึกหกธาตุ</h1>
+    <h1 id="logoSm" aria-label="Clash of Mon"></h1>
     <p id="hello"></p>
   </header>
   <section>
@@ -925,6 +930,34 @@ function render(){const c=ctx;c.setTransform(SC,0,0,SC,0,0);c.imageSmoothingEnab
   const f=G.me;for(const b of ABS){const v=b.i<0?f.dodgeCd/2.2:f.cds[b.i]/MOVES[f.moves[b.i]].cd;b.cd.style.height=(clamp(v,0,1)*100)+"%"}
   if(ULTB){ULTB.cd.style.height=(100-f.ult)+"%";ULTB.b.classList.toggle("on",f.ult>=100)}}
 
+
+/* ================= logo: chunky pixel lettering, cold steel CLASH against molten MON ================= */
+const GLY={C:[".#####.","#######","##...##","##.....","##.....","##.....","##...##","#######",".#####."],
+  L:["##.....","##.....","##.....","##.....","##.....","##.....","##.....","#######","#######"],
+  A:[".#####.","#######","##...##","##...##","#######","#######","##...##","##...##","##...##"],
+  S:[".######","#######","##.....","######.",".######",".....##",".....##","#######","######."],
+  H:["##...##","##...##","##...##","#######","#######","##...##","##...##","##...##","##...##"],
+  O:[".#####.","#######","##...##","##...##","##...##","##...##","##...##","#######",".#####."],
+  F:["#######","#######","##.....","#####..","#####..","##.....","##.....","##.....","##....."],
+  M:["##...##","###.###","#######","#######","##.#.##","##...##","##...##","##...##","##...##"],
+  N:["##...##","###..##","####.##","#######","##.####","##..###","##...##","##...##","##...##"]};
+function makeLogo(){const LW=112,LH=66,cell=new Array(LW*LH).fill(null);
+  const COLD=["#ffffff","#eaf6ff","#c4e4ff","#93caff","#5e9df0","#3a6fd6","#27489e"],HOT=["#ffffff","#fff3a0","#ffd83e","#ffab2a","#ff6a24","#e0312b","#93183c"],GOLD=["#fff6c8","#ffe27a","#f5c542","#d99a1e"];
+  const word=(txt,x0,y0,sc,ramp)=>{let x=x0;for(const ch of txt){const g=GLY[ch];for(let r=0;r<9;r++)for(let q=0;q<7;q++)if(g[r][q]==="#")for(let a=0;a<sc;a++)for(let b=0;b<sc;b++){const X=x+q*sc+a,Y=y0+r*sc+b;cell[Y*LW+X]={ramp,k:(r*sc+b)/(9*sc-1)}}x+=8*sc}};
+  word("CLASH",17,6,2,COLD);word("MON",31,30,3,HOT);word("OF",9,39,1,GOLD);
+  const on=(x,y)=>x>=0&&x<LW&&y>=0&&y<LH&&cell[y*LW+x];
+  const near=(x,y,d)=>{for(let j=-d;j<=d;j++)for(let i=-d;i<=d;i++)if(Math.abs(i)+Math.abs(j)<=d+(d>1?1:0)&&on(x+i,y+j))return true;return false};
+  const c=document.createElement("canvas");c.width=LW;c.height=LH;c.className="logo";const g=c.getContext("2d");
+  g.fillStyle="rgba(8,6,16,.55)";for(let y=0;y<LH;y++)for(let x=0;x<LW;x++)if(near(x,y-3,2)||near(x-1,y-2,2))g.fillRect(x,y,1,1);
+  for(let y=0;y<LH;y++)for(let x=0;x<LW;x++){if(on(x,y))continue;if(near(x,y,1)){g.fillStyle="#14101f";g.fillRect(x,y,1,1)}else if(near(x,y,2)){g.fillStyle=y>30?"#ffd23e":"#bfe2ff";g.fillRect(x,y,1,1)}}
+  for(let y=0;y<LH;y++)for(let x=0;x<LW;x++){const p=cell[y*LW+x];if(!p)continue;const n=p.ramp.length;let i=Math.round(p.k*(n-2))+1;
+    if(!on(x,y-1)||!on(x-1,y))i=Math.max(0,i-1-(on(x,y-1)?0:1));else if(!on(x,y+1)||!on(x+1,y))i=Math.min(n-1,i+1);
+    if(p.ramp!==GOLD&&((x+y*2)%23===0||(x+y*2)%23===1)&&p.k<.7)i=Math.max(0,i-2);
+    g.fillStyle=p.ramp[i];g.fillRect(x,y,1,1)}
+  g.fillStyle="#fff";for(const[x,y]of[[13,4],[98,9],[27,30],[101,27],[104,57],[6,52]]){g.fillRect(x,y-1,1,3);g.fillRect(x-1,y,3,1)}
+  g.fillStyle="#ffd23e";for(const[x,y]of[[8,14],[104,40],[22,60],[94,3]])g.fillRect(x,y,1,1);
+  return c}
+$("logoBig").append(makeLogo());$("logoSm").append(makeLogo());
 /* ================= splash: a looping brawl ================= */
 const SP={c:$("sp"),on:true,t:0,a:[],fx:[],pt:[],next:.2};
 function spInit(){const ks=Object.keys(MONS);SP.a=ks.map((k,i)=>({k,x:60+(i%4)*170+rnd(-20,20),y:110+((i/4)|0)*170+rnd(-20,20),vx:rnd(-70,70),vy:rnd(-50,50),w:rnd(0,9),fl:0}));paintArena(buildArena("stadium"))}
