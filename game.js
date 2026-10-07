@@ -1,12 +1,14 @@
 "use strict";
 /* ================= data ================= */
 const TY={
-  fire:{n:"ไฟ",c:"#ff7a3d",beats:["grass","wind"]},
+  fire:{n:"ไฟ",c:"#ff7a3d",beats:["grass","wind","metal"]},
   water:{n:"น้ำ",c:"#3d9bff",beats:["fire","earth"]},
   grass:{n:"พืช",c:"#4cc26a",beats:["water","earth"]},
-  elec:{n:"สายฟ้า",c:"#f7d23e",beats:["water","wind"]},
+  elec:{n:"สายฟ้า",c:"#f7d23e",beats:["water","wind","metal"]},
   earth:{n:"ดิน",c:"#c08a4a",beats:["fire","elec"]},
   wind:{n:"ลม",c:"#8fe3d0",beats:["grass","earth"]},
+  metal:{n:"โลหะ",c:"#b8c4d0",beats:["grass","shadow"]},
+  shadow:{n:"เงา",c:"#9a6adf",beats:["elec","water"]},
   norm:{n:"ปกติ",c:"#c9c5d6",beats:[]}
 };
 const eff1=(a,d)=>a==="norm"?1:TY[a].beats.includes(d)?1.5:(a===d||TY[d].beats.includes(a))?.6:1;
@@ -23,6 +25,10 @@ const MOVES={
   b_eela:{n:"พ่นน้ำ",t:"water",kind:"shot",aim:"line",pw:5,cd:.34,sp:350,r:5,cnt:1,life:.9,basic:1,d:"พ่นลูกน้ำ"},
   b_fuwa:{n:"เป่าลม",t:"wind",kind:"shot",aim:"line",pw:4,cd:.36,sp:320,r:6,cnt:1,kb:70,life:.9,basic:1,d:"เป่าลูกลม ผลักเบา ๆ"},
   b_lavarok:{n:"เขาลาวา",t:"fire",kind:"melee",aim:"cone",pw:11,cd:.56,rng:54,arc:1.8,burn:1,heavy:1,basic:1,d:"ขวิดด้วยเขาร้อน ติดไฟ"},
+  b_blazar:{n:"ลูกไฟรัว",t:"fire",kind:"shot",aim:"line",pw:3,cd:.44,sp:400,r:5,cnt:3,gap:.06,life:.85,basic:1,d:"พ่นลูกไฟ 3 ลูกรัวเป็นชุด"},
+  b_reya:{n:"ลูกน้ำวน",t:"water",kind:"shot",aim:"line",pw:5,cd:.34,sp:340,r:6,cnt:1,life:.9,basic:1,d:"ยิงลูกน้ำหมุน"},
+  b_terran:{n:"ทุบพสุธา",t:"earth",kind:"melee",aim:"cone",pw:13,cd:.66,rng:66,arc:2.3,kb:150,heavy:1,basic:1,d:"ทุบพื้นเป็นคลื่นกระแทกวงกว้าง ผลักถอย"},
+  b_umbra:{n:"กรงเล็บเงา",t:"shadow",kind:"melee",aim:"cone",pw:7,cd:.32,rng:50,arc:1.7,basic:1,d:"ข่วนเร็วมากระยะประชิด"},
   /* fire */
   wheel:{n:"กงล้อเพลิง",t:"fire",kind:"dash",aim:"line",pw:17,cd:3.2,sp:470,dur:.34,burn:3,d:"พุ่งชน ทำให้ติดไฟ"},
   blaze:{n:"ทะเลเพลิง",t:"fire",kind:"zone",aim:"point",pw:5,cd:7,rad:48,delay:.45,dur:4,rng:210,d:"จุดกองไฟที่จุดเล็ง ยืนอยู่โดนต่อเนื่อง"},
@@ -59,6 +65,18 @@ const MOVES={
   tail:{n:"ลมส่งท้าย",t:"wind",kind:"buff",aim:"self",pw:0,cd:9,buff:"haste",d:"เดินเร็วขึ้น 50% นาน 4 วินาที"},
   boom:{n:"ใบมีดลมวกกลับ",t:"wind",kind:"shot",aim:"line",pw:9,cd:3.2,sp:540,r:10,cnt:1,boom:1,pierce:1,life:2,d:"ใบมีดลมพุ่งออกไปแล้ววกกลับ โดนได้ทั้งขาไปและขากลับ"},
   vac:{n:"หลุมสุญญากาศ",t:"wind",kind:"zone",aim:"point",pw:4,cd:7,rad:70,delay:.35,dur:1.5,pull:210,rng:210,d:"ดูดคู่ต่อสู้เข้าหาจุดเล็ง 1.5 วินาที"},
+  /* metal */
+  shrap:{n:"เศษเหล็กกระจาย",t:"metal",kind:"shot",aim:"cone",pw:5,cd:1.7,sp:380,r:5,cnt:5,fan:.6,bn:1,life:1.3,d:"เศษเหล็ก 5 ชิ้นเป็นพัด เด้งกำแพงได้ 1 ครั้ง"},
+  saw:{n:"กงจักรเหล็ก",t:"metal",kind:"shot",aim:"line",pw:10,cd:3.4,sp:500,r:10,cnt:1,boom:1,pierce:1,life:2,heavy:1,d:"กงจักรพุ่งออกแล้ววกกลับ พังลังไม้ได้"},
+  spike:{n:"หนามเหล็กผุด",t:"metal",kind:"strike",aim:"point",pw:20,cd:5,rad:42,delay:.5,slow:1.5,rng:220,d:"หนามเหล็กพุ่งขึ้นจากพื้นที่จุดเล็ง ทำให้ช้า"},
+  ram:{n:"เกราะพุ่งชน",t:"metal",kind:"dash",aim:"line",pw:16,cd:3,sp:480,dur:.32,stun:.4,heavy:1,d:"พุ่งชนด้วยเกราะ คู่ต่อสู้มึน"},
+  armor:{n:"เกราะเหล็กไหล",t:"metal",kind:"buff",aim:"self",pw:0,cd:10,buff:"armor",d:"ลดความเสียหาย 60% นาน 3 วินาที"},
+  /* shadow */
+  fang:{n:"เขี้ยวรัตติกาล",t:"shadow",kind:"shot",aim:"cone",pw:6,cd:1.6,sp:420,r:5,cnt:3,fan:.34,pierce:1,d:"คลื่นเงา 3 สาย ทะลุสิ่งกีดขวาง"},
+  lunge:{n:"เงาพุ่งสังหาร",t:"shadow",kind:"dash",aim:"line",pw:13,cd:2.2,sp:680,dur:.2,d:"พุ่งเร็วที่สุดในเกม ทิ้งภาพติดตา"},
+  wisp:{n:"ดวงไฟเงาไล่ล่า",t:"shadow",kind:"shot",aim:"line",pw:14,cd:5,sp:160,r:9,cnt:1,home:2.6,life:3.2,d:"ดวงไฟเงาช้า ๆ ที่เลี้ยวตามคู่ต่อสู้"},
+  pit:{n:"บ่อเงา",t:"shadow",kind:"zone",aim:"point",pw:4,cd:7,rad:56,delay:.4,dur:3.5,slow:.8,rng:210,d:"บ่อเงาที่จุดเล็ง กัดพลังและทำให้ช้า"},
+  cloak:{n:"ม่านเงา",t:"shadow",kind:"buff",aim:"self",pw:0,cd:11,buff:"cloak",d:"หายตัว 3.5 วินาทีและเดินเร็วขึ้น โจมตีแล้วจะเผยตัว"},
   /* common */
   tackle:{n:"พุ่งชน",t:"norm",kind:"dash",aim:"line",pw:12,cd:2.2,sp:440,dur:.3,stun:.45,heavy:1,d:"ชนแล้วคู่ต่อสู้มึน พังลังไม้ได้"},
   leap:{n:"กระโดดทุ่ม",t:"norm",kind:"leap",aim:"point",pw:20,cd:4.5,rad:64,rng:180,d:"กระโดดข้ามสิ่งกีดขวางไปจุดเล็ง แล้วกระแทกพื้น"},
@@ -76,7 +94,7 @@ const MOVES={
   bolt:{t:"elec",kind:"strike",pw:13,rad:40,stun:.35,hidden:1},
   trailz:{t:"fire",kind:"zone",pw:5,rad:40,dur:3,hidden:1},
   /* signature ultimates */
-  u_bird:{n:"วิหคเพลิงผลาญฟ้า",t:"fire",kind:"u_bird",aim:"line",pw:36,sp:880,dur:.6,hr:46,burn:3,kb:260,heavy:9,ult:1,d:"กลายร่างเป็นวิหคเพลิง พุ่งทะลุสนาม ทิ้งทางไฟไว้ข้างหลัง"},
+  u_bird:{n:"วิหคเพลิงผลาญฟ้า",t:"fire",kind:"u_bird",aim:"line",udash:1,pw:36,sp:880,dur:.6,hr:46,burn:3,kb:260,heavy:9,ult:1,d:"กลายร่างเป็นวิหคเพลิง พุ่งทะลุสนาม ทิ้งทางไฟไว้ข้างหลัง"},
   u_wave:{n:"คลื่นยักษ์ถล่มธรณี",t:"water",kind:"u_wave",aim:"line",pw:34,kb:420,slow:2,ult:1,d:"เรียกกำแพงคลื่นกวาดทั้งสนามไปในทิศที่เล็ง"},
   u_storm:{n:"พายุอัสนีพันสาย",t:"elec",kind:"u_storm",aim:"point",rng:320,pw:13,rad:40,stun:.35,ult:1,d:"ฟ้าผ่า 12 สายไล่ถล่มรอบจุดเล็ง"},
   u_pepper:{n:"ระเบิดพริกนรก",t:"fire",kind:"u_pepper",aim:"self",pw:7,sp:250,r:6,burn:2,life:2,ult:1,d:"กระสุนไฟระเบิดออกรอบทิศ 3 ระลอก"},
@@ -84,9 +102,14 @@ const MOVES={
   u_beam:{n:"ลำแสงมังกรอัสนี",t:"elec",kind:"u_beam",aim:"line",pw:12,heavy:9,ult:1,d:"ลำแสงยักษ์ยิงค้าง 4 จังหวะในทิศที่เล็ง"},
   u_vortex:{n:"มหาวายุสลาตัน",t:"wind",kind:"u_vortex",aim:"point",rng:200,pw:6,rad:120,dur:3.2,pull:190,ult:1,d:"พายุหมุนยักษ์ดูดคู่ต่อสู้เข้าหาศูนย์กลาง"},
   u_erupt:{n:"ภูเขาไฟปะทุ",t:"fire",kind:"u_erupt",aim:"point",rng:190,pw:30,rad:110,ult:1,d:"กระโดดขึ้นฟ้าไปจุดเล็งแล้วทุ่มลง อุกกาบาตไฟตกรอบตัว"},
+  u_barrage:{n:"ห่าเพลิงเหล็กไหล",t:"fire",kind:"u_barrage",aim:"cone",pw:8,sp:420,r:8,cnt:7,fan:.9,arc:1.1,rng:320,burn:2,life:1.4,heavy:1,ult:1,d:"ระดมลูกไฟ 4 ระลอก ระลอกละ 7 ลูกเป็นพัดกว้าง"},
+  u_typhoon:{n:"ไต้ฝุ่นวารี",t:"water",kind:"u_typhoon",aim:"line",pw:7,rad:86,dur:3.6,pull:200,slow:1,ult:1,d:"พายุหมุนน้ำเคลื่อนไปข้างหน้า ดูดและซัดคู่ต่อสู้"},
+  u_fissure:{n:"ปฐพีแยก",t:"earth",kind:"u_fissure",aim:"line",pw:26,rad:50,stun:.6,crater:1,kb:160,heavy:9,ult:1,d:"พื้นแยกเป็นแนวยาวไปข้างหน้า ระเบิด 8 จุดไล่กัน"},
+  u_phantom:{n:"เงาอัสนีพันร่าง",t:"shadow",kind:"u_phantom",aim:"line",pw:30,sp:1000,dur:.5,hr:42,udash:1,stun:.5,heavy:9,ult:1,d:"พุ่งทะลุสนามเป็นเงา ทิ้งสายฟ้าผ่าตามทางที่วิ่ง"},
+  fisblast:{t:"earth",kind:"strike",pw:26,rad:50,stun:.6,crater:1,kb:160,heavy:9,hidden:1},
   u_erupt2:{t:"fire",kind:"u_erupt2",pw:30,rad:110,burn:2,kb:260,heavy:9,hidden:1}
 };
-const KIND={shot:"ยิง",dash:"พุ่งชน",slam:"รอบตัว",strike:"ลงพื้น",zone:"พื้นที่",dig:"มุดดิน",buff:"เสริม",leap:"กระโดด",ring:"วงแหวน",beam:"ชาร์จ",clone:"เรียกร่าง",melee:"ประชิด",breath:"พ่น",orbit:"โคจร",rain:"ถล่ม",trap:"กับดัก",blink:"วาร์ป",wall:"กำแพง"};
+const KIND={u_barrage:"ระดมยิง",shot:"ยิง",dash:"พุ่งชน",slam:"รอบตัว",strike:"ลงพื้น",zone:"พื้นที่",dig:"มุดดิน",buff:"เสริม",leap:"กระโดด",ring:"วงแหวน",beam:"ชาร์จ",clone:"เรียกร่าง",melee:"ประชิด",breath:"พ่น",orbit:"โคจร",rain:"ถล่ม",trap:"กับดัก",blink:"วาร์ป",wall:"กำแพง"};
 const COMMON=["tackle","leap","ring","beam","clone","guard","rest"];
 const ENVMV={barrel:{t:"fire",pw:22,rad:74,kb:260,burn:2,kind:"slam"},burn:{t:"fire",pw:5,rad:36,kind:"zone"},zap:{t:"elec",pw:13,stun:.5,kind:"env"},lava:{t:"fire",pw:6,burn:2,kind:"env"},
   bog:{t:"grass",pw:4,slow:.8,kind:"env"},cactus:{t:"grass",pw:6,kb:160,kind:"env"}};
@@ -98,6 +121,10 @@ const MONS={
   sila:{n:"ศิลา",t:["earth","grass"],hp:200,atk:1.05,def:1.2,spd:96,basic:"b_sila",ult:"u_quake",role:"รถถัง",ds:"โกเลมหินมีมอส ตาผลึก หมัดหนักและอึด"},
   eela:{n:"อีลล่า",t:["water","elec"],hp:165,atk:1.1,def:1,spd:122,basic:"b_eela",ult:"u_beam",role:"คุมพื้นที่",ds:"ปลาไหลโคมไฟ ว่ายน้ำเร็ว ช็อตทั้งแม่น้ำ"},
   fuwa:{n:"ฟูวา",t:["wind","water"],hp:155,atk:1,def:1,spd:134,basic:"b_fuwa",ult:"u_vortex",role:"ก่อกวน",ds:"แมงกะพรุนก้อนเมฆ ผลักและดูดคู่ต่อสู้"},
+  blazar:{n:"เบลซาร์",t:["fire","metal"],hp:170,atk:1.1,def:1.12,spd:118,basic:"b_blazar",ult:"u_barrage",role:"ยิงรัว",ds:"มังกรจิ้งจกเกราะเหล็ก พ่นลูกไฟรัวเป็นชุด"},
+  reya:{n:"เรย่า",t:["water","wind"],hp:150,atk:1.05,def:.95,spd:136,basic:"b_reya",ult:"u_typhoon",role:"คุมพื้นที่",ds:"กระเบนเมฆบิน สร้างพายุหมุนน้ำดูดคู่ต่อสู้"},
+  terran:{n:"เทอร์รัน",t:["earth","grass"],hp:210,atk:1.08,def:1.25,spd:92,basic:"b_terran",ult:"u_fissure",role:"รถถัง",ds:"ผู้พิทักษ์กระดองหิน ทุบพื้นเป็นแรงกระแทก"},
+  umbra:{n:"อัมบร้า",t:["elec","shadow"],hp:140,atk:1.15,def:.88,spd:152,basic:"b_umbra",ult:"u_phantom",role:"นักล่า",ds:"จิ้งจอกเงาสายฟ้า เร็วที่สุด ทิ้งภาพติดตาไว้ข้างหลัง"},
   lavarok:{n:"ลาวาร็อก",t:["fire","earth"],hp:190,atk:1.12,def:1.15,spd:104,basic:"b_lavarok",ult:"u_erupt",role:"บุกประชิด",ds:"ด้วงแรดหลังภูเขาไฟ เดินบนลาวาได้สบาย"}
 };
 const typedMoves=t=>Object.keys(MOVES).filter(m=>{const v=MOVES[m];return!v.ult&&!v.hidden&&!v.basic&&v.t===t});
@@ -209,6 +236,47 @@ const DRAW={
     g.R(11,22+b,3,2,Y);g.R(19,22+b,3,2,Y);g.P(12,22+b,OUT);g.P(20,22+b,OUT);g.L(10,20+b,14,21+b,D);g.L(22,20+b,18,21+b,D);
     g.R(14,25+b,5,1,D);}
 };
+/* four more monsters */
+const mirG=g=>({P:(x,y,c)=>g.P(31-x,y,c),R:(x,y,w,h,c)=>g.R(32-x-w,y,w,h,c),M:(x,y,w,h,c)=>g.M(32-x-w,y,w,h,c),E:(x,y,rx,ry,c)=>g.E(31-x,y,rx,ry,c),L:(a,b,c,d,e)=>g.L(31-a,b,31-c,d,e)});
+Object.assign(DRAW,{
+  blazar(g,b){const R="#e2542a",O="#ff8a3a",C="#ffd9a0",S="#9aa4ae",SL="#d0d8e0",SD="#5f6872",Y="#ffd23e";
+    g.L(20,24,27,26,R);g.L(20,25,27,27,R);g.L(27,26,29,22,R);g.L(28,26,30,22,O);g.E(29,19,2,3,"#ff8a2a");g.P(29,15,Y);g.P(29,19,Y);g.P(29,18,Y);g.P(30,17,"#fff3a0");
+    g.R(10,26,5,4,R);g.R(18,26,5,4,R);g.R(10,29,5,1,SD);g.R(18,29,5,1,SD);g.P(10,30,"#fff");g.P(12,30,"#fff");g.P(14,30,"#fff");g.P(18,30,"#fff");g.P(20,30,"#fff");g.P(22,30,"#fff");
+    g.R(6,18+b,3,5,R);g.R(23,18+b,3,5,R);g.R(5,22+b,4,2,S);g.R(23,22+b,4,2,S);g.P(5,22+b,SL);g.P(23,22+b,SL);
+    g.E(16,19+b,6,7,R);g.E(16,21+b,4,4,C);g.L(14,20+b,18,20+b,"#f0b878");g.L(14,23+b,18,23+b,"#f0b878");g.P(16,18+b,Y);g.P(15,19+b,Y);g.P(17,19+b,Y);g.P(16,19+b,"#fff3a0");
+    g.E(8,16+b,3,3,S);g.E(24,16+b,3,3,S);g.E(8,15+b,2,1,SL);g.E(24,15+b,2,1,SL);g.P(8,18+b,SD);g.P(24,18+b,SD);
+    g.E(16,10+b,6,5,R);g.E(16,13+b,4,2,O);
+    g.R(10,5+b,13,3,S);g.R(11,4+b,11,1,SL);g.R(10,7+b,13,1,SD);g.L(10,5+b,7,1+b,S);g.L(11,5+b,8,1+b,SL);g.L(22,5+b,25,1+b,S);g.L(21,5+b,24,1+b,SL);g.P(7,0+b,SD);g.P(25,0+b,SD);
+    g.R(12,9+b,2,2,Y);g.R(18,9+b,2,2,Y);g.P(13,10+b,OUT);g.P(18,10+b,OUT);g.L(11,8+b,14,8+b,"#8e2a18");g.L(18,8+b,21,8+b,"#8e2a18");
+    g.L(13,14+b,19,14+b,"#7a1f18");g.P(14,14+b,"#fff");g.P(18,14+b,"#fff");g.P(15,12+b,"#7a1f18");g.P(17,12+b,"#7a1f18");},
+  reya(g,b){const W="#eef6ff",B="#5aa8f0",D="#2a5fc0",T="#3fd0c8",w=b?1:-1;
+    g.L(14,19+b,11,25,T);g.L(11,25,12+w,31,T);g.L(18,19+b,21,25,T);g.L(21,25,20-w,31,T);g.L(16,20+b,16+w,26,D);g.L(16+w,26,16-w,30,D);g.P(12+w,31,"#bff4ff");g.P(20-w,31,"#bff4ff");
+    g.E(16,13+b,14,5,B);g.E(2,11+b+b,2,3,D);g.E(29,11+b+b,2,3,D);g.E(16,14+b,12,3,"#7fc0f8");g.M(3,16+b,26,1,"#9ad4ff");g.M(6,17+b,20,1,D);
+    g.E(7,20+b,3,2,"#fff");g.E(25,20+b,3,2,"#fff");g.E(11,21+b,2,1,"#fff");g.E(21,21+b,2,1,"#fff");g.P(5,22+b,"#d8f2ff");g.P(27,22+b,"#d8f2ff");
+    g.E(16,13+b,6,7,W);g.E(16,8+b,4,3,W);g.L(12,7+b,9,2+b,B);g.L(13,7+b,10,2+b,W);g.L(20,7+b,23,2+b,B);g.L(19,7+b,22,2+b,W);
+    g.L(16,5+b,16,9+b,B);g.P(15,10+b,B);g.P(17,10+b,B);g.L(16,11+b,16,13+b,B);
+    g.R(12,12+b,2,3,OUT);g.R(19,12+b,2,3,OUT);g.P(12,12+b,"#fff");g.P(19,12+b,"#fff");g.P(10,15+b,"#ff9ab0");g.P(22,15+b,"#ff9ab0");
+    g.L(14,16+b,15,17+b,D);g.L(15,17+b,17,17+b,D);g.P(18,16+b,D);g.E(16,19+b,3,1,"#d8f2ff");},
+  terran(g,b){const K="#8a7458",L="#b09a78",D="#5f4e3a",M="#4cae52",MD="#2f8a3c",S="#9aa0a8",SL="#d0d6dc";
+    g.R(5,25,6,5,D);g.R(21,25,6,5,D);g.R(5,29,6,1,"#3e3226");g.R(21,29,6,1,"#3e3226");g.P(5,30,SL);g.P(7,30,SL);g.P(10,30,SL);g.P(21,30,SL);g.P(24,30,SL);g.P(26,30,SL);
+    g.E(16,15+b,13,9,K);g.E(9,12+b,4,3,L);g.E(22,11+b,4,3,L);g.E(16,16+b,5,3,L);g.E(6,18+b,3,2,L);g.E(26,18+b,3,2,L);
+    g.L(13,9+b,12,14+b,D);g.L(19,8+b,20,13+b,D);g.L(11,17+b,8,20+b,D);g.L(21,17+b,24,20+b,D);g.L(13,19+b,19,19+b,D);
+    g.E(16,7+b,7,2,M);g.E(6,13+b,3,2,M);g.E(26,14+b,3,2,M);g.P(4,15+b,MD);g.P(28,16+b,MD);g.P(12,9+b,MD);g.P(20,9+b,MD);g.P(16,9+b,M);g.P(9,7+b,M);g.P(23,7+b,M);
+    g.R(15,3+b,3,5,S);g.R(16,2+b,1,2,SL);g.R(15,3+b,1,4,SL);g.R(8,7+b,2,4,S);g.P(8,6+b,SL);g.R(22,7+b,2,4,S);g.P(22,6+b,SL);
+    g.L(12,6+b,11,2+b,"#2b7a3a");g.E(10,1+b,1,0,"#6fd06a");g.P(12,1+b,"#6fd06a");g.L(20,6+b,21,2+b,"#2b7a3a");g.E(22,1+b,1,0,"#6fd06a");g.P(20,1+b,"#6fd06a");
+    g.E(16,24+b,7,4,L);g.R(10,20+b,5,2,S);g.R(17,20+b,5,2,S);g.P(10,20+b,SL);g.P(17,20+b,SL);g.L(9,22+b,7,20+b,S);g.L(22,22+b,24,20+b,S);
+    g.R(12,22+b,3,2,"#fff");g.R(17,22+b,3,2,"#fff");g.P(13,23+b,OUT);g.P(14,23+b,OUT);g.P(17,23+b,OUT);g.P(18,23+b,OUT);g.L(11,21+b,15,22+b,D);g.L(21,21+b,17,22+b,D);
+    g.P(15,25+b,D);g.P(17,25+b,D);g.L(12,27+b,20,27+b,D);g.E(10,24+b,1,1,M);},
+  umbra(g0,b){const g=mirG(g0),N="#2a2456",V="#4a3a9a",C="#4ad8ff",CL="#bff4ff",Y="#ffe04a";
+    g.E(26,15+b,3,5,V);g.E(27,11+b,2,4,C);g.L(27,7+b,29,3+b,C);g.P(28,8+b,CL);g.P(27,12+b,CL);g.P(25,18+b,C);g.L(24,19+b,22,20+b,N);
+    g.R(8,24,3,6,N);g.R(12,25,3,5,N);g.R(18,25,3,5,N);g.R(22,24,3,6,N);g.R(8,29,3,1,C);g.R(12,29,3,1,C);g.R(18,29,3,1,C);g.R(22,29,3,1,C);
+    g.E(16,20+b,8,5,N);g.E(16,22+b,5,2,V);g.P(12,18+b,C);g.P(13,19+b,C);g.P(19,21+b,C);g.P(20,20+b,C);g.P(16,18+b,C);g.L(21,17+b,23,18+b,C);
+    g.E(11,15+b,4,5,V);g.L(13,11+b,15,7+b,C);g.L(12,12+b,13,8+b,CL);g.L(14,13+b,17,10+b,C);g.P(15,14+b,C);
+    g.E(9,13+b,5,4,N);g.E(5,15+b,3,2,N);g.P(2,15+b,V);g.P(3,16+b,V);
+    g.L(8,10+b,6,4+b,N);g.L(9,10+b,7,4+b,N);g.L(9,10+b,8,5+b,C);g.L(12,10+b,13,4+b,N);g.L(13,10+b,14,5+b,N);g.L(12,9+b,13,6+b,C);
+    g.R(7,12+b,2,2,Y);g.P(7,13+b,OUT);g.L(6,11+b,9,11+b,OUT);g.P(4,17+b,"#fff");g.P(6,17+b,"#fff");g.L(4,16+b,7,16+b,V);
+    g.P(21,31,Y);g.P(23,30,Y);g.P(5,31,Y);g.P(27,31,Y);g.P(15,31,C);}
+});
 const SPR={};for(const k in MONS){const a=pix(SS,SS,DRAW[k],0),b=pix(SS,SS,DRAW[k],1);SPR[k]={f:[a.c,b.c],w:[a.w,b.w]}}
 const PROP={
   crate:pix(16,18,g=>{g.R(1,1,14,16,"#b8793a");g.R(1,1,14,2,"#d79a52");g.R(1,7,14,1,"#8f5a28");g.R(1,12,14,1,"#8f5a28");g.L(2,3,13,16,"#8f5a28")}).c,
@@ -302,7 +370,7 @@ function renderArenas(){const box=$("arenas");box.textContent="";
   for(const a of [{k:"random",n:"สุ่มสนาม",d:"สุ่มหนึ่งในแปดสนามทุกครั้งที่เริ่ม"},...ARENAS]){const b=el("button","ar");b.type="button";b.setAttribute("aria-pressed",String(SEL.ar===a.k));
     b.append(arenaThumb(a.k),el("b",null,a.n),el("span",null,a.d));b.onclick=()=>{SEL.ar=a.k;saveSel();SFX.play("ui");renderArenas()};box.append(b)}}
 function renderChart(){const c=$("chart");c.textContent="";
-  for(const k of ["fire","water","grass","elec","earth","wind"]){const r=el("div");r.append(chip(k),el("span","w","ชนะ"));for(const b of TY[k].beats)r.append(chip(b));c.append(r)}}
+  for(const k of ["fire","water","grass","elec","earth","wind","metal","shadow"]){const r=el("div");r.append(chip(k),el("span","w","ชนะ"));for(const b of TY[k].beats)r.append(chip(b));c.append(r)}}
 function renderNav(){const ok=SEL.mv[SEL.mon].length===3;$("bBack").hidden=SEL.step===1;$("bNext").hidden=SEL.step===3;$("bNext").disabled=SEL.step===2&&!ok;
   $("bNext").textContent=SEL.step===1?"ถัดไป: จัดท่า":"ถัดไป: เลือกสนาม";$("navInfo").textContent=MONS[SEL.mon].n+(SEL.step>1?" · "+SEL.mv[SEL.mon].map(k=>MOVES[k].n).join(" / "):"");
   [...$("steps").children].forEach((li,i)=>{li.className=i+1===SEL.step?"on":i+1<SEL.step?"done":""})}
@@ -315,7 +383,7 @@ function netHint(){$("netHint").textContent=netState==="wait"?"กำลัง�
 const NETOK="เล่นออนไลน์ได้เลย ไม่ต้องสมัครสมาชิก สร้างห้องแล้วส่งรหัสหรือลิงก์เชิญให้เพื่อน",NETOFF="เบราว์เซอร์นี้เชื่อมต่อผู้เล่นอื่นไม่ได้ ยังฝึกกับบอทได้ตามปกติ",INVITE=true;
 /* Peer-to-peer room over WebRTC (PeerJS). Same small surface the game uses: presence / peers / onPeers / leave. */
 function peerRoom(code,host){return new Promise((resolve,reject)=>{
-  const ID="clashmon5-"+code;let mine={},theirs=null,conn=null,done=false,closed=false;const hs=new Set();
+  const ID="clashmon6-"+code;let mine={},theirs=null,conn=null,done=false,closed=false;const hs=new Set();
   const peer=host?new Peer(ID):new Peer();
   const fire=()=>hs.forEach(h=>{try{h()}catch(e){}});
   const send=()=>{if(conn&&conn.open){try{conn.send(mine)}catch(e){}}};
@@ -339,7 +407,7 @@ function peerRoom(code,host){return new Promise((resolve,reject)=>{
 ROOM=typeof Peer==="function"&&typeof RTCPeerConnection==="function"?{join:peerRoom}:null;netState=ROOM?"ok":"off";
 
 
-const PV=5,myCard=()=>({v:PV,nick:SEL.nick,mon:SEL.mon,mv:SEL.mv[SEL.mon].slice(),ar:SEL.ar});
+const PV=6,myCard=()=>({v:PV,nick:SEL.nick,mon:SEL.mon,mv:SEL.mv[SEL.mon].slice(),ar:SEL.ar});
 const CLR={ready:false,rt:0,ko:null,g:null,a:null,h:null,mn:null,xb:null};
 async function enterRoom(code,host){if(!ROOM)return;code=code.toLowerCase();
   if(!/^[a-z0-9]{4}$/.test(code)){$("netHint").textContent="รหัสห้องต้องเป็นตัวอักษรอังกฤษหรือตัวเลข 4 ตัว";return}
@@ -419,14 +487,14 @@ const waterNear=(x,y,r)=>G.A.water.some(w=>w.e?inEll(w,x,y,r):inRect(w,x,y,r));
 const ellAt=(arr,x,y,p)=>arr.find(l=>inEll(l,x,y,p));
 const wallAt=(x,y,r)=>G.A.walls.find(w=>inRect(w,x,y,r));
 const inCover=f=>G.A.props.some(p=>!p.dead&&((p.k==="bush"&&Math.hypot(p.x-f.x,p.y-f.y)<p.R-4)||(p.k==="tree"&&Math.hypot(p.x-f.x,p.y-14-f.y)<p.R-2)));
-const seenBy=(o,f)=>o.under<=0&&!(inCover(o)&&o.reveal<=0&&o.burn<=0&&Math.hypot(o.x-f.x,o.y-f.y)>90);
+const seenBy=(o,f)=>o.under<=0&&!(o.cloak>0&&o.reveal<=0&&Math.hypot(o.x-f.x,o.y-f.y)>70)&&!(inCover(o)&&o.reveal<=0&&o.burn<=0&&Math.hypot(o.x-f.x,o.y-f.y)>90);
 function meltIce(x,y,r){const A=G.A;for(let i=A.ice.length-1;i>=0;i--){const l=A.ice[i];if(inEll(l,x,y,r)){A.ice.splice(i,1);A.water.push(l);FX.burst(l.x,l.y,"#e8f4ff",30,l.rx*2.4,.9);SFX.play("dash","water")}}}
 
 /* ================= game state ================= */
 let G=null;const ENV={mon:{atk:1,t:[]},owned:false,env:true,ult:0,x:0,y:0};
 function mkFighter(card,x,face,owned,tag){const m=MONS[card.mon];
   return{tag,card,mon:m,key:card.mon,moves:card.mv,x,y:H/2,tx:x,ty:H/2,ax:face,ay:0,hp:m.hp,max:m.hp,owned,seq:0,ult:0,cdB:0,
-    cds:[0,0,0],dodgeCd:0,stun:0,stunImm:0,slow:0,burn:0,burnTick:0,guard:0,haste:0,rest:0,under:0,roll:0,rdx:0,rdy:0,ifr:0,root:0,air:0,airT:1,jx:0,jy:0,land:null,shield:0,shieldT:0,cast:0,faceT:0,
+    cds:[0,0,0],dodgeCd:0,stun:0,stunImm:0,slow:0,burn:0,burnTick:0,guard:0,haste:0,rest:0,under:0,roll:0,rdx:0,rdy:0,ifr:0,root:0,air:0,airT:1,jx:0,jy:0,land:null,shield:0,shieldT:0,cast:0,faceT:0,cloak:0,
     dash:null,chg:null,chgF:0,kx:0,ky:0,ivx:0,ivy:0,hk:null,flash:0,walk:0,moving:false,reveal:0,envT:0,cacT:0,sprT:0,padCd:0,hitSet:new Set(),hits:[],atks:[],minions:[],ai:{t:1.2,s:1,st:1,lx:W/2,ly:H/2,hold:null}}}
 function newGame(mode,meCard,opCard,left,arKey){
   const A=buildArena(arKey);paintArena(A);
@@ -582,13 +650,18 @@ function spawnAttack(f,a){const mv=MOVES[a.m];if(!mv)return;
     case"orbit":G.orbits.push({id:a.id,own:f,mv,t:mv.dur,a:0,hc:0,n:0,et:0});SFX.play("buff");break;
     case"blink":FX.boom(a.x,a.y-12,type,26);FX.boom(px,py-12,type,30);G.blasts.push({id:a.id,own:f,mv:MOVES.blinkout,x:a.x,y:a.y,t:.3,full:.3});if(f.owned){f.x=px;f.y=py;f.ifr=Math.max(f.ifr,.2);collide(f)}else{f.x=px;f.y=py}SFX.play("zap");break;
     case"dig":if(f.owned)f.under=.95;crater(a.x,a.y,26,1);part(a.x,a.y,"#8a5a2a",12,120,.5);break;
-    case"buff":if(f.owned){if(mv.buff==="guard")f.guard=1.6;else if(mv.buff==="haste")f.haste=4;else if(mv.buff==="shield"){f.shield=32;f.shieldT=5}else f.rest=1}part(f.x,f.y-12,TY[type].c,10,80,.5);SFX.play("buff");break;
+    case"buff":if(f.owned){if(mv.buff==="guard")f.guard=1.6;else if(mv.buff==="haste")f.haste=4;else if(mv.buff==="shield"){f.shield=32;f.shieldT=5}else if(mv.buff==="armor")f.guard=3;else if(mv.buff==="cloak"){f.cloak=3.5;f.haste=Math.max(f.haste,3.5)}else f.rest=1}if(mv.buff==="cloak")f.reveal=0;part(f.x,f.y-12,TY[type].c,10,80,.5);SFX.play("buff");break;
     case"leap":if(f.owned){f.air=f.airT=.5;f.jx=(a.tx-a.x)/.5;f.jy=(a.ty-a.y)/.5;f.land="leapland"}part(a.x,a.y,"#fff",8,90,.3);SFX.play("dash");break;
     case"ring":G.rings.push({id:a.id,own:f,mv,x:a.x,y:a.y,r:10,max:mv.max,sp:250,done:false});SFX.play("beam",type);break;
     case"beam":{const p=clamp(a.p||0,0,1);G.beams.push({id:a.id,own:f,mv,x:a.x,y:a.y-12,dx:a.dx,dy:a.dy,p,wd:8+14*p,sc:.4+.6*p,w:0,t:.26,done:false,len:rayLen(a.x,a.y,a.dx,a.dy,1200)});SFX.play("beam",type);break}
     case"clone":if(f.owned){for(const s of [-1,1])f.minions.push({id:a.id+":"+s,x:clamp(a.x-a.dy*s*30,FR,W-FR),y:clamp(a.y+a.dx*s*30,FR+10,H-FR),hp:22,t:10,hc:.6,wk:0})}part(a.x,a.y-12,"#fff",16,140,.5);SFX.play("buff");break;
     case"u_bird":f.dash={t:mv.dur,dx:a.dx,dy:a.dy,mv,id:a.id};if(f.owned)f.ifr=mv.dur+.1;G.dark=1;SFX.play("beam","fire");
       for(let k=1;k<=6;k++)G.blasts.push({id:a.id+":t"+k,own:f,mv:MOVES.trailz,x:clamp(a.x+a.dx*k*85,FR,W-FR),y:clamp(a.y+a.dy*k*85,FR,H-FR),t:.1*k,full:.1*k});break;
+    case"u_barrage":for(let w=0;w<4;w++)addShots(f,a,mv,mv.cnt,ang+(w%2?.06:-.06),{w:w*.22,k0:w*10});if(f.owned)f.cast=1;G.shake=5;SFX.play("beam","fire");break;
+    case"u_typhoon":G.zones.push({id:a.id,own:f,mv,x:clamp(a.x+a.dx*50,60,W-60),y:clamp(a.y+a.dy*50,60,H-60),t:mv.dur,tk:.2,n:0,pull:mv.pull,vx:a.dx*95,vy:a.dy*95});for(const l of G.A.lava)l.cool=7;SFX.play("beam","water");break;
+    case"u_fissure":for(let k=1;k<=8;k++){const x=a.x+a.dx*k*62,y=a.y+a.dy*k*62;if(x<FR||x>W-FR||y<FR||y>H-FR||wallAt(x,y,0))break;G.blasts.push({id:a.id+":"+k,own:f,mv:MOVES.fisblast,x,y,t:.12+k*.11,full:.4})}if(f.owned)f.root=.5;G.shake=8;SFX.play("boom");break;
+    case"u_phantom":f.dash={t:mv.dur,dx:a.dx,dy:a.dy,mv,id:a.id};if(f.owned)f.ifr=mv.dur+.15;G.dark=1.4;SFX.play("zap");
+      for(let k=1;k<=7;k++)G.blasts.push({id:a.id+":b"+k,own:f,mv:MOVES.bolt,x:clamp(a.x+a.dx*k*70,FR,W-FR),y:clamp(a.y+a.dy*k*70,FR,H-FR),t:.1+.07*k,full:.3});break;
     case"u_wave":G.waves.push({id:a.id,own:f,mv,x:a.x,y:a.y,dx:a.dx,dy:a.dy,d:-20,sp:340});for(const l of G.A.lava)l.cool=7;G.shake=6;SFX.play("boom");break;
     case"u_storm":G.dark=3.4;for(let k=0;k<12;k++){const an=R()*6.28,rr=R()*(k<3?30:125);G.blasts.push({id:a.id+":"+k,own:f,mv:MOVES.bolt,x:clamp(a.tx+Math.cos(an)*rr,FR,W-FR),y:clamp(a.ty+Math.sin(an)*rr,FR,H-FR),t:.5+k*.24,full:.5})}break;
     case"u_pepper":for(let w=0;w<3;w++)for(let i=0;i<14;i++)addShots(f,a,mv,1,i/14*6.283+w*.22,{w:w*.3,k0:w*20+i,spread:0});G.shake=5;SFX.play("boom");break;
@@ -610,7 +683,7 @@ function collide(f){f.x=clamp(f.x,FR+8,W-FR-8);f.y=clamp(f.y,FR+18,H-FR);if(f.ai
   if(f.under>0)return;
   const push=(px,py,pr)=>{let dx=f.x-px,dy=f.y-py;const d=Math.hypot(dx,dy),r=pr+9;if(d<r){if(d<.01){dx=1;dy=0}f.x+=dx/(d||1)*(r-d);f.y+=dy/(d||1)*(r-d)}};
   for(const p of G.A.props)if(!p.dead&&p.r)push(p.x,p.y,p.r);for(const w of G.twalls)push(w.x,w.y,w.r)}
-function tick(f,dt){for(const k of ["stun","stunImm","slow","guard","haste","roll","ifr","root","dodgeCd","flash","reveal","cdB","cast","faceT","padCd","shieldT"])if(f[k]>0)f[k]=Math.max(0,f[k]-dt);
+function tick(f,dt){for(const k of ["stun","stunImm","slow","guard","haste","roll","ifr","root","dodgeCd","flash","reveal","cdB","cast","faceT","padCd","shieldT","cloak"])if(f[k]>0)f[k]=Math.max(0,f[k]-dt);
   for(let i=0;i<3;i++)if(f.cds[i]>0)f.cds[i]=Math.max(0,f.cds[i]-dt);if(f.shieldT<=0)f.shield=0}
 function envOwned(f,dt){const A=G.A,gr=f.air<=0&&f.under<=0;if(!gr)return{mul:1,ice:false};let mul=1,ice=false;
   const wet=inWater(f.x,f.y);if(wet){mul*=f.mon.t.includes("water")?1.25:.6;if(f.burn>0)f.burn=0}
@@ -719,6 +792,7 @@ function updWorld(dt){const A=G.A;
     if(b.zone)G.zones.push({id:b.id+"z",own:b.own,mv:MOVES.trailz,x:b.x,y:b.y,t:3,tk:.4,n:0,pull:0});
     for(const v of victimsOf(b.own))if(vuln(v)&&v.ifr<=0){const dx=v.x-b.x,dy=v.y-b.y,d=Math.hypot(dx,dy);if(d<mv.rad+10)applyHit(v,b.own,mv,b.id,d>1?[dx/d,dy/d]:[1,0])}}
   for(let i=G.zones.length-1;i>=0;i--){const z=G.zones[i];z.t-=dt;z.tk-=dt;if(z.t<=0){G.zones.splice(i,1);continue}const type=mvT(z.mv,z.own);
+    if(z.vx||z.vy){z.x=clamp(z.x+z.vx*dt,40,W-40);z.y=clamp(z.y+z.vy*dt,40,H-40)}
     if(z.pull)for(const v of victimsOf(z.own))if(vuln(v)){const dx=z.x-v.x,dy=z.y-v.y,d=Math.hypot(dx,dy);if(d<z.mv.rad*1.7&&d>6){v.x+=dx/d*z.pull*dt;v.y+=dy/d*z.pull*dt}}
     if(z.tk<=0){z.tk=z.pull?.4:.5;z.n++;if(type==="fire")touchEnv(z.x,z.y,z.mv.rad*.8,z.own,z.mv,z.id);
       if(z.mv.heal){const o=z.own;if(o.owned&&o.hp>0&&o.hp<o.max&&Math.hypot(o.x-z.x,o.y-z.y)<z.mv.rad){o.hp=Math.min(o.max,o.hp+z.mv.heal);pop(o.x+rnd(-8,8),o.y-40,"+"+z.mv.heal,"#7dffa0")}continue}
@@ -754,7 +828,7 @@ function updWorld(dt){const A=G.A;
   if(G.shake>0)G.shake=Math.max(0,G.shake-dt*24)}
 
 /* ---- net sync (presence only: absolute state + short lists of recent attacks, hits, minions, destroyed props) ---- */
-function flagsOf(f){return(f.stun>0?1:0)|(f.slow>0?2:0)|(f.burn>0?4:0)|(f.guard>0?8:0)|(f.haste>0?16:0)|(f.rest>0?32:0)|(f.under>0?64:0)|(f.roll>0?128:0)|(f.dash?256:0)|(f.air>0?512:0)|(f.chg?1024:0)}
+function flagsOf(f){return(f.stun>0?1:0)|(f.slow>0?2:0)|(f.burn>0?4:0)|(f.guard>0?8:0)|(f.haste>0?16:0)|(f.rest>0?32:0)|(f.under>0?64:0)|(f.roll>0?128:0)|(f.dash?256:0)|(f.air>0?512:0)|(f.chg?1024:0)|(f.cloak>0?2048:0)}
 function netSend(dt){G.sendT-=dt;if(G.sendT>0||!NR)return;G.sendT=.05;const f=G.me;
   NR.presence({g:[Math.round(f.x),Math.round(f.y),f.hp,flagsOf(f),f.dash?f.dash.id:0,f.dash?Object.keys(MOVES).find(k=>MOVES[k]===f.dash.mv)||0:0,+Math.atan2(f.ay,f.ax).toFixed(2),Math.round(f.ult),Math.round(f.shield)],
     a:f.atks.map(a=>[a.id,a.m,a.x,a.y,a.dx,a.dy,+(a.p||0).toFixed(2),a.tx,a.ty]),h:f.hits,mn:f.minions.map(m=>[m.id,Math.round(m.x),Math.round(m.y),m.hp]),xb:G.myKills}).catch(()=>{})}
@@ -763,8 +837,8 @@ function netRecv(dt){const f=G.op;const p=NR?NR.peers().find(x=>x.peer===G.opPee
   const g=q.g;if(Array.isArray(g)){f.tx=clamp(Number(g[0])||0,0,W);f.ty=clamp(Number(g[1])||0,0,H);const hp=clamp(Number(g[2])||0,0,f.max);if(G.cd<=0||hp<f.hp)f.hp=hp;const fl=Number(g[3])|0;
     const an=Number(g[6])||0;f.ax=Math.cos(an);f.ay=Math.sin(an);f.ult=clamp(Number(g[7])||0,0,100);f.shield=clamp(Number(g[8])||0,0,99);f.shieldT=f.shield>0?1:0;
     f.stun=fl&1?.15:0;f.slow=fl&2?.15:0;f.burn=fl&4?.15:0;f.guard=fl&8?.15:0;f.haste=fl&16?.15:0;f.rest=fl&32?.15:0;f.under=fl&64?.15:0;f.roll=fl&128?.15:0;
-    if(fl&512){if(f.air<=0)f.airT=.6;f.air=.15}else f.air=0;f.chgF=fl&1024?.15:0;if(fl&1024)f.reveal=.3;
-    if(fl&256){const mv=MOVES[g[5]];if(mv&&(mv.kind==="dash"||mv.kind==="u_bird"))f.dash={t:.15,dx:f.ax,dy:f.ay,mv,id:String(g[4])}}else if(f.dash)f.dash=null}
+    if(fl&512){if(f.air<=0)f.airT=.6;f.air=.15}else f.air=0;f.chgF=fl&1024?.15:0;f.cloak=fl&2048?.15:0;if(fl&1024)f.reveal=.3;
+    if(fl&256){const mv=MOVES[g[5]];if(mv&&(mv.kind==="dash"||mv.udash))f.dash={t:.15,dx:f.ax,dy:f.ay,mv,id:String(g[4])}}else if(f.dash)f.dash=null}
   if(Array.isArray(q.a))for(const r of q.a){if(!Array.isArray(r))continue;const id=String(r[0]);if(G.seenA.has(id))continue;G.seenA.add(id);
     const mv=MOVES[r[1]];if(!mv||G.cd>0)continue;const n=i=>Number(r[i])||0;let dx=clamp(n(4),-1,1),dy=clamp(n(5),-1,1);const dl=Math.hypot(dx,dy)||1;dx/=dl;dy/=dl;
     const a={id,m:r[1],x:clamp(n(2),0,W),y:clamp(n(3),0,H),dx,dy,p:clamp(n(6),0,1),tx:clamp(n(7),0,W),ty:clamp(n(8),0,H)};
@@ -857,6 +931,8 @@ const PAL={
   elec:["#ffffff","#fffbd0","#fff06a","#f7d23e","#e0a01a","#9a6a10","#5a3a0a"],
   earth:["#fff6e0","#f0d8a8","#d8a868","#b07a3e","#8a5a2a","#5f3e1e","#3a2612"],
   wind:["#ffffff","#f0fffa","#c8f5e8","#8fe3d0","#5ab8a8","#3a8a7e","#255a52"],
+  metal:["#ffffff","#e8eef4","#c4ced8","#98a4b0","#6c7884","#48525c","#2a3038"],
+  shadow:["#f0e0ff","#c8a0ff","#9a6adf","#6a3fb0","#43287a","#2a1850","#150c2a"],
   norm:["#ffffff","#f4f0ff","#d8d2ea","#b0a8c8","#8880a0","#5a5470","#34304a"]};
 const PALH={};for(const k in PAL)PALH[k]=PAL[k].map(hex);
 const pick=a=>a[(Math.random()*a.length)|0];
@@ -885,6 +961,8 @@ function makeTextures(s){const T=s.textures;
       if(t==="grass"){const v1=Math.abs(y-15.5-7*Math.sin(ph*2)),v2=Math.abs(y-15.5+7*Math.sin(ph*2));if(v1<1.5||v2<1.5)return R[1];if(v1<2.6||v2<2.6)return R[4];const lim=.78+(vnoise(x/8,1.7,seed,8)-.5)*.3;if(e>lim)return null;return cl(R,2+e*2.4+(vnoise(x/4,y/4,seed+3,16)-.5)*1.6)}
       if(t==="earth"){const lim=.82+(vnoise(x/8,2.1,seed,8)-.5)*.34;if(e>lim)return null;const cx=Math.floor(x/7),cy=Math.floor(y/6);if(hsh(cx,cy,seed)>.62){const ix=x%7,iy=y%6;if(ix===0||iy===0||ix===6||iy===5)return hsh(x,y,seed+5)>.5?R[5]:null;return R[ix+iy<5?1:ix+iy>8?4:2]}return hsh(x,y,seed+1)>.62?null:R[hsh(x,y,seed+2)>.5?3:4]}
       if(t==="wind"){if(Math.abs(y-15.5-11*Math.sin(ph))<1.3)return R[0];if(Math.abs(y-15.5+11*Math.sin(ph+1))<1.1)return R[3];const n=vnoise(x/16,y/2,seed,4);return n>.7&&e<.95?R[n>.84?0:n>.76?1:3]:null}
+      if(t==="metal"){const row=Math.floor(y/6),ry=row*6+3,q=((x+row*17)%22),half=2.6-Math.abs(q-7)/3;if(row>0&&row<5&&q<14&&Math.abs(y-ry)<half)return R[Math.abs(y-ry)<.8?0:y<ry?1:3];return e<.2?R[2]:e<.34&&(x+y)%2?R[3]:null}
+      if(t==="shadow"){const I=(1-e)*1.2+(vnoise(x/8,y/5,seed,8)-.5)*.9+(vnoise(x/4,y/3,seed+1,16)-.5)*.5;if(Math.abs(y-15.5-8*Math.sin(ph*2+1))<1.2)return R[0];if(I<.3)return null;return cl(R,6.4-Math.min(1,I)*4.6)}
       const I=(1-e)*(1-e);if(I<.12||(I<.36&&(x+y)%2))return null;return R[I>.8?0:I>.55?2:3]});
     /* projectile, 4 frames, pointing along +x */
     sheet(s,"shot_"+t,20,20,4,i=>(x,y)=>{const dx=x-9.5,dy=y-9.5,d=Math.hypot(dx,dy),a=Math.atan2(dy,dx);
@@ -894,6 +972,8 @@ function makeTextures(s){const T=s.textures;
       if(t==="elec"){if(d<3.4)return R[d<2?0:1];if(d<9&&Math.abs(Math.sin(a*2.5+i*2.1+d*.9))>.93)return R[1];if(d<5.4&&(x+y+i)%2)return R[3];return null}
       if(t==="earth"){const lim=7*(.74+.26*vnoise(a*1.5+i*1.57+7,1,seed));if(d>lim)return null;if(d>lim-1.1)return R[6];const sl=dx*Math.cos(i*1.57)+dy*Math.sin(i*1.57)+dy;return R[sl<-3?1:sl>3?5:3]}
       if(t==="wind"){const q=Math.hypot(x-8,dy),an=Math.atan2(dy,x-8);if(Math.abs(an)<1.15-i*.05){if(q>5.6&&q<8.4-Math.abs(an)*1.2)return R[q>7?2:0];if(q>2.2&&q<3.8)return R[1]}return null}
+      if(t==="metal"){const rx=Math.abs(dx*Math.cos(i*.785)+dy*Math.sin(i*.785)),ry=Math.abs(-dx*Math.sin(i*.785)+dy*Math.cos(i*.785));if(rx/8+ry/3.4>1)return null;return rx/8+ry/3.4>.78?R[5]:ry<1?R[0]:dy<0?R[1]:R[3]}
+      if(t==="shadow"){if(d<3)return R[1];if(d<6.2+Math.sin(a*3+i*1.6)*1.3)return R[d<4.6?4:5];if(x<9&&Math.abs(dy+Math.sin(x*.9+i*1.5)*2)<1.4&&x>1)return R[3];if(d<8&&Math.abs(Math.sin(a*2+i*1.6))>.95)return R[2];return null}
       return d<4?R[0]:d<6?R[2]:d<7?R[4]:null})}
   sheet(s,"flame",16,24,6,i=>(x,y)=>{const h=(23-y)/23,w=6.4*Math.pow(1-h,.7)*(1+.25*Math.sin(i*1.05+h*6)),cx=7.5+Math.sin(h*5+i*1.05)*1.7*h,d=Math.abs(x-cx)/(w||.01);return d>1?null:cl(PAL.fire,d*2.2+h*3.3)});
   sheet(s,"wave",32,64,1,()=>(x,y)=>{const n=vnoise(y/8,x/6,5,8);if(x<4+n*9)return null;if(x>26-n*3)return hsh(x,y,3)>.25?"#ffffff":"#d8f2ff";if(vnoise(y/4,x/3,9,16)>.7)return "#d8f2ff";return x>18?"#9ad4ff":x>11?"#4aa3f0":"#2a6fd0"});
@@ -921,6 +1001,8 @@ function spray(type,x,y,n,sp){const P=PALH[type]||PALH.norm;for(let i=0;i<n;i++)
     case"elec":emit("streak",x,y,vx*1.6,vy*1.6,rnd(.1,.22),pick(P.slice(0,3)),a*57.3);break;
     case"earth":emit(i%2?"rock":"smoke",x,y,vx,vy-100,rnd(.35,.6),i%2?pick(P.slice(2,5)):0x8a6a4a);break;
     case"wind":emit("streak",x,y,vx*1.3,vy*1.3,rnd(.2,.35),pick(P.slice(0,3)),a*57.3);break;
+    case"metal":if(i%2)emit("rock",x,y,vx,vy-80,rnd(.3,.5),pick(P.slice(0,4)));else emit("streak",x,y,vx*1.5,vy*1.5,rnd(.1,.2),pick([0xffd23e,0xff9a2a,0xffffff]),a*57.3);break;
+    case"shadow":emit(i%2?"smoke":"sq",x,y,vx*.7,vy*.7-20,rnd(.35,.6),i%2?pick([0x43287a,0x2a1850]):pick(P.slice(0,3)));break;
     default:emit("sq",x,y,vx,vy,rnd(.2,.4),0xffffff)}}}
 const ADDT={fire:1,elec:1,grass:1,wind:1,norm:1};
 function boomSprite(x,y,type,sc){const o=SCN.add.sprite(x,y,"ex_"+type).setScale(sc).setDepth(D.AIR+5).setRotation(rnd(0,6.28));if(ADDT[type])o.setBlendMode("ADD");o.play("ex_"+type);o.once("animationcomplete",()=>o.destroy());return o}
@@ -976,13 +1058,13 @@ const VIEW={ready:false,fx:[],keep:new Set(),t:0,camX:0,camY:0,
     v.spr.setVisible(vis);v.sh.setVisible(vis);v.mound.setVisible(und&&!hid);v.orb.setVisible(false);v.zz.setVisible(false);for(const st of v.stars)st.setVisible(false);if(v.chev)v.chev.setVisible(vis);
     if(hid)return;
     if(und){v.mound.setPosition(x,y-2).setDepth(D.ENT+y);if(Math.random()<.4)emit("sqg",x+rnd(-10,10),y,rnd(-40,40),-rnd(60,140),.35,0x8a5a2a);return}
-    const z=f.air>0?Math.sin(Math.PI*clamp(1-f.air/f.airT,0,1))*(f.airT>.6?120:60):0,bird=f.dash&&f.dash.mv.kind==="u_bird";
+    const z=f.air>0?Math.sin(Math.PI*clamp(1-f.air/f.airT,0,1))*(f.airT>.6?120:60):0,bird=f.dash&&f.dash.mv.kind==="u_bird",ph=f.dash&&f.dash.mv.kind==="u_phantom";
     v.sh.setPosition(x,y+1).setScale(Math.max(.3,1-z*.004)).setDepth(D.ENT+y-1);
     const fr=f.moving?(Math.floor(f.walk)%2):(Math.floor(G.t*2.2)%2),sc=bird?2.6:f.dash?2.15:2,punch=f.cdB>0&&MOVES[f.mon.basic].kind==="melee"?Math.max(0,f.cdB-MOVES[f.mon.basic].cd+.12)*60:0;
-    v.spr.setTexture("m_"+f.key+"_"+fr).setPosition(x+f.ax*punch,y-z+(f.roll>0?10:0)+f.ay*punch).setFlipX(f.ax<0).setScale(sc).setDepth(D.ENT+y).setAlpha(f.hp<=0?.5:f.roll>0?.55:me&&inCover(f)?.6:1).setRotation(f.hp<=0?1.4:f.roll>0?(.28-f.roll)*22*(f.ax<0?-1:1):0);
+    v.spr.setTexture("m_"+f.key+"_"+fr).setPosition(x+f.ax*punch,y-z+(f.roll>0?10:0)+f.ay*punch).setFlipX(f.ax<0).setScale(sc).setDepth(D.ENT+y).setAlpha(f.hp<=0?.5:f.roll>0?.55:f.cloak>0&&f.reveal<=0?.38:me&&inCover(f)?.6:1).setRotation(f.hp<=0?1.4:f.roll>0?(.28-f.roll)*22*(f.ax<0?-1:1):0);
     fillTint(v.spr,f.flash>0);
     if(me){gG.lineStyle(1.5,0xf5c542,.85).strokeEllipse(x,y+1,40,16);v.chev.setPosition(x+f.ax*36,y-8+f.ay*30).setRotation(Math.atan2(f.ay,f.ax))}
-    v.gt-=dt;if(v.gt<=0&&(f.dash||f.roll>0||(f.haste>0&&f.moving))){v.gt=bird?.02:.04;this.ghost(f,f.dash?PALH[mvT(f.dash.mv,f)][3]:f.roll>0?0xffffff:0x8fe3d0,bird?.8:.5)}
+    v.gt-=dt;if(v.gt<=0&&(f.dash||f.roll>0||(f.haste>0&&f.moving))){v.gt=bird||ph?.016:.04;this.ghost(f,ph?pick([0x4ad8ff,0x9a6adf,0xfff06a]):f.dash?PALH[mvT(f.dash.mv,f)][2]:f.roll>0?0xffffff:0x8fe3d0,bird||ph?.85:.5)}if(ph)for(let i=0;i<4;i++){const a=rnd(0,6.283);emit("streak",x+rnd(-16,16),y-rnd(0,36),Math.cos(a)*260,Math.sin(a)*260,.16,pick([0xfff06a,0x4ad8ff,0xc8a0ff]),a*57.3)}
     if(bird){for(let i=0;i<5;i++)emit("soft",x+rnd(-24,24),y-rnd(0,44),-f.dash.dx*rnd(60,200)+rnd(-40,40),-f.dash.dy*rnd(60,200)-rnd(10,60),rnd(.3,.6),pick(PALH.fire.slice(1,5)));
       if(!v.aura)v.aura=SCN.add.sprite(x,y,"flame").setBlendMode("ADD").setOrigin(.5,.85).play("flame");v.aura.setPosition(x-f.dash.dx*8,y-18-f.dash.dy*8).setRotation(Math.atan2(f.dash.dy,f.dash.dx)-1.5708).setScale(5,4.4).setDepth(D.ENT+y+1)}
     else if(v.aura){v.aura.destroy();v.aura=null}
@@ -1005,19 +1087,19 @@ const VIEW={ready:false,fx:[],keep:new Set(),t:0,camX:0,camY:0,
     if(mv.aim==="point"){const rng=mv.rng||160,m=Math.max(.12,a.mag),tx=clamp(x+a.ax*rng*m,FR+8,W-FR-8),ty=clamp(y+a.ay*rng*m,FR+18,H-FR),r=mv.rad||(mv.kind==="wall"?44:26);
       gG.lineStyle(1.5,col,.35).strokeCircle(x,y,rng);gG.lineStyle(2,col,.5).beginPath();gG.moveTo(x,y);gG.lineTo(tx,ty);gG.strokePath();gG.fillStyle(col,.25).fillCircle(tx,ty,r);gG.lineStyle(2,0xffffff,.8).strokeCircle(tx,ty,r);return}
     if(mv.aim==="cone"){const r=mv.rng||Math.min(300,mv.sp*(mv.life||1.7)),arc=mv.arc||(mv.fan+.24);gG.fillStyle(col,.2);gG.slice(x,y-10,r,ang-arc/2,ang+arc/2,false);gG.fillPath();gG.lineStyle(2,col,.75);gG.slice(x,y-10,r,ang-arc/2,ang+arc/2,false);gG.strokePath();return}
-    const L=Math.min(mv.kind==="dash"||mv.kind==="u_bird"?mv.sp*mv.dur:mv.sp?Math.min(440,mv.sp*(mv.life||1.7)):520,rayLen(x,y,a.ax,a.ay,1200)),hw=Math.max(5,(mv.hr||mv.r||8)+4),nx=-a.ay,ny=a.ax,y0=y-10;
+    const L=Math.min(mv.kind==="dash"||mv.udash?mv.sp*mv.dur:mv.sp?Math.min(440,mv.sp*(mv.life||1.7)):520,rayLen(x,y,a.ax,a.ay,1200)),hw=Math.max(5,(mv.hr||mv.r||8)+4),nx=-a.ay,ny=a.ax,y0=y-10;
     gG.fillStyle(col,.2).fillPoints([{x:x+nx*hw,y:y0+ny*hw},{x:x+a.ax*L+nx*hw,y:y0+a.ay*L+ny*hw},{x:x+a.ax*L-nx*hw,y:y0+a.ay*L-ny*hw},{x:x-nx*hw,y:y0-ny*hw}],true);
     gG.fillStyle(col,.8).fillTriangle(x+a.ax*(L+12),y0+a.ay*(L+12),x+a.ax*L+nx*(hw+4),y0+a.ay*L+ny*(hw+4),x+a.ax*L-nx*(hw+4),y0+a.ay*L-ny*(hw+4))},
   /* one beam = body strip + bright core or drawn arc + flowing particles, all different per element */
   beam(b){const s=SCN,type=mvT(b.mv,b.own),ang=Math.atan2(b.dy,b.dx),P=PALH[type]||PALH.norm,w=b.wd,end=Math.max(30,b.len||900),life=b.big?.36:.5,ex=b.dx,ey=b.dy,nx=-ey,ny=ex;
-    const c=s.add.container(b.x,b.y).setRotation(ang).setDepth(D.AIR),add=!(type==="water"||type==="earth");
+    const c=s.add.container(b.x,b.y).setRotation(ang).setDepth(D.AIR),add=!(type==="water"||type==="earth"||type==="metal"||type==="shadow");
     const body=s.add.tileSprite(6,0,end,32,"bm_"+type).setOrigin(0,.5);if(add)body.setBlendMode("ADD");c.add(body);
     let core=null,gfx=null;
-    if(type==="fire"||type==="grass"||type==="water"){core=s.add.tileSprite(6,0,end,32,"bm_"+type).setOrigin(0,.5).setBlendMode("ADD");c.add(core)}
+    if(type==="fire"||type==="grass"||type==="water"||type==="shadow"){core=s.add.tileSprite(6,0,end,32,"bm_"+type).setOrigin(0,.5).setBlendMode("ADD");c.add(core)}
     if(type==="elec"||type==="wind"||type==="norm"){gfx=s.add.graphics().setBlendMode("ADD");c.add(gfx)}
     const orb=s.add.image(6,0,"orb").setTint(P[1]).setBlendMode("ADD");c.add(orb);
     boomSprite(b.x+ex*end,b.y+ey*end,type,1.2+w/14);
-    const sp={fire:900,water:1250,grass:700,elec:500,earth:820,wind:1400,norm:800}[type],at=d=>[b.x+ex*d,b.y+ey*d],deg=ang*57.2958,dens=clamp(end/700,.25,1.3);let nt=0;
+    const sp={fire:900,water:1250,grass:700,elec:500,earth:820,wind:1400,norm:800,metal:1500,shadow:650}[type],at=d=>[b.x+ex*d,b.y+ey*d],deg=ang*57.2958,dens=clamp(end/700,.25,1.3);let nt=0;
     VIEW.fx.push({t:life,upd(dt,k){const age=life*(1-k),grow=Math.min(1,age/.06),fade=k<.45?k/.45:1,sy=w/13*grow*(.55+.45*fade)*(1+.08*Math.sin(age*60)),n=q=>{const f=q*dens*dt*(.4+.6*fade);return Math.floor(f)+(Math.random()<f%1?1:0)};
       body.tilePositionX-=sp*dt;body.setScale(1,sy).setAlpha(fade);if(core){core.tilePositionX-=sp*1.7*dt;core.setScale(1,sy*.42).setAlpha(.6*fade)}
       orb.setScale((w/7)*(1+.2*Math.sin(age*50))*fade+.2);
@@ -1031,6 +1113,10 @@ const VIEW={ready:false,fx:[],keep:new Set(),t:0,camX:0,camY:0,
         for(let i=n(30);i--;){const q=edge();emit("sq",q[0],q[1],ex*200,ey*200,rnd(.2,.35),P[1])}}
       else if(type==="earth"){for(let i=n(70);i--;){const q=edge(),v=rnd(450,720);emit("rock",q[0],q[1],ex*v+nx*rnd(-60,60),ey*v+ny*rnd(-60,60)-30,rnd(.35,.55),pick(P.slice(1,5)))}
         for(let i=n(34);i--;){const q=edge();emit("smoke",q[0],q[1],ex*90+nx*rnd(-40,40),ey*90+ny*rnd(-40,40)-20,rnd(.4,.8),pick([0x8a6a4a,0xb08a5a,0x6a4e34]))}}
+      else if(type==="metal"){for(let i=n(80);i--;){const q=edge(),v=rnd(600,900);emit("rock",q[0],q[1],ex*v+nx*rnd(-40,40),ey*v+ny*rnd(-40,40),rnd(.25,.4),pick(P.slice(0,4)))}
+        for(let i=n(70);i--;){const q=edge(),a=rnd(0,6.283),v=rnd(160,420);emit("streak",q[0],q[1],Math.cos(a)*v,Math.sin(a)*v,rnd(.08,.18),pick([0xffd23e,0xff9a2a,0xffffff]),a*57.3)}}
+      else if(type==="shadow"){for(let i=n(90);i--;){const q=edge();emit("smoke",q[0],q[1],ex*rnd(60,200)+nx*rnd(-50,50),ey*rnd(60,200)+ny*rnd(-50,50)-rnd(0,30),rnd(.4,.7),pick([0x43287a,0x2a1850,0x6a3fb0]))}
+        for(let i=n(50);i--;){const q=edge(),v=rnd(300,520);emit("sq",q[0],q[1],ex*v+nx*rnd(-90,90),ey*v+ny*rnd(-90,90),rnd(.2,.4),pick(P.slice(0,3)))}}
       else if(type==="wind"){gfx.clear();for(const [ph,col,al,lw] of [[0,0xffffff,.9,2.5],[3.14,P[3],.7,2],[1.57,P[2],.45,1.5]]){gfx.lineStyle(lw,col,al*fade);gfx.beginPath();for(let x=6;x<=end;x+=8){const yy=Math.sin(x*.045-age*40+ph)*w*1.15*(.35+.65*Math.min(1,x/120))*grow;if(x===6)gfx.moveTo(x,yy);else gfx.lineTo(x,yy)}gfx.strokePath()}
         for(let i=n(70);i--;){const q=edge(),v=rnd(600,950);emit("streak",q[0],q[1],ex*v,ey*v,rnd(.15,.28),pick(P.slice(0,3)),deg)}for(let i=n(10);i--;){const q=edge();emit("leaf",q[0],q[1],ex*500+nx*rnd(-90,90),ey*500+ny*rnd(-90,90),.4,0x8fd070)}}
       else{nt-=dt;if(nt<=0){nt=.045;gfx.clear();const p=jag(gfx,6,0,end,0,w*1.1,22);boltPts(gfx,p,w*.9,P);const p2=jag(gfx,6,0,end,0,w*1.6,34);strokePts(gfx,p2,Math.max(1.5,w*.18),P[1],.7);
@@ -1065,7 +1151,7 @@ const VIEW={ready:false,fx:[],keep:new Set(),t:0,camX:0,camY:0,
     const sh=G.shake,cx=this.camX,cy=this.camY;s.cameras.main.setScroll(this.bx+Math.round(cx)+(sh?rnd(-sh,sh)*.5:0),this.by+Math.round(cy)+(sh?rnd(-sh,sh)*.5:0));
     gG.clear();gO.clear();gA.clear();this.regions(gG,gA);
     for(const z of G.zones){const type=mvT(z.mv,z.own);if(z.pull||type==="fire")continue;const al=Math.min(1,z.t*2),P=PALH[type];gG.fillStyle(P[3],.18*al).fillCircle(z.x,z.y,z.mv.rad);gG.lineStyle(2,P[2],.7*al).strokeCircle(z.x,z.y,z.mv.rad);gG.lineStyle(1.5,0xffffff,.5*al).strokeCircle(z.x,z.y,z.mv.rad*((G.t*.7)%1));
-      if(Math.random()<dt*22){const an=rnd(0,6.283),r=rnd(0,z.mv.rad);emit("leaf",z.x+Math.cos(an)*r,z.y+Math.sin(an)*r,rnd(-10,10),-rnd(30,70),.7,pick(P.slice(1,4)))}}
+      if(Math.random()<dt*22){const an=rnd(0,6.283),r=rnd(0,z.mv.rad);emit(type==="shadow"?"smoke":"leaf",z.x+Math.cos(an)*r,z.y+Math.sin(an)*r,rnd(-10,10),-rnd(30,70),.7,pick(type==="shadow"?[0x43287a,0x6a3fb0,0x2a1850]:P.slice(1,4)))}}
     for(const b of G.blasts){if(b.t>b.full)continue;const k=1-b.t/b.full,col=PALH[mvT(b.mv,b.own)][3];gG.lineStyle(2,col,1);dashCircle(gG,b.x,b.y,b.mv.rad,this.t*2);gG.fillStyle(col,.28).fillCircle(b.x,b.y,b.mv.rad*k);gG.lineStyle(1.5,0xffffff,.5).strokeCircle(b.x,b.y,b.mv.rad*k)}
     this.aimGuide(gG);
     syncList(G.blasts.filter(b=>b.fall&&b.t<=b.full),st.met,()=>s.add.sprite(0,0,"shot_fire").setScale(2.6).setRotation(1.87).setBlendMode("ADD").setDepth(D.AIR).play("shot_fire"),(b,o)=>{const h=b.t*520;o.setPosition(b.x-h*.3,b.y-h-8);emit("soft",o.x,o.y,rnd(-20,20),-rnd(20,60),.3,pick(PALH.fire.slice(1,5)))});
@@ -1083,13 +1169,13 @@ const VIEW={ready:false,fx:[],keep:new Set(),t:0,camX:0,camY:0,
     syncList(G.shots,st.shots,o=>{const type=mvT(o.mv,o.own);const v=o.mv.pierce&&type==="wind"&&!o.mv.boom?s.add.image(0,0,"swirl").setBlendMode("ADD"):s.add.sprite(0,0,"shot_"+type).play("shot_"+type);if(ADDT[type]&&type!=="grass")v.setBlendMode("ADD");
         if(o.mv.hook)v.setTint(0x7ad06a);if(o.mv.drain)v.setTint(0xd8ffb0);return v.setDepth(D.AIR).setVisible(false)},
       (o,v)=>{if(o.w>0)return;const mv=o.mv,type=mvT(mv,o.own),P=PALH[type],sw=mv.pierce&&type==="wind"&&!mv.boom;
-        v.setVisible(true).setPosition(o.x,o.y).setScale(sw?mv.r/22:mv.home?1.9+.2*Math.sin(G.t*20):Math.max(1,mv.r/5.2)).setRotation(sw?G.t*14:mv.boom?G.t*26:type==="grass"&&!mv.hook||type==="earth"?o.rot*(type==="earth"?.5:1.4):Math.atan2(o.vy,o.vx));
+        v.setVisible(true).setPosition(o.x,o.y).setScale(sw?mv.r/22:mv.home?1.9+.2*Math.sin(G.t*20):Math.max(1,mv.r/5.2)).setRotation(sw?G.t*14:mv.boom?G.t*26:type==="grass"&&!mv.hook||type==="earth"||type==="metal"?o.rot*(type==="earth"?.5:1.4):Math.atan2(o.vy,o.vx));
         if(mv.hook){const f=o.own,p=jag(gO,f.x,f.y-12,o.x,o.y,3,14);strokePts(gO,p,4,0x226e30,1);strokePts(gO,p,2,0x6fd06a,1)}
         if(mv.home&&Math.random()<.6){const a=rnd(0,6.283);emit("streak",o.x,o.y,Math.cos(a)*220,Math.sin(a)*220,.14,pick(P.slice(0,3)),a*57.3)}
-        if(Math.random()<dt*46){const n=type==="water"?"drop":type==="grass"?"leaf":type==="earth"?"rock":type==="fire"?"soft":"sq";emit(n,o.x-o.vx*.02,o.y-o.vy*.02,-o.vx*.12+rnd(-30,30),-o.vy*.12+rnd(-30,30),rnd(.18,.34),pick(P.slice(1,5)))}});
-    syncList(G.zones.filter(z=>z.pull||mvT(z.mv,z.own)==="fire"),st.zones,z=>{const R=seeded(z.id+"v");if(z.pull)return[s.add.image(z.x,z.y,"swirl").setBlendMode("ADD").setDepth(D.GFX+3),s.add.image(z.x,z.y,"swirl").setBlendMode("ADD").setDepth(D.GFX+4)];
+        if(Math.random()<dt*46){const n=type==="water"?"drop":type==="grass"?"leaf":type==="earth"||type==="metal"?"rock":type==="shadow"?"smoke":type==="fire"?"soft":"sq";emit(n,o.x-o.vx*.02,o.y-o.vy*.02,-o.vx*.12+rnd(-30,30),-o.vy*.12+rnd(-30,30),rnd(.18,.34),pick(P.slice(1,5)))}});
+    syncList(G.zones.filter(z=>z.pull||mvT(z.mv,z.own)==="fire"),st.zones,z=>{const R=seeded(z.id+"v");if(z.pull){const a=[s.add.image(z.x,z.y,"swirl").setBlendMode("ADD").setDepth(D.AIR-6),s.add.image(z.x,z.y,"swirl").setBlendMode("ADD").setDepth(D.AIR-5)];if(mvT(z.mv,z.own)==="water")a.forEach(o=>o.setTint(0x7cc4ff));return a}
         const a=[];for(let i=0,n=Math.round(z.mv.rad/3.4);i<n;i++){const an=R()*6.283,r=Math.sqrt(R())*z.mv.rad*.92,fx=z.x+Math.cos(an)*r,fy=z.y+Math.sin(an)*r*.9;const o=s.add.sprite(fx,fy,"flame").setOrigin(.5,.95).setScale(1.1+R()*1.3).setDepth(D.ENT+fy+3).setBlendMode(i%3?"NORMAL":"ADD");o.play({key:"flame",startFrame:(R()*6)|0,frameRate:9+R()*6});a.push(o)}return a},
-      (z,a)=>{if(z.pull){const k=Math.min(1,z.t*2,(z.mv.dur-z.t)*4);a[0].setRotation(G.t*9).setScale(z.mv.rad/26*k).setAlpha(.8);a[1].setRotation(-G.t*13+1).setScale(z.mv.rad/44*k).setAlpha(.9);
+      (z,a)=>{if(z.pull){const k=Math.min(1,z.t*2,(z.mv.dur-z.t)*4);const wt=mvT(z.mv,z.own)==="water";a[0].setPosition(z.x,z.y).setRotation(G.t*9).setScale(z.mv.rad/26*k).setAlpha(.8);a[1].setPosition(z.x,z.y).setRotation(-G.t*13+1).setScale(z.mv.rad/44*k).setAlpha(.9);if(wt)for(let i=0;i<5;i++){const an=rnd(0,6.283),r=z.mv.rad*rnd(.3,1.1);emit("drop",z.x+Math.cos(an)*r,z.y+Math.sin(an)*r,-Math.sin(an)*240,Math.cos(an)*240-90,.4,pick(PALH.water.slice(0,3)))}
           for(let i=0;i<3;i++){const an=rnd(0,6.283),r=z.mv.rad*rnd(.5,1.2);emit("streak",z.x+Math.cos(an)*r,z.y+Math.sin(an)*r,-Math.sin(an)*260-Math.cos(an)*120,Math.cos(an)*260-Math.sin(an)*120,.3,pick(PALH.wind.slice(0,3)),an*57.3+90)}return}
         const al=Math.min(1,z.t*2.5);for(const o of a)o.setAlpha(al);gG.fillStyle(0xff6a1a,.2*al).fillCircle(z.x,z.y,z.mv.rad);gG.lineStyle(2,0xffb020,.55*al).strokeCircle(z.x,z.y,z.mv.rad);
         if(Math.random()<dt*30){const an=rnd(0,6.283),r=rnd(0,z.mv.rad);emit(Math.random()<.3?"smoke":"sq",z.x+Math.cos(an)*r,z.y+Math.sin(an)*r-10,rnd(-12,12),-rnd(50,110),rnd(.4,.8),Math.random()<.3?0x3a3038:pick(PALH.fire.slice(1,4)))}});
