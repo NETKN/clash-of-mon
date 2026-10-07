@@ -1,8 +1,10 @@
-# ศึกหกธาตุ
+# Clash of Mon
+
+Realtime 1-on-1 monster showdown
 
 เกมดวลมอนสเตอร์ธาตุผสม 1 ต่อ 1 แบบเรียลไทม์ ภาพพิกเซลมองจากด้านบน เล่นได้บนมือถือและคอมพิวเตอร์ ไม่ต้องติดตั้งและไม่ต้องสมัครสมาชิก
 
-เล่นได้ที่ https://netkn.github.io/hok-that-arena/
+เล่นได้ที่ https://netkn.github.io/clash-of-mon/
 
 ## วิธีเล่น
 
