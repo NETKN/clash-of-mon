@@ -253,7 +253,75 @@ h3.grp{margin:14px 0 8px;font-size:15px;color:var(--fg);border-left:4px solid va
   .nav{padding:6px 14px calc(6px + env(safe-area-inset-bottom,0px))}.btn{padding:8px 14px}.btn.big{font-size:16px;padding:10px 18px}
   #splash{gap:6px}#splash h1{width:min(62vw,calc((100vh - 150px) * 2.1))}#splash p.tag{font-size:11px}#bStart{font-size:24px;padding:8px 30px}#nameBox{padding:12px;gap:8px}
   #lobby .code{font-size:46px}.seats{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}}
+
+/* ===== step 1 fits one screen: 6 monsters per page ===== */
+.pager{display:flex;gap:6px;justify-content:center;align-items:center;margin-top:8px}
+.pgb,.pgd{background:var(--panel2);border:2px solid var(--line);border-radius:6px;min-width:38px;height:32px;font-weight:700;padding:0 8px}
+.pgd.on{background:var(--gold);color:#14121f;border-color:#000}.pgb[disabled]{opacity:.35}
+.mons{grid-template-columns:repeat(3,minmax(0,1fr))}
+#menu.fit1{height:100vh;height:100dvh;overflow:hidden;padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+#menu.fit1 #st1{flex:1;min-height:0;display:flex;flex-direction:column}
+#menu.fit1 .pick{flex:1;min-height:0;align-items:stretch}
+#menu.fit1 .monsw{display:flex;flex-direction:column;min-height:0}
+#menu.fit1 .mons{flex:1;min-height:0;grid-template-rows:repeat(2,minmax(0,1fr))}
+#menu.fit1 .mon{justify-content:center;min-height:0;overflow:hidden}
+#menu.fit1 .mon canvas{width:clamp(40px,min(12vh,15vw),96px);height:clamp(40px,min(12vh,15vw),96px)}
+#menu.fit1 .detail{min-height:0;overflow:hidden}
+#menu.fit1 .detail .hero canvas{width:clamp(56px,14vh,140px);height:clamp(56px,14vh,140px)}
+.stats{display:grid;gap:3px}#menu.fit1 .stats{grid-template-columns:1fr 1fr;column-gap:12px}#menu.fit1 .stat{grid-template-columns:52px 1fr}
+#menu.fit1 .kit span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@media (max-width:760px){#menu.fit1 #logoSm{width:96px}#menu.fit1 .step>p.sub,#menu.fit1 #hello{display:none}#menu.fit1 .role{display:none}#menu.fit1 .kit span{-webkit-line-clamp:1}#menu.fit1 .pick{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto;gap:8px}#menu.fit1 .detail{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-content:start}
+  #menu.fit1 .detail .hero{grid-row:span 2}#menu.fit1 .detail .hero canvas{width:72px;height:72px}#menu.fit1 .detail .stats,#menu.fit1 .detail .kit{grid-column:1/-1}#menu.fit1 .detail .ds{display:none}}
+@media (max-height:520px) and (orientation:landscape){
+  #menu.fit1 .top{flex-wrap:nowrap}#menu.fit1 #hello{display:none}#menu.fit1 .step>p.sub{display:none}#menu.fit1 .step h2{font-size:16px;margin:0 0 4px}
+  #menu.fit1 .mon{padding:3px 3px 4px;gap:2px}#menu.fit1 .mon b{font-size:13px;line-height:1.1}#menu.fit1 .role{display:none}#menu.fit1 .mon .chip{font-size:10px;padding:0 5px}
+  #menu.fit1 .pick{grid-template-columns:minmax(0,1fr) minmax(230px,34vw);gap:10px}.pager{margin-top:4px}.pgb,.pgd{height:26px;min-width:32px}
+  #menu.fit1 .detail{padding:7px 9px;gap:3px;display:grid;grid-template-columns:auto 1fr;align-content:start}#menu.fit1 .detail .hero{grid-row:span 2}
+  #menu.fit1 .detail h3{font-size:17px}#menu.fit1 .detail .ds{display:none}#menu.fit1 .stats{grid-column:1/-1}#menu.fit1 .stat{font-size:10.5px;gap:4px;grid-template-columns:44px 1fr}#menu.fit1 .stat i{height:6px}
+  #menu.fit1 .kit{grid-column:1/-1;padding-top:3px}#menu.fit1 .kit b{font-size:13px}#menu.fit1 .kit span{font-size:11px;-webkit-line-clamp:1}#menu.fit1 .kit small{font-size:10px}
+  #splash.naming h1,#splash.naming p.tag{display:none}
+  #nameBox{flex-direction:row;flex-wrap:wrap;justify-content:center;padding:10px 12px;gap:8px}#nameBox label{width:100%;text-align:center;font-size:15px}#nick{width:200px;font-size:16px}}
+#splash.naming h1{width:min(60vw,calc((100vh - 230px) * 2.1))}
+
+/* ===== score, KO banner, result screen ===== */
+#score{font-family:var(--f-px);font-size:12px;color:var(--gold);white-space:nowrap;letter-spacing:.05em}
+.rban{position:absolute;left:50%;top:22%;transform:translateX(-50%);z-index:6;background:rgba(10,9,18,.88);border:3px solid var(--gold);border-radius:10px;padding:10px 22px;text-align:center;pointer-events:none;display:flex;flex-direction:column;gap:2px;animation:banIn .25s ease-out}
+.rban b{font-size:clamp(24px,5vw,40px);color:var(--gold);text-shadow:3px 3px 0 #000}.rban.lose{border-color:var(--bad)}.rban.lose b{color:var(--bad)}.rban span{color:var(--fg);font-size:13px}
+@keyframes banIn{from{transform:translateX(-50%) scale(.6);opacity:0}}
+.res{position:fixed;inset:0;z-index:20;background:#0c0b14;display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:10px;padding:max(10px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+.rsides{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rs{position:relative;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;overflow:hidden;min-height:0;border:3px solid #000}
+.rs.won{background:radial-gradient(circle at 50% 55%,rgba(255,215,90,.55),rgba(120,70,10,.6) 60%,#1a1206);box-shadow:inset 0 0 40px rgba(255,220,120,.5)}
+.rs.lost{background:radial-gradient(circle at 50% 55%,rgba(90,90,120,.35),#14121f 70%);filter:saturate(.55)}
+.rs canvas{width:min(34vh,40vw,300px);height:min(34vh,40vw,300px);image-rendering:pixelated;filter:drop-shadow(0 10px 0 rgba(0,0,0,.45))}
+.rs.won canvas{animation:hop 1s ease-in-out infinite}.rs.lost canvas{transform:rotate(8deg);opacity:.75}
+@keyframes hop{50%{transform:translateY(-10px)}}
+.rbig{font-family:var(--f-px);font-size:clamp(34px,9vh,84px);line-height:1;text-shadow:5px 5px 0 #000;letter-spacing:.06em}.rs.won .rbig{color:var(--gold)}.rs.lost .rbig{color:#8a8aa0}
+.rs strong{font-size:clamp(15px,3vh,22px)}.rs span{color:var(--dim);font-size:13px}.rs em{position:absolute;top:10px;right:14px;font-style:normal;font-family:var(--f-px);font-size:clamp(26px,6vh,46px);color:#fff;text-shadow:3px 3px 0 #000}
+#resWhy{margin:0;text-align:center;color:var(--dim)}
+@media (max-height:520px){.res{gap:6px}.rs canvas{width:min(30vh,30vw);height:min(30vh,30vw)}.btn.big{padding:8px 16px;font-size:15px}}
 @media (prefers-reduced-motion:reduce){.bar u{transition:none}#bStart,.ab.pu.on,#logoBig .logo{animation:none}}
+
+#shopBtn{position:absolute;left:8px;top:8px;z-index:3;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;border:2px solid #f5c542;background:rgba(20,18,31,.82);color:#ffe066;font:700 14px "Chakra Petch",sans-serif;cursor:pointer}
+#shopBtn span{color:#fff;font-size:12px}
+.coin{display:inline-block;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff3a0,#f5c542 45%,#b8860b);box-shadow:inset 0 0 0 1.5px #8a6410}
+#shop{position:absolute;inset:8px auto 8px 8px;width:min(520px,calc(100% - 16px));z-index:6;background:rgba(14,13,24,.95);border:2px solid #f5c542;border-radius:10px;display:flex;flex-direction:column;overflow:hidden}
+#shop[hidden]{display:none}
+#shop .shd{display:flex;align-items:center;gap:10px;padding:8px 10px;background:#1e1b30;border-bottom:1px solid #3a3550}
+#shop .shd>b{font-size:16px;color:#ffe066}#shop .cn{display:flex;align-items:center;gap:5px;color:#ffe066;font-weight:700;margin-right:auto}
+#shopX{background:#3a3550;color:#fff;border:0;border-radius:6px;padding:5px 10px;cursor:pointer;font:600 13px "Chakra Petch",sans-serif}
+#shopHint{margin:6px 10px 0;font-size:11px;color:#b8b3cc}
+#shopList{overflow:auto;padding:6px 10px 10px;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+#shopList h4{grid-column:1/-1;margin:6px 0 0;font-size:12px;color:#c8a0ff}
+#shopList .sc{display:grid;grid-template-columns:30px 1fr;grid-template-rows:auto 1fr auto;column-gap:6px;text-align:left;padding:6px;border-radius:7px;border:1px solid #3a3550;background:#1a1828;color:#fff;cursor:pointer;font:12px "Chakra Petch",sans-serif}
+#shopList .sc img{grid-row:1/4;width:30px;height:30px;image-rendering:pixelated}
+#shopList .sc b{font-size:12px}#shopList .sc span{font-size:10px;color:#a8a3bc;line-height:1.25}#shopList .sc em{font-style:normal;color:#ffe066;font-weight:700;font-size:12px}
+#shopList .sc.sp{border-color:#8a6ad8;background:#221c38}#shopList .sc.no{opacity:.45}#shopList .sc:active{transform:scale(.97)}
+#tstop{position:absolute;left:50%;top:10%;transform:translateX(-50%);z-index:4;pointer-events:none;padding:6px 14px;border-radius:20px;background:rgba(30,40,70,.75);border:2px solid #d8e8ff;color:#e8f0ff;font:700 15px "Chakra Petch",sans-serif}
+#tstop[hidden]{display:none}#tstop.mine{border-color:#7dffa0}
+#game.t-over #shopBtn{top:calc(env(safe-area-inset-top,0px) + 42px);left:calc(env(safe-area-inset-left,0px) + 8px);padding:4px 8px;font-size:12px}
+#game.t-over #shop{top:calc(env(safe-area-inset-top,0px) + 40px)}
+#game.t-over #shopList .sc span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:9px}#game.t-over #shopList{grid-template-columns:repeat(3,1fr)}
 </style>
 </head>
 <body>
@@ -280,7 +348,7 @@ h3.grp{margin:14px 0 8px;font-size:15px;color:var(--fg);border-left:4px solid va
   <section id="st1" class="step">
     <h2>เลือกมอนสเตอร์ของคุณ</h2>
     <p class="sub">แต่ละตัวมี 2 ธาตุ มีท่าโจมตีพื้นฐานและท่าไม้ตายเป็นของตัวเอง</p>
-    <div class="pick"><div class="mons" id="mons"></div><aside class="detail" id="monDetail"></aside></div>
+    <div class="pick"><div class="monsw"><div class="mons" id="mons"></div><div class="pager" id="monPg"></div></div><aside class="detail" id="monDetail"></aside></div>
   </section>
 
   <section id="st2" class="step" hidden>
@@ -348,21 +416,28 @@ h3.grp{margin:14px 0 8px;font-size:15px;color:var(--fg);border-left:4px solid va
 <div id="game" hidden>
   <div id="hud">
     <div class="side"><div class="nm" id="nmL"></div><div class="bar"><u id="hpL"></u></div><div class="bar ul"><u id="ulL"></u></div></div>
-    <div class="mid"><span id="arName"></span><div class="row"><button id="bSnd">เสียง: เปิด</button><button id="quit">ออก</button></div></div>
+    <div class="mid"><span id="arName"></span><span id="score"></span><div class="row"><button id="bSnd">เสียง: เปิด</button><button id="quit">ออก</button></div></div>
     <div class="side r"><div class="nm" id="nmR"></div><div class="bar"><u id="hpR"></u></div><div class="bar ul"><u id="ulR"></u></div></div>
   </div>
   <div id="stage">
     <canvas id="mini" hidden></canvas>
+    <button id="shopBtn" hidden title="ร้านค้า (B)"><i class="coin"></i><b id="coins">0</b><span>ร้านค้า</span></button>
+    <div id="tstop" hidden><b></b></div>
+    <div id="shop" hidden><div class="shd"><b>ร้านค้า</b><span class="cn"><i class="coin"></i><b id="shopCoins">0</b></span><button id="shopX">ปิด ✕</button></div>
+      <p id="shopHint"></p><div id="shopList"></div></div>
     <div id="over" hidden><h3 id="ovT"></h3><p id="ovP"></p>
       <div class="row" style="justify-content:center"><button class="btn go" id="bAgain">เล่นอีกครั้ง</button><button class="btn" id="bMenu">กลับไปจัดทีม</button></div>
     </div>
   </div>
+  <div id="rban" class="rban" hidden><b></b><span></span></div>
+  <div id="res" class="res" hidden><div class="rsides" id="resSides"></div><p id="resWhy"></p>
+    <div class="row" style="justify-content:center"><button class="btn go big" id="rAgain">เล่นอีกครั้ง</button><button class="btn big" id="rMenu">กลับไปจัดทีม</button></div></div>
   <div id="joy"><div id="joyBase"><div id="joyKnob"></div></div></div>
   <div id="rotHint" hidden>หมุนจอเป็นแนวนอนเพื่อเล่นแบบเต็มจอ</div>
   <div id="btns"><div id="pad"></div></div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/phaser@4.2.1/dist/phaser.min.js"></script>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-<script src="game.js?v=8"></script>
+<script src="game.js?v=9"></script>
 </body>
 </html>
