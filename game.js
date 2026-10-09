@@ -32,7 +32,6 @@ const MOVES={
   b_terran:{n:"ทุบพสุธา",t:"earth",kind:"melee",aim:"cone",pw:13,cd:.66,rng:66,arc:2.3,kb:150,heavy:1,basic:1,d:"ทุบพื้นเป็นคลื่นกระแทกวงกว้าง ผลักถอย"},
   b_nivara:{n:"ขนนกน้ำแข็ง",t:"ice",kind:"shot",aim:"line",pw:4,cd:.36,sp:430,r:4,cnt:2,gap:.07,life:.8,basic:1,d:"ยิงขนนกน้ำแข็ง 2 ลูกรัว"},
   b_umbra:{n:"กรงเล็บเงา",t:"shadow",kind:"melee",aim:"cone",pw:7,cd:.32,rng:50,arc:1.7,kb:75,basic:1,d:"ข่วนเร็วต่อเนื่องและดันคู่ต่อสู้เสียจังหวะ"},
-  b_aurex:{n:"หมัดเกราะสุริยะ",t:"metal",kind:"melee",aim:"cone",pw:9,cd:.36,rng:62,arc:1.65,kb:95,heavy:1,basic:1,d:"หมัดเกราะแสงระยะประชิด ต่อยเร็วและผลักเล็กน้อย"},
   /* fire */
   wheel:{n:"กงล้อเพลิง",t:"fire",kind:"dash",aim:"line",pw:17,cd:3.2,sp:470,dur:.34,burn:3,d:"พุ่งชน ทำให้ติดไฟ"},
   blaze:{n:"ทะเลเพลิง",t:"fire",kind:"zone",aim:"point",pw:5,cd:7,rad:48,delay:.45,dur:4,rng:210,d:"จุดกองไฟที่จุดเล็ง ยืนอยู่โดนต่อเนื่อง"},
@@ -101,21 +100,25 @@ const MOVES={
   clone:{n:"แยกร่าง",t:"norm",kind:"clone",aim:"self",pw:5,cd:12,d:"เรียกร่างแยก 2 ตัว พลังชีวิตน้อย วิ่งเข้าไปช่วยโจมตี"},
   guard:{n:"ตั้งการ์ด",t:"norm",kind:"buff",aim:"self",pw:0,cd:7,buff:"guard",d:"ลดความเสียหาย 60% นาน 1.6 วินาที"},
   rest:{n:"พักฟื้น",t:"norm",kind:"buff",aim:"self",pw:0,cd:13,buff:"rest",d:"หยุดนิ่ง 1 วินาที แล้วฟื้นพลัง 26"},
-  /* Aurex signature set: a fighting-game style rush, rising strike and projectile */
-  aurex_rush:{n:"หมัดดาวหาง",t:"light",kind:"dash",aim:"line",pw:18,cd:4,sp:610,dur:.32,kb:360,stun:.25,heavy:9,hidden:1,d:"พุ่งหมัดทะลวงแนวตรง ชนศัตรูกระเด็นและเตะวัตถุในสนาม"},
-  aurex_upper:{n:"หมัดเสยดาวรุ่ง",t:"metal",kind:"leap",aim:"point",pw:0,cd:5.2,rng:185,rad:76,land:"aurex_upperland",hidden:1,d:"กระโจนไปจุดเล็ง ก่อนเสยพื้นเป็นคลื่นกระแทกวงกว้าง"},
-  aurex_wave:{n:"คลื่นหมัดสุริยะ",t:"light",kind:"shot",aim:"line",pw:15,cd:2.8,sp:500,r:13,cnt:1,pierce:1,life:1.05,kb:230,heavy:1,crescent:1,hidden:1,d:"เหวี่ยงหมัดปล่อยคลื่นแสงทะลุเป้าหมายและผลักศัตรู"},
-  aurex_upperland:{t:"metal",kind:"slam",pw:22,rad:76,delay:0,crater:1,kb:470,stun:.4,heavy:9,hidden:1},
-  /* Chronox: shadow/ice time hunter */
-  b_chronox:{n:"เข็มกาลเยือกแข็ง",t:"ice",kind:"shot",aim:"line",pw:6,cd:.38,sp:500,r:5,cnt:1,life:.9,chill:.3,basic:1,d:"ยิงเข็มเวลาน้ำแข็ง สะสมความเย็นจนแช่แข็ง"},
-  chrono_step:{n:"ย่างก้าวข้ามวินาที",t:"shadow",kind:"dash",aim:"line",pw:15,cd:3,sp:720,dur:.24,kb:180,stun:.2,hidden:1,d:"หายเข้าเงาแล้วพุ่งผ่านเป้าหมายอย่างฉับพลัน"},
-  chrono_orb:{n:"ดาวค้างเวลา",t:"ice",kind:"shot",aim:"line",pw:14,cd:4.2,sp:175,r:11,cnt:1,home:2.8,life:3.4,slow:2,chill:1,hidden:1,d:"ดาวน้ำแข็งติดตามเป้าหมาย ทำให้ช้าและเร่งสถานะแช่แข็ง"},
-  chrono_well:{n:"หลุมแรงโน้มถ่วงนิรันดร์",t:"shadow",kind:"zone",aim:"point",pw:5,cd:7.5,rad:78,delay:.35,dur:2.2,pull:250,rng:230,hidden:1,d:"บิดเวลาเป็นหลุมแรงโน้มถ่วง ดูดศัตรูเข้าศูนย์กลาง"},
-  /* Verdara: grass/light prism guardian */
-  b_verdara:{n:"เกสรปริซึม",t:"grass",kind:"shot",aim:"cone",pw:3,cd:.4,sp:410,r:4,cnt:3,fan:.28,life:.9,basic:1,d:"ยิงเกสรผลึกสามสายเป็นพัด"},
-  verd_lance:{n:"เขากวางแสงทะลวง",t:"light",kind:"shot",aim:"line",pw:17,cd:3.2,sp:560,r:10,cnt:1,pierce:1,life:1.05,kb:280,heavy:1,crescent:1,hidden:1,d:"ปล่อยคมหอกแสงทะลุเป้าหมายและผลักออก"},
-  verd_bloom:{n:"สวนผลึกมีชีวิต",t:"grass",kind:"zone",aim:"point",pw:4,cd:8,rad:72,delay:.3,dur:4,heal:4,rng:210,hidden:1,d:"สร้างสวนผลึกที่ทำร้ายศัตรูและฟื้นพลังผู้สร้าง"},
-  verd_wall:{n:"แนวไม้ปริซึม",t:"light",kind:"wall",aim:"point",pw:0,cd:7,rng:125,dur:6,ice:1,hidden:1,d:"ปลูกกำแพงผลึกสามต้น ใช้บังทางหรือบีบพื้นที่"},
+  /* Aurex: four-armed solar scarab. Perfect guard banks impact for throws and piston punches. */
+  b_aurex:{n:"หมัดจักรสุริยะ",t:"metal",kind:"melee",aim:"cone",pw:7,cd:.34,rng:66,arc:1.8,kb:90,heavy:1,basic:1,d:"คอมโบสามหมัด จังหวะสุดท้ายใช้แขนทั้งสี่และแรงจากคลังแรงกระแทก"},
+  aurex_rush:{n:"การ์ดศูนย์วินาที",t:"light",kind:"counter",aim:"self",pw:0,cd:4.8,hidden:1,d:"เปิด Perfect Guard ชั่วขณะ รับการโจมตีโดยไม่เสียพลังและเก็บแรงกระแทก"},
+  aurex_upper:{n:"จับทุ่มเวกเตอร์",t:"metal",kind:"vectorgrab",aim:"line",pw:13,cd:5.4,rng:82,arc:1.5,kb:420,heavy:9,breach:2,hidden:1,d:"จับศัตรูหรือวัตถุด้านหน้าแล้วทุ่มไปตามเมาส์ แรงขึ้นตามพลังที่สะสม"},
+  aurex_wave:{n:"หมัดลูกสูบแม่เหล็ก",t:"light",kind:"shot",aim:"line",pw:15,cd:3.2,sp:620,r:12,cnt:1,life:.75,kb:120,hook:1,heavy:1,pierce:1,hidden:1,d:"ยิงหมัดแม่เหล็กดึงเป้าหมายกลับมา เปิดทางต่อคอมโบประชิด"},
+  aurex_counterhit:{t:"light",kind:"slam",pw:15,rad:58,delay:0,kb:360,stun:.3,heavy:9,hidden:1},
+  /* Chronox: every attack leaves an echo that strikes again from the future. */
+  b_chronox:{n:"เคียววินาทีย้อนกลับ",t:"ice",kind:"chronoblade",aim:"line",pw:6,cd:.42,sp:540,r:7,life:.72,chill:.25,basic:1,d:"ขว้างเคียวเวลาออกไปและเรียกคมมีดจากอนาคตย้อนเส้นเดิมกลับมา"},
+  chrono_step:{n:"ตัดข้ามเฟรม",t:"shadow",kind:"chronocut",aim:"line",pw:14,cd:3.4,sp:690,dur:.25,kb:150,stun:.18,heavy:1,udash:1,hidden:1,d:"พุ่งฟันหนึ่งครั้ง แล้วร่างอนาคตฟันย้อนกลับตามเส้นเดิม"},
+  chrono_orb:{n:"ยืมตัวตนจากอนาคต",t:"ice",kind:"future",aim:"point",pw:0,cd:7,rng:210,dur:2.8,hidden:1,d:"วางร่างอนาคตที่คัดลอกการโจมตีพื้นฐานตามทิศที่ผู้เล่นเล็ง"},
+  chrono_well:{n:"ประหารพาราด็อกซ์",t:"shadow",kind:"paradox",aim:"line",pw:8,cd:8,rng:260,hidden:1,d:"บันทึกตำแหน่งศัตรู แล้วดึงกลับมารับความเสียหายสะสมซ้ำหลัง 2.4 วินาที"},
+  chrono_echo:{t:"shadow",kind:"shot",pw:7,sp:620,r:9,cnt:1,life:.7,pierce:1,chill:.35,hidden:1},
+  chrono_paradox:{t:"shadow",kind:"slam",pw:14,rad:54,delay:0,kb:260,stun:.35,hidden:1},
+  /* Verdara: a plant body and a solar seed attack from two positions at once. */
+  b_verdara:{n:"กระสุนประสานสองสุริยะ",t:"grass",kind:"dualshot",aim:"line",pw:5,cd:.42,sp:500,r:6,life:.85,basic:1,d:"ร่างพฤกษาและเมล็ดสุริยะยิงเข้าหาเป้าหมายพร้อมกัน โดนทั้งคู่จะเกิด Solar Cross"},
+  verd_lance:{n:"ดาวพุ่งทิ้งเส้นแสง",t:"light",kind:"sunlance",aim:"point",pw:18,cd:3.5,rng:250,kb:220,heavy:1,hidden:1,d:"ส่งเมล็ดสุริยะพุ่งไปยังจุดเล็ง เส้นทางทั้งหมดกลายเป็นคมแสง"},
+  verd_bloom:{n:"สลับขั้วสุริยะ",t:"grass",kind:"sunswap",aim:"line",pw:14,cd:5.5,rng:150,kb:180,hidden:1,d:"สลับตำแหน่งกับเมล็ดสุริยะและตัดทุกสิ่งบนเส้นทาง"},
+  verd_wall:{n:"กรรไกรทวิภพ",t:"light",kind:"sunclamp",aim:"line",pw:20,cd:6.5,rng:180,kb:300,stun:.28,heavy:9,hidden:1,d:"ร่างพฤกษาและดวงอาทิตย์พุ่งหนีบเข้าหากัน ลากศัตรูสู่จุดกึ่งกลาง"},
+  verd_line:{t:"light",kind:"beam",pw:16,heavy:1,breach:1,hidden:1},
   /* helpers the player never picks */
   digout:{t:"earth",kind:"slam",pw:19,rad:58,delay:.25,crater:2,heavy:1,hidden:1},
   leapland:{t:"norm",kind:"slam",pw:20,rad:64,delay:0,crater:1,kb:200,heavy:1,hidden:1},
@@ -138,9 +141,9 @@ const MOVES={
   u_cage:{n:"คุกศิลาพันปี",t:"earth",kind:"u_cage",aim:"point",rng:260,rad:90,pw:7,ult:1,d:"เสาหิน 13 ต้นผุดขึ้นล้อมจุดเล็งเป็นกรง หนามรากไม้ผุดในกรง 3 ระลอก ปิดท้ายด้วยหินยักษ์ถล่มลงกลางกรง"},
   u_phantom:{n:"เงาอัสนีสามภพ",t:"shadow",kind:"u_phantom",aim:"self",rad:84,pw:13,ult:1,d:"ลอยขึ้นร่ายวงเวทย์ (อมตะระหว่างร่าย) เรียกร่างเงา 3 ร่าง HP ครึ่งหนึ่ง ตีแรงเท่าร่างต้น พุ่งสายฟ้าเข้าหาศัตรู"},
   u_knight:{n:"อัศวินแสงเหมันต์",t:"light",kind:"u_knight",aim:"self",rad:70,pw:10,ult:1,d:"แปลงร่างเป็นอัศวินแสงถือดาบ 15 วินาที สกิลเปลี่ยนเป็นคลื่นดาบแสง กระโดดปักดาบ และพุ่งฟันพร้อมกำแพงน้ำแข็ง"},
-  u_impact:{n:"มหาสังเวียนดาวตก",t:"light",kind:"u_impact",aim:"point",rng:290,rad:190,pw:26,ult:1,d:"ทะยานขึ้นแล้วทิ้งหมัดดาวตก เกิดแรงกระแทก 3 ชั้น ทำลายฉาก เตะวัตถุ และผลักศัตรูอย่างรุนแรง"},
-  u_event:{n:"สุริยคราสหยุดกาล",t:"shadow",kind:"u_event",aim:"point",rng:300,rad:180,pw:26,ult:1,d:"หยุดเวลาในจุดเล็ง ดูดทุกสิ่งเข้าศูนย์กลาง ก่อนยุบตัวเป็นหลุมมิติที่ตกลงไปได้"},
-  u_worldtree:{n:"มหาพฤกษาปริซึม",t:"grass",kind:"u_worldtree",aim:"point",rng:270,rad:170,pw:22,ult:1,d:"ปลูกมหาพฤกษาผลึก รากสามระลอกยกศัตรูและฉาก ก่อนระเบิดแสงผลักออกพร้อมฟื้นพลัง"},
+  u_impact:{n:"ราชันสังเวียนสุริยะ",t:"light",kind:"u_impact",aim:"line",rng:260,rad:150,pw:28,ult:1,d:"แขนทั้งสี่จับและเหวี่ยงเป้าหมายไปตามทิศเล็ง ทะลุกำแพงและกวาดวัตถุทั้งแนว"},
+  u_event:{n:"ชั่วโมงที่สิบสาม",t:"shadow",kind:"u_event",aim:"self",rad:150,pw:24,ult:1,d:"เข้าสู่ช่วงเวลาเกินจริง ทุกการโจมตีจะถูกภาพอนาคตเล่นซ้ำสองครั้ง ก่อนระเบิดรอยแยกเวลา"},
+  u_worldtree:{n:"สุริยุปราคากินโลก",t:"light",kind:"u_worldtree",aim:"line",rng:240,rad:180,pw:24,ult:1,d:"ขยายเมล็ดสุริยะแล้วโคจรร่างพฤกษาเป็นใบมีดแสง ก่อนพุ่งสวนกันและระเบิดกลางสนาม"},
   /* light knight form */
   k_slash:{n:"ฟันดาบแสง",t:"light",kind:"melee",aim:"cone",pw:11,cd:.42,rng:72,arc:2.4,kb:140,hidden:1},
   k_wave:{n:"คลื่นดาบแสง",t:"light",kind:"shot",aim:"line",pw:16,cd:1.3,sp:540,r:16,cnt:1,pierce:1,life:.9,heavy:1,crescent:1,hidden:1},
@@ -179,7 +182,7 @@ const MOVES={
   aurex_u2:{t:"metal",kind:"slam",pw:15,rad:126,kb:380,stun:.25,heavy:9,crater:1,hidden:1},
   aurex_u3:{t:"light",kind:"slam",pw:24,rad:190,kb:680,stun:.65,heavy:9,breach:3,bridge:9,crater:2,terrain:46,hidden:1},
   event_tick:{t:"shadow",kind:"zone",pw:4,rad:132,dur:2.4,pull:320,slow:1,hidden:1},
-  event_end:{t:"shadow",kind:"slam",pw:28,rad:180,kb:760,stun:.75,heavy:9,breach:3,bridge:9,crater:2,terrain:54,hidden:1},
+  event_end:{t:"shadow",kind:"slam",pw:27,rad:150,kb:560,stun:.6,heavy:9,breach:2,bridge:6,crater:1,hidden:1},
   rootburst:{t:"grass",kind:"slam",pw:9,rad:74,kb:180,stun:.25,heavy:1,hidden:1},
   treeburst:{t:"light",kind:"slam",pw:22,rad:170,kb:560,stun:.45,heavy:9,breach:2,bridge:5,crater:1,hidden:1}
 };
@@ -207,16 +210,16 @@ const MONS={
   nivara:{n:"นิวาร่า",t:["ice","light"],hp:175,atk:1.2,def:.95,spd:122,basic:"b_nivara",ult:"u_knight",role:"สมดุล · อัศวิน",ds:"นกฮูกหิมะมงกุฎผลึก ปล่อยคลื่นความเย็นแช่แข็งศัตรู แปลงร่างเป็นอัศวินแสงได้"},
   umbra:{n:"อัมบร้า",t:["elec","shadow"],hp:125,atk:1.08,def:0.85,spd:172,basic:"b_umbra",ult:"u_phantom",role:"สปีด",ds:"จิ้งจอกเงาสายฟ้า เร็วที่สุด ทิ้งภาพติดตาไว้ข้างหลัง"},
   lavarok:{n:"ลาวาร็อก",t:["fire","earth"],hp:190,atk:1.32,def:0.82,spd:110,basic:"b_lavarok",ult:"u_volcano",role:"ไฮบริด",ds:"ด้วงแรดหลังภูเขาไฟ เดินบนลาวาได้สบาย"},
-  aurex:{n:"ออเร็กซ์",t:["metal","light"],hp:205,atk:1.18,def:1.08,spd:118,basic:"b_aurex",ult:"u_impact",sig:["aurex_rush","aurex_upper","aurex_wave"],role:"คอมโบ · คุมสนาม",ds:"แรดนักสู้เกราะสุริยะ ใช้หมัดพุ่ง หมัดเสย และคลื่นแสง ผลักศัตรูพร้อมกวาดวัตถุในสนาม"},
-  chronox:{n:"โครน็อกซ์",t:["shadow","ice"],hp:158,atk:1.16,def:.94,spd:154,basic:"b_chronox",ult:"u_event",sig:["chrono_step","chrono_orb","chrono_well"],role:"ลอบโจมตี · ควบคุมเวลา",ds:"หมาในจักรกลผู้เฝ้านาฬิกาดารา หยุดทางหนีด้วยความเย็นและยุบสนามเป็นหลุมมิติ"},
-  verdara:{n:"เวอร์ดารา",t:["grass","light"],hp:188,atk:1.08,def:1.12,spd:126,basic:"b_verdara",ult:"u_worldtree",sig:["verd_lance","verd_bloom","verd_wall"],role:"สนับสนุน · สร้างพื้นที่",ds:"กวางผลึกพฤกษา ปลูกสวนรักษา สร้างแนวปริซึม และระเบิดรากไม้เพื่อแบ่งสนาม"}
+  aurex:{n:"ออเร็กซ์",t:["metal","light"],hp:212,atk:1.16,def:1.12,spd:116,basic:"b_aurex",ult:"u_impact",sig:["aurex_rush","aurex_upper","aurex_wave"],role:"เคาน์เตอร์ · จับทุ่ม",ds:"ด้วงสุริยะสี่แขน สะสมแรงด้วย Perfect Guard แล้วจับทุ่มศัตรูและวัตถุให้ทะลุฉาก"},
+  chronox:{n:"โครน็อกซ์",t:["shadow","ice"],hp:164,atk:1.14,def:.94,spd:150,basic:"b_chronox",ult:"u_event",sig:["chrono_step","chrono_orb","chrono_well"],role:"คอมโบเวลา · ระเบิดซ้ำ",ds:"สิ่งมีชีวิตนาฬิกาแตกที่เรียกร่างอนาคตมาเล่นการโจมตีซ้ำ และประหารเป้าหมายด้วยพาราด็อกซ์"},
+  verdara:{n:"เวอร์ดารา",t:["grass","light"],hp:180,atk:1.12,def:1.02,spd:136,basic:"b_verdara",ult:"u_worldtree",sig:["verd_lance","verd_bloom","verd_wall"],role:"โจมตีสองจุด · คุมมุม",ds:"ร่างพฤกษาและเมล็ดสุริยะคู่ โจมตีจากสองตำแหน่ง สลับขั้ว และหนีบศัตรูด้วยเส้นแสง"}
 };
 const OLD_KITS={
   pyros:["wheel","breath","frain"],crusta:["geyser","shield","mortar"],mekha:["fork","thunder","homing"],prikky:["leaf","trap","breath"],
   sila:["quake","wall","rock"],eela:["jet","thunder","bubble"],fuwa:["gust","vac","cyclone"],blazar:["ram","shrap","breath"],
   reya:["bounce","vac","jet"],terran:["quake","mortar","wall"],nivara:["icelance","frostwave","holyray"],umbra:["lunge","pit","wisp"],lavarok:["wheel","quake","mortar"]};
 for(const k in OLD_KITS)MONS[k].kit=OLD_KITS[k];
-const MONSTYLE={pyros:"wing",crusta:"tank",mekha:"caster",prikky:"wild",sila:"tank",eela:"serpent",fuwa:"float",blazar:"gunner",reya:"float",terran:"tank",nivara:"caster",umbra:"beast",lavarok:"beast",aurex:"fighter",chronox:"assassin",verdara:"caster"};
+const MONSTYLE={pyros:"wing",crusta:"tank",mekha:"caster",prikky:"wild",sila:"tank",eela:"serpent",fuwa:"float",blazar:"gunner",reya:"float",terran:"tank",nivara:"caster",umbra:"beast",lavarok:"beast",aurex:"fighter",chronox:"assassin",verdara:"float"};
 const typedMoves=t=>Object.keys(MOVES).filter(m=>{const v=MOVES[m];return!v.ult&&!v.hidden&&!v.basic&&v.t===t});
 const poolOf=k=>[...(MONS[k].sig||[]),...typedMoves(MONS[k].t[0]),...typedMoves(MONS[k].t[1]),...COMMON];
 const defMoves=k=>MONS[k].sig?[...MONS[k].sig]:MONS[k].kit?[...MONS[k].kit]:[typedMoves(MONS[k].t[0])[1],typedMoves(MONS[k].t[1])[2],"beam"];
@@ -450,35 +453,29 @@ Object.assign(DRAW,{
     g.L(8,10+b,6,4+b,N);g.L(9,10+b,7,4+b,N);g.L(9,10+b,8,5+b,C);g.L(12,10+b,13,4+b,N);g.L(13,10+b,14,5+b,N);g.L(12,9+b,13,6+b,C);
     g.R(7,12+b,2,2,Y);g.P(7,13+b,OUT);g.L(6,11+b,9,11+b,OUT);g.P(4,17+b,"#fff");g.P(6,17+b,"#fff");g.L(4,16+b,7,16+b,V);
     g.P(21,31,Y);g.P(23,30,Y);g.P(5,31,Y);g.P(27,31,Y);g.P(15,31,C);},
-  chronox(g,b){const N="#201934",V="#59428c",I="#9fe8ff",C="#e8fbff",G="#d6b85a",D="#6e5a32",bob=b?1:0;
-    /* clockwork jackal: split cloak, crescent clock and frozen hour hand */
-    g.R(9,25,5,6,N);g.R(19,25,5,6,N);g.R(8,30,7,1,I);g.R(18,30,7,1,I);g.E(16,20+bob,7,7,V);g.E(16,20+bob,4,5,N);
-    g.L(10,18+bob,5,25+bob,N);g.L(22,18+bob,28,24+bob,N);g.P(5,25,I);g.P(28,24,I);g.E(16,10+bob,6,6,N);
-    g.L(11,7+bob,8,1+bob,N);g.L(21,7+bob,24,1+bob,N);g.L(10,6+bob,9,2+bob,V);g.L(22,6+bob,23,2+bob,V);
-    g.R(11,9+bob,11,3,V);g.R(12,9+bob,9,1,I);g.P(13,10+bob,C);g.P(20,10+bob,C);g.L(16,13+bob,16,16+bob,G);
-    g.E(16,20+bob,3,3,D);g.E(16,20+bob,2,2,G);g.L(16,20+bob,18,18+bob,C);g.L(16,20+bob,14,22+bob,I);
-    g.L(23,20+bob,29,15+bob,V);g.L(28,15+bob,31,17+bob,I);g.P(30,16+bob,C)},
-  verdara(g,b){const B="#5b3a2a",L="#9a6b42",G="#56b86b",E="#baf08a",C="#d9ffff",P="#b88cff",W="#ffffff",bob=b?1:0;
-    /* crystal stag: rooted hooves, leaf mantle and branching prism antlers */
-    g.R(10,25,4,6,B);g.R(19,25,4,6,B);g.R(9,30,6,1,P);g.R(18,30,6,1,P);g.E(16,20+bob,7,7,L);g.E(16,19+bob,6,4,G);
-    g.L(9,18+bob,5,23+bob,G);g.L(23,18+bob,27,23+bob,G);g.P(5,23,E);g.P(27,23,E);g.E(16,11+bob,6,6,B);g.E(16,12+bob,4,4,L);
-    g.L(12,7+bob,8,1+bob,C);g.L(10,5+bob,6,3+bob,P);g.L(9,3+bob,5,0+bob,E);g.L(20,7+bob,24,1+bob,C);g.L(22,5+bob,27,3+bob,P);g.L(24,3+bob,29,0+bob,E);
-    g.R(11,9+bob,11,3,G);g.P(12,10+bob,W);g.P(20,10+bob,W);g.P(13,10+bob,P);g.P(19,10+bob,P);g.P(16,14+bob,C);
-    g.E(16,20+bob,3,4,C);g.E(16,20+bob,1,2,W);g.P(11,18+bob,E);g.P(21,18+bob,E)},
-  aurex(g,b){const M="#8a94a2",MD="#4e5868",ML="#c8d2dc",G="#ffd84a",L="#fff3a0",W="#ffffff",R="#ef6a3a",bob=b?1:0;
-    /* planted boxer stance and oversized meteor gauntlets */
-    g.R(8,26,6,5,MD);g.R(19,26,6,5,MD);g.R(7,30,7,1,G);g.R(19,30,7,1,G);
-    g.E(16,20+bob,8,7,M);g.E(16,21+bob,5,4,ML);g.R(13,18+bob,7,2,G);g.P(16,17+bob,L);
-    g.E(6,20+(b?0:1),5,5,MD);g.E(26,18+(b?1:0),5,5,MD);g.E(5,19+(b?0:1),3,3,M);g.E(27,17+(b?1:0),3,3,M);
-    g.R(3,18+(b?0:1),5,3,G);g.R(24,16+(b?1:0),5,3,G);g.P(3,18,L);g.P(28,16,W);
-    /* rhinoceros helmet, solar horn and visor */
-    g.E(16,10+bob,7,6,M);g.E(16,11+bob,5,4,ML);g.L(15,5+bob,17,0+bob,L);g.L(16,5+bob,19,1+bob,G);g.P(18,0+bob,W);
-    g.L(9,8+bob,6,4+bob,MD);g.L(23,8+bob,26,4+bob,MD);g.P(6,4+bob,G);g.P(26,4+bob,G);
-    g.R(10,9+bob,13,3,"#33284a");g.R(11,9+bob,11,1,R);g.P(12,10+bob,W);g.P(20,10+bob,W);
-    g.R(13,14+bob,7,2,MD);g.P(14,14+bob,L);g.P(18,14+bob,L);
-    /* luminous shoulder reactors */
-    g.E(8,15+bob,3,3,G);g.E(24,15+bob,3,3,G);g.E(8,15+bob,1,1,W);g.E(24,15+bob,1,1,W);
-    g.P(11,23+bob,G);g.P(21,23+bob,G);g.L(13,24+bob,19,24+bob,MD);}
+  chronox(g,b){const N="#171426",V="#7252a4",I="#9fe8ff",C="#efffff",G="#e5c85a",bob=b?1:0;
+    /* broken floating hourglass: detached past/future halves and clock-hand face */
+    g.E(16,17+bob,8,10,N);g.L(9,8+bob,23,26+bob,V);g.L(23,8+bob,9,26+bob,I);g.E(16,17+bob,5,7,"#30264e");
+    g.E(16,9+bob,6,5,N);g.R(11,8+bob,11,3,V);g.E(16,9+bob,3,2,C);g.L(16,9+bob,21,7+bob,G);g.L(16,9+bob,13,4+bob,I);g.P(16,9,C);
+    g.L(8,14+bob,2,10+bob,V);g.L(24,14+bob,30,9+bob,I);g.E(3,10+bob,2,2,V);g.E(29,9+bob,2,2,C);
+    g.L(10,24+bob,5,29+bob,N);g.L(22,24+bob,27,29+bob,V);g.E(5,29+bob,2,1,I);g.E(27,29+bob,2,1,C);
+    g.E(16,19+bob,3,3,G);g.E(16,19+bob,1,1,C);g.P(8,21+bob,I);g.P(24,22+bob,V);g.P(3,20+bob,C);g.P(29,19+bob,I)},
+  verdara(g,b){const N="#173629",D="#285a3c",G="#55be72",E="#b9f58b",S="#ffd84a",L="#fff5a8",C="#e9ffff",bob=b?1:0;
+    /* faceless vine body orbiting a separate miniature sun */
+    g.L(13,29,15,20+bob,N);g.L(20,29,17,20+bob,N);g.L(8,30,15,28,D);g.L(25,30,18,28,D);g.E(16,20+bob,6,8,D);g.E(16,18+bob,4,6,G);
+    g.L(12,18+bob,5,22+bob,G);g.L(20,18+bob,27,22+bob,G);g.L(6,21+bob,2,17+bob,E);g.L(26,21+bob,30,16+bob,E);
+    g.E(16,9+bob,5,6,N);g.L(12,7+bob,7,3+bob,G);g.L(20,7+bob,25,2+bob,G);g.L(10,5+bob,5,7+bob,E);g.L(22,5+bob,28,6+bob,E);
+    g.R(12,8+bob,9,2,C);g.P(16,9,S);g.L(16,12+bob,16,16+bob,E);g.E(16,19+bob,2,3,C);g.P(16,18,L);
+    g.E(27,7+(b?1:0),4,4,S);g.E(27,7+(b?1:0),2,2,L);for(let i=0;i<6;i++){const a=i*1.047;g.L(27+Math.round(Math.cos(a)*5),7+Math.round(Math.sin(a)*5),27+Math.round(Math.cos(a)*7),7+Math.round(Math.sin(a)*7),E)}},
+  aurex(g,b){const M="#7e8794",D="#343c49",B="#b9c3cd",G="#ffd23e",L="#fff2a0",W="#ffffff",R="#ed7046",bob=b?1:0;
+    /* broad four-armed solar scarab with split horn and halo reactor */
+    g.E(16,18+bob,9,9,D);g.E(16,19+bob,7,7,M);g.R(11,18+bob,11,3,G);g.E(16,20+bob,3,4,L);
+    g.R(8,25,6,6,D);g.R(19,25,6,6,D);g.R(7,30,7,1,G);g.R(19,30,7,1,G);
+    g.E(6,17+bob,5,5,M);g.E(26,17+bob,5,5,M);g.E(3,16+bob,3,3,G);g.E(29,16+bob,3,3,G);
+    g.E(8,23+bob,4,4,B);g.E(24,23+bob,4,4,B);g.E(5,25+bob,3,3,G);g.E(27,25+bob,3,3,G);
+    g.E(16,8+bob,7,6,M);g.R(10,7+bob,13,4,D);g.R(11,8+bob,11,2,R);g.P(12,9+bob,W);g.P(20,9+bob,W);
+    g.L(13,5+bob,10,0+bob,G);g.L(19,5+bob,22,0+bob,G);g.P(10,0,L);g.P(22,0,L);g.L(9,5+bob,5,2+bob,D);g.L(23,5+bob,27,2+bob,D);
+    g.E(16,15+bob,8,2,G);g.E(16,15+bob,6,1,L);g.P(8,12+bob,G);g.P(24,12+bob,G)}
 });
 const KNIGHTDRAW=(g,b)=>{const W="#f4f8ff",S="#c8d2e0",SL="#eef2f8",SD="#7a8498",Y="#ffd84a",B="#7fd0ff",BD="#3a8ad0",C="#e2f8ff";
   g.L(4,26,2,31,BD);g.R(5,18+b,6,12,B);g.R(5,18+b,2,12,C);
@@ -1212,7 +1209,8 @@ let G=null;const ENV={mon:{atk:1,t:[]},owned:false,env:true,ult:0,x:0,y:0};
 function mkFighter(card,x,face,owned,tag){const m=MONS[card.mon];
   return{tag,card,mon:m,key:card.mon,moves:card.mv,x,y:H/2,tx:x,ty:H/2,ax:face,ay:0,hp:m.hp,max:m.hp,owned,seq:0,ult:0,cdB:0,
     cds:[0,0,0],dodgeCd:0,stun:0,stunImm:0,slow:0,burn:0,burnTick:0,guard:0,haste:0,rest:0,under:0,roll:0,rdx:0,rdy:0,ifr:0,root:0,air:0,airT:1,jx:0,jy:0,land:null,shield:0,shieldT:0,cast:0,faceT:0,cloak:0,chill:0,chT:0,frz:0,inv:0,busy:0,bub:0,U:null,fly:0,car:0,carHc:0,rage:0,regen:0,regT:0,cdr:0,cdI:0,item:null,lv:0,
-    dash:null,chg:null,chgF:0,kx:0,ky:0,ivx:0,ivy:0,hk:null,flash:0,walk:0,moving:false,reveal:0,envT:0,cacT:0,sprT:0,padCd:0,tremN:0,hitSet:new Set(),hits:[],atks:[],minions:[],ai:{t:1.2,s:1,st:1,lx:W/2,ly:H/2,hold:null}}}
+    dash:null,chg:null,chgF:0,kx:0,ky:0,ivx:0,ivy:0,hk:null,flash:0,walk:0,moving:false,reveal:0,envT:0,cacT:0,sprT:0,padCd:0,tremN:0,
+    impact:0,combo:0,comboT:0,counter:0,future:null,paradox:null,timeOver:0,sunLock:null,hitSet:new Set(),hits:[],atks:[],minions:[],ai:{t:1.2,s:1,st:1,lx:W/2,ly:H/2,hold:null}}}
 function goFull(){if(!touch)return;const d=document.documentElement;try{if(!document.fullscreenElement&&d.requestFullscreen)d.requestFullscreen({navigationUI:"hide"}).then(()=>{try{screen.orientation.lock("landscape").catch(()=>{})}catch(e){}setTimeout(layout,200)}).catch(()=>{})}catch(e){}}
 function spawnPt(A,left){if(A.spawn)return A.spawn[left?0:1];const bad=(x,y)=>{const t=l=>l.e?inEll(l,x,y,26):inRect(l,x,y,26);return A.water.some(t)||A.lava.some(t)||A.bog.some(t)||A.sand.some(t)||A.walls.some(t)||A.props.some(p=>!p.dead&&p.r&&Math.hypot(p.x-x,p.y-y)<p.r+30)};
   for(let r=0;r<400;r+=12)for(let a=0;a<6.28;a+=.5){const x=Math.round((left?W*.13:W*.87)+Math.cos(a)*r),y=Math.round(H/2+Math.sin(a)*r);if(x>40&&x<W-40&&y>60&&y<H-40&&!bad(x,y))return[x,y]}return[left?150:W-150,H/2]}
@@ -1220,7 +1218,7 @@ function newGame(mode,meCard,opCard,left,arKey,seed){
   const A=buildArena(arKey);paintArena(A);
   const sL=spawnPt(A,true),sR=spawnPt(A,false),ms=left?sL:sR,os=left?sR:sL;
   const me=mkFighter(meCard,ms[0],left?1:-1,true,"m"+((Math.random()*1e5)|0)+"-"),op=mkFighter(opCard,os[0],left?-1:1,mode==="bot","o");me.y=me.ty=ms[1];op.y=op.ty=os[1];me.home=ms;op.home=os;
-  G={mode,A,me,op,shots:[],blasts:[],zones:[],rings:[],beams:[],waves:[],slashes:[],cones:[],traps:[],orbits:[],twalls:[],ults:[],items:[],itemN:0,picked:new Set(),myPicks:[],seed:String(seed||Math.random()),cd:3.2,over:null,shake:0,t:0,cut:null,stop:0,zapT:0,zapSeen:new Set(),dark:0,
+  G={mode,A,me,op,shots:[],blasts:[],zones:[],rings:[],beams:[],waves:[],slashes:[],cones:[],traps:[],orbits:[],twalls:[],echoes:[],ults:[],items:[],itemN:0,picked:new Set(),myPicks:[],seed:String(seed||Math.random()),cd:3.2,over:null,shake:0,t:0,cut:null,stop:0,zapT:0,zapSeen:new Set(),dark:0,
     score:[0,0],rn:0,nextT:0,seenA:new Set(),seenH:new Set(),myDrain:new Map(),myKills:[],opPeer:null,gone:0,sendT:0,left};
   $("nmL").textContent="";$("nmR").textContent="";const L=left?me:op,Rr=left?op:me;
   L.mon.t.forEach(t=>$("nmL").append(chip(t)));$("nmL").append(el("span",null,L.card.nick+(L===me?" (คุณ)":"")));
@@ -1250,7 +1248,7 @@ function updScore(){const s=G.score,L=G.left?s[0]:s[1],R=G.left?s[1]:s[0],dots=(
 function koBanner(res){const b=$("rban");b.hidden=false;b.className="rban "+res;b.querySelector("b").textContent=res==="win"?"KO! คุณได้แต้ม":res==="lose"?"KO! เสียแต้ม":"KO พร้อมกัน";
   b.querySelector("span").textContent="คุณ "+G.score[0]+" : "+G.score[1]+" "+G.op.card.nick+" · ชนะครบ "+WINS+" ครั้งก่อนเป็นผู้ชนะ";clearTimeout(b.tm);b.tm=setTimeout(()=>{b.hidden=true},2600)}
 function nextGame(){G.rn++;G.over=null;G.nextT=0;G.cd=2.6;G.cut=null;G.dark=0;
-  for(const k of ["shots","blasts","zones","rings","beams","waves","slashes","cones","traps","orbits","twalls","ults"])G[k]=[];
+  for(const k of ["shots","blasts","zones","rings","beams","waves","slashes","cones","traps","orbits","twalls","echoes","ults"])G[k]=[];
   const fresh=f=>{const h=f.home,n=mkFighter(f.card,h[0],f.ax<0?-1:1,f.owned,f.tag);n.y=n.ty=h[1];n.seq=f.seq;n.home=h;n.v=f.v;n.ai=f.ai;n.ai.hold=null;n.dmgMul=f.dmgMul;n.spdMul=f.spdMul;n.ult=Math.min(60,f.ult);n.ax=h[0]<W/2?1:-1;return n};
   G.me=fresh(G.me);G.op=fresh(G.op);G.items=G.items.filter(it=>!it.fix);placeFixed("fx"+G.rn+"_");resetInput();itemBtn();relabel();FX.burst(G.me.x,G.me.y-20,"#ffffff",20,160,.5)}
 function showResult(fin,why){const r=$("res"),s=G.score,me=G.me,op=G.op;r.hidden=false;r.className="res "+fin;
@@ -1350,10 +1348,13 @@ function hitFx(v,d,e,label){v.flash=.14;v.reveal=1;pop(v.x+rnd(-8,8),v.y-40,d>0?
   if(label)pop(v.x,v.y-70,label,"#fff",1);G.shake=Math.min(10,G.shake+d*.25);if(d>=17)G.stop=Math.max(G.stop,.055)}
 function applyHit(v,att,mv,key,dir,scale){
   if(!v.owned||v.hp<=0||v.hitSet.has(key))return false;if(!att.env&&(att.lv||0)!==(v.lv||0))return false;v.hitSet.add(key);
+  if(v.key==="aurex"&&v.counter>0&&!att.env&&mv.pw>0){v.counter=0;v.guard=0;v.impact=clamp((v.impact||0)+32+(mv.kb||0)*.08,0,100);pop(v.x,v.y-64,"PERFECT! "+Math.round(v.impact)+"%","#fff2a0",1);FX.mega(v.x,v.y-14,"light",46);G.stop=Math.max(G.stop,.1);
+    const dx=att.x-v.x,dy=att.y-v.y,l=Math.hypot(dx,dy)||1;record(v,"aurex_counterhit",{ax:dx/l,ay:dy/l,mag:1});return false}
   const t=mvT(mv,att),e=eff(t,v.mon.t),stab=att.mon.t.includes(t)?1.25:1,grd=v.guard>0;
   let d=Math.max(1,Math.round(mv.pw*(scale||1)*att.mon.atk*(att.rage>0?1.3:1)*(att.b_red>0?1.25:1)*(att.b_boss>0?1.3:1)*(v.b_boss>0?.75:1)*(v.tank>0?.6:1)*(att.dmgMul||1)/v.mon.def*stab*e*(grd?.4:1))),label="";
   if(v.shield>0){const ab=Math.min(v.shield,d);v.shield-=ab;d-=ab;label="ฟองน้ำกัน!";if(v.shield<=0)FX.burst(v.x,v.y-14,"#9ad4ff",18,160,.5)}
-  v.hp=Math.max(0,v.hp-d);if(G.units&&!att.env&&att.hp!=null)att.aggroT=G.t+2.5;
+  v.hp=Math.max(0,v.hp-d);if(v.paradox&&v.paradox.by===att.tag)v.paradox.d=(v.paradox.d||0)+d;
+  if(v.key==="aurex"&&mv.kb)v.impact=clamp((v.impact||0)+Math.min(14,mv.kb*.025),0,100);if(G.units&&!att.env&&att.hp!=null)att.aggroT=G.t+2.5;
   if(!grd&&d>0){if(mv.hard){v.stun=mv.hard;v.bub=mv.hard;v.stunImm=mv.hard+1.6;v.dash=null;v.chg=null;v.kx=v.ky=0;label="ติดฟอง!"}else if(mv.stun&&v.stunImm<=0){v.stun=mv.stun;v.stunImm=mv.stun+1.6;v.dash=null;v.chg=null;label="BONK!"}
     if(mv.chill){v.chill=(v.chill||0)+mv.chill;v.chT=.5;if(v.chill>=3&&!(v.frz>0)){v.chill=0;v.frz=2;v.stun=2;v.stunImm=3.6;v.dash=null;v.chg=null;label="แข็งเป็นน้ำแข็ง!";FX.boom(v.x,v.y-14,"ice",36)}}
     if(mv.slow)v.slow=mv.slow;if(mv.burn){v.burn=mv.burn;v.burnTick=.5}if(mv.kb&&dir){v.kx+=dir[0]*mv.kb;v.ky+=dir[1]*mv.kb}
@@ -1396,7 +1397,11 @@ function rayLen(x,y,dx,dy,max){for(let d=10;d<max;d+=8){const px=x+dx*d,py=y+dy*
 /* --- attacks --- */
 function addShots(f,a,mv,n,base,opt){opt=opt||{};for(let i=0;i<n;i++){const ang=mv.fan?base+(n>1?(i/(n-1)-.5)*mv.fan:0):base+(opt.spread!=null?opt.spread:((i%2?1:-1)*.035*Math.ceil(i/2)));
   G.shots.push({id:a.id+":"+(opt.k0||0)+"_"+i,base:a.id,own:f,lv:f.lv||0,mv,x:a.x,y:a.y-12,vx:Math.cos(ang)*mv.sp,vy:Math.sin(ang)*mv.sp,dx:Math.cos(ang),dy:Math.sin(ang),life:mv.life||1.7,rot:0,bt:0,bn:mv.bn||0,w:(opt.w||0)+(mv.gap?i*mv.gap:0)})}}
-function spawnAttack(f,a){const mv=MOVES[a.m];if(!mv)return;G.wlv=f.lv||0;
+function shotAt(f,id,mv,x,y,dx,dy,w){G.shots.push({id,base:id,own:f,lv:f.lv||0,mv,x,y:y-12,vx:dx*mv.sp,vy:dy*mv.sp,dx,dy,life:mv.life||1,rot:0,bt:0,bn:mv.bn||0,w:w||0})}
+const sunPos=(f,a)=>f.sunLock?[f.sunLock.x,f.sunLock.y]:[clamp(f.x+(a?a.dx:f.ax)*112,FR+18,W-FR-18),clamp(f.y+(a?a.dy:f.ay)*88,FR+28,H-FR-10)];
+function beamLine(f,id,mv,x1,y1,x2,y2,w,big){const dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy)||1;G.beams.push({id,own:f,mv,x:x1,y:y1-12,dx:dx/len,dy:dy/len,p:1,wd:11,sc:1,w:w||0,t:.28,done:false,len,big:!!big})}
+function spawnAttack(f,a){let mv=MOVES[a.m];if(!mv)return;G.wlv=f.lv||0;
+  if(a.m==="b_aurex"){const st=clamp(Math.round((a.p||.34)*3),1,3);mv={...mv,pw:st===3?13:st===2?9:7,kb:st===3?260:st===2?130:80,arc:st===3?2.45:1.8,rng:st===3?78:66}}
   if(mv.ult&&!a.cut&&!G.cut){G.cut={t:1.05,f,mv,a};SFX.play("ult");return}
   f.reveal=1.2;const ang=Math.atan2(a.dy,a.dx),R=seeded(a.id),type=mvT(mv,f),self=mv.aim!=="point",px=self?a.x:a.tx,py=self?a.y:a.ty;
   if(!["buff","trap","wall"].includes(mv.kind)){
@@ -1409,6 +1414,18 @@ function spawnAttack(f,a){const mv=MOVES[a.m];if(!mv)return;G.wlv=f.lv||0;
     else part(fx,fy,"#fff3a0",7,90,.2)}
   switch(mv.kind){
     case"shot":addShots(f,a,mv,mv.cnt||1,ang);SFX.play("shot",type);break;
+    case"counter":if(f.owned){f.counter=.5;f.guard=.5}f.impact=clamp(f.impact||0,0,100);FX.mega(f.x,f.y-14,"light",34);pop(f.x,f.y-56,"IMPACT "+Math.round(f.impact)+"%","#fff2a0");SFX.play("buff");break;
+    case"vectorgrab":{const v=other(f),power=clamp(a.p||0,0,1),gm={...mv,pw:mv.pw+Math.round(power*10),kb:mv.kb+power*520};if(vuln(v)&&inCone(v.x,v.y-12,a.x,a.y-12,ang,mv.rng,mv.arc)){if(v.owned&&v.ifr<=0)applyHit(v,f,gm,a.id,[a.dx,a.dy]);FX.mega(v.x,v.y-12,"metal",46);damageStructures(v.x+a.dx*34,v.y+a.dy*34,38,gm,f)}
+      if(f.owned)for(const p of G.A.props)if(!p.dead&&p.kick&&inCone(p.x,p.y-8,a.x,a.y-12,ang,mv.rng,mv.arc))kickProp(p,f);G.shake=Math.max(G.shake,5+power*4);SFX.play("melee","metal");break}
+    case"chronoblade":{shotAt(f,a.id+":out",mv,a.x,a.y,a.dx,a.dy,0);const d=Math.min(390,rayLen(a.x,a.y,a.dx,a.dy,390)),ex=a.x+a.dx*d,ey=a.y+a.dy*d;G.echoes.push({t:.58,k:"shot",own:f,id:a.id+":back",mv:MOVES.chrono_echo,x:ex,y:ey,dx:-a.dx,dy:-a.dy});
+      if(f.future)shotAt(f,a.id+":future",MOVES.chrono_echo,f.future.x,f.future.y,a.dx,a.dy,.08);SFX.play("shot","ice");break}
+    case"chronocut":{f.dash={t:mv.dur,dx:a.dx,dy:a.dy,mv,id:a.id};const d=mv.sp*mv.dur,ex=a.x+a.dx*d,ey=a.y+a.dy*d;G.echoes.push({t:.68,k:"beam",own:f,id:a.id+":echo",mv:MOVES.chrono_echo,x1:ex,y1:ey,x2:a.x,y2:a.y,big:1});FX.burst(ex,ey-12,"#bfefff",16,180,.35);SFX.play("dash","shadow");break}
+    case"future":f.future={x:a.tx,y:a.ty,t:mv.dur};FX.mega(a.tx,a.ty-14,"ice",42);SFX.play("buff");break;
+    case"paradox":{const v=other(f);if(Math.hypot(v.x-a.x,v.y-a.y)<=mv.rng+20){v.paradox={t:2.4,x:v.x,y:v.y,by:f.tag,att:f,id:a.id+":end",d:0};if(v.owned&&v.ifr<=0)applyHit(v,f,mv,a.id,[a.dx,a.dy]);FX.mega(v.x,v.y-12,"shadow",48);pop(v.x,v.y-62,"บันทึกเวลา","#c9b0ff")}break}
+    case"dualshot":{const sp=sunPos(f,a),tx=a.x+a.dx*230,ty=a.y+a.dy*230,fire=(x,y,id)=>{const dx=tx-x,dy=ty-y,l=Math.hypot(dx,dy)||1;shotAt(f,id,mv,x,y,dx/l,dy/l,0)};fire(a.x,a.y,a.id+":body");fire(sp[0],sp[1],a.id+":sun");SFX.play("shot","grass");break}
+    case"sunlance":{const sp=sunPos(f,a);beamLine(f,a.id,mv,sp[0],sp[1],a.tx,a.ty,0,1);f.sunLock={x:a.tx,y:a.ty,t:1.15};FX.mega(a.tx,a.ty-12,"light",42);SFX.play("beam","light");break}
+    case"sunswap":{const sp=sunPos(f,a),ox=f.x,oy=f.y;beamLine(f,a.id,MOVES.verd_line,ox,oy,sp[0],sp[1],0,1);f.sunLock={x:ox,y:oy,t:1.25};if(f.owned){f.x=sp[0];f.y=sp[1];f.ifr=Math.max(f.ifr,.18);collide(f)}FX.boom((ox+sp[0])/2,(oy+sp[1])/2-12,"grass",36);SFX.play("dash","light");break}
+    case"sunclamp":{const sp=sunPos(f,a),mx=(f.x+sp[0])/2,my=(f.y+sp[1])/2;beamLine(f,a.id,MOVES.verd_line,f.x,f.y,sp[0],sp[1],0,1);const v=other(f),dx=mx-v.x,dy=my-v.y,d=Math.hypot(dx,dy)||1;if(v.owned&&vuln(v)&&segDist(v.x,v.y-12,f.x,f.y-12,(sp[0]-f.x)/(Math.hypot(sp[0]-f.x,sp[1]-f.y)||1),(sp[1]-f.y)/(Math.hypot(sp[0]-f.x,sp[1]-f.y)||1),Math.hypot(sp[0]-f.x,sp[1]-f.y))<24)applyHit(v,f,mv,a.id+":clamp",[dx/d,dy/d]);FX.mega(mx,my-12,"light",54);SFX.play("beam","light");break}
     case"melee":{G.slashes.push({own:f,mv,x:a.x,y:a.y-12,ang,t:.22,full:.22});SFX.play("melee",type);
       for(const p of G.A.props)if(!p.dead&&inCone(p.x,p.y-8,a.x,a.y-12,ang,mv.rng,mv.arc))hurtProp(p,f,mv,type);for(const w of G.twalls)if(inCone(w.x,w.y-8,a.x,a.y-12,ang,mv.rng,mv.arc))hurtTwall(w,mv);
       touchEnvLite(a.x+a.dx*mv.rng*.6,a.y+a.dy*mv.rng*.6,type,a.id);hurtMinions(f,(x,y)=>inCone(x,y,a.x,a.y-12,ang,mv.rng,mv.arc),mv.pw,a.id);
@@ -1438,8 +1455,11 @@ function spawnAttack(f,a){const mv=MOVES[a.m];if(!mv)return;G.wlv=f.lv||0;
     case"clone":if(f.owned){for(const s of [-1,1])f.minions.push({id:a.id+":"+s,x:clamp(a.x-a.dy*s*30,FR,W-FR),y:clamp(a.y+a.dx*s*30,FR+10,H-FR),hp:22,t:10,hc:.6,wk:0})}part(a.x,a.y-12,"#fff",16,140,.5);SFX.play("buff");break;
     case"tank":case"jet":case"tstop":case"collar":case"clones":specialUse(f,a,mv);break;
     default:if(ULT[mv.kind])startUlt(f,a,mv);
-  }}
+  }
+  if(f.key==="chronox"&&f.timeOver>0&&!mv.ult&&!a.m.includes("paradox")){for(const [j,w] of [[1,.32],[2,.68]])G.echoes.push({t:w,k:"beam",own:f,id:a.id+":over"+j,mv:MOVES.chrono_echo,x1:a.x-a.dy*j*10,y1:a.y+a.dx*j*10,x2:a.x+a.dx*210-a.dy*j*10,y2:a.y+a.dy*210+a.dx*j*10,big:j===2})}
+}
 function record(f,m,aim,p){const mv=MOVES[m];aim=aim||{ax:f.ax,ay:f.ay,mag:.7};const rng=mv.rng||160,mg=mv.aim==="point"?Math.max(.12,aim.mag==null?.7:aim.mag):1;
+  if(m==="b_aurex"){f.combo=f.comboT>0?(f.combo%3)+1:1;f.comboT=.78;p=f.combo/3}else if(m==="aurex_upper"||m==="u_impact"){p=(f.impact||0)/100;f.impact=0}
   const a={id:f.tag+(++f.seq),m,x:Math.round(f.x),y:Math.round(f.y),dx:+aim.ax.toFixed(3),dy:+aim.ay.toFixed(3),p:p||0,tx:Math.round(clamp(f.x+aim.ax*rng*mg,FR+8,W-FR-8)),ty:Math.round(clamp(f.y+aim.ay*rng*mg,FR+18,H-FR))};
   if(mv.aim!=="self"){f.ax=aim.ax;f.ay=aim.ay;f.faceT=.4}
   if(mv.drain)G.myDrain.set(a.id,mv);f.atks.push(a);if(f.atks.length>12)f.atks.shift();spawnAttack(f,a);return a}
@@ -1449,8 +1469,10 @@ function collide(f){f.x=clamp(f.x,FR+8,W-FR-8);f.y=clamp(f.y,FR+18,H-FR);if(f.ai
   if(f.under>0)return;
   const push=(px,py,pr)=>{let dx=f.x-px,dy=f.y-py;const d=Math.hypot(dx,dy),r=pr+9;if(d<r){if(d<.01){dx=1;dy=0}f.x+=dx/(d||1)*(r-d);f.y+=dy/(d||1)*(r-d)}};
   for(const p of G.A.props)if(!p.dead&&p.r&&(p.lv||0)===(f.lv||0))push(p.x,p.y,p.r);if(G.units)for(const u of G.units)if(UK[u.k].solid)push(u.x,u.y,UK[u.k].r-4);if(!f.lv)for(const w of G.twalls)push(w.x,w.y,w.r)}
-function tick(f,dt){for(const k of ["stun","stunImm","slow","guard","haste","roll","ifr","root","dodgeCd","flash","reveal","cdB","cast","faceT","padCd","shieldT","cloak","inv","busy","bub","fly","car","rage","regen","cdr","cdI","carHc","b_red","b_blue","b_boss","frz","chT","tank","jet","pose"])if(f[k]>0)f[k]=Math.max(0,f[k]-dt);
+function tick(f,dt){for(const k of ["stun","stunImm","slow","guard","haste","roll","ifr","root","dodgeCd","flash","reveal","cdB","cast","faceT","padCd","shieldT","cloak","inv","busy","bub","fly","car","rage","regen","cdr","cdI","carHc","b_red","b_blue","b_boss","frz","chT","tank","jet","pose","counter","comboT","timeOver"])if(f[k]>0)f[k]=Math.max(0,f[k]-dt);
   if(f.chT<=0&&f.chill>0)f.chill=Math.max(0,f.chill-dt*1.5);
+  if(f.comboT<=0)f.combo=0;if(f.future){f.future.t-=dt;if(f.future.t<=0)f.future=null}if(f.sunLock){f.sunLock.t-=dt;if(f.sunLock.t<=0)f.sunLock=null}
+  if(f.paradox){f.paradox.t-=dt;if(f.paradox.t<=0){const p=f.paradox;f.paradox=null;if(f.owned&&f.hp>0){f.x=p.x;f.y=p.y;collide(f);const dx=f.x-p.att.x,dy=f.y-p.att.y,l=Math.hypot(dx,dy)||1;applyHit(f,p.att,MOVES.chrono_paradox,p.id,[dx/l,dy/l],1+Math.min(.9,(p.d||0)/55));FX.mega(f.x,f.y-12,"shadow",58);pop(f.x,f.y-64,"PARADOX","#c9b0ff",1)}}}
   for(let i=0;i<3;i++)if(f.cds[i]>0)f.cds[i]=Math.max(0,f.cds[i]-dt*(f.cdr>0?2:1)*(f.b_blue>0?1.5:1));if(f.shieldT<=0)f.shield=0}
 function envOwned(f,dt){if(G.A.envHook)G.A.envHook(f,dt);const A=G.A,gr=f.air<=0&&f.under<=0&&f.fly<=0&&f.car<=0;if(!gr)return{mul:1,ice:false};let mul=1,ice=false;
   const hole=A.holes.find(h=>(h.arm||0)<=0&&(h.lv||0)===(f.lv||0)&&Math.hypot(f.x-h.x,f.y-h.y)<h.r-7);if(hole&&f.roll<=0){if(f.lv){f.lv=0;f.hp=Math.max(0,f.hp-28);f.stun=Math.max(f.stun,.7);f.kx+=(f.x-hole.x)*8;f.ky+=(f.y-hole.y)*8;pop(f.x,f.y-55,"พื้นชั้นบนทะลุ!","#ff9a8a",1)}else{f.hp=0;f.stun=1;pop(f.x,f.y-58,"ตกลงไปในหลุม!","#ff6a6a",1)}FX.mega(hole.x,hole.y,"shadow",hole.r);G.shake=Math.max(G.shake,9);return{mul:0,ice:false}}
@@ -1568,6 +1590,7 @@ function updWorld(dt){const A=G.A;
     if(a.car>0)hurtMinions(a,(x,y)=>Math.hypot(a.x-x,a.y-12-y)<34,20,a.tag+"car"+((G.t*1.5)|0));
     if(a.dash){const mv=a.dash.mv,hr=mv.hr||30;touchEnv(a.x,a.y,hr*.5,a,mv,a.dash.id);hurtMinions(a,(x,y)=>Math.hypot(a.x-x,a.y-12-y)<hr,mv.pw,a.dash.id);
       if(vuln(v)&&Math.hypot(a.x-v.x,a.y-v.y)<hr){if(v.owned){if(v.ifr<=0){if(applyHit(v,a,mv,a.dash.id,[a.dash.dx||a.ax,a.dash.dy||0])&&a.owned&&!mv.ult)a.dash.t=Math.min(a.dash.t,.05)}}else if(a.owned&&!mv.ult)a.dash.t=Math.min(a.dash.t,.08)}}}
+  for(let i=G.echoes.length-1;i>=0;i--){const e=G.echoes[i];e.t-=dt;if(e.t>0)continue;G.echoes.splice(i,1);if(e.k==="shot")shotAt(e.own,e.id,e.mv,e.x,e.y,e.dx,e.dy,0);else if(e.k==="beam"){beamLine(e.own,e.id,e.mv,e.x1,e.y1,e.x2,e.y2,0,e.big);FX.burst(e.x1,e.y1-12,"#bfefff",14,170,.3);SFX.play("beam","shadow")}}
   for(let i=G.shots.length-1;i>=0;i--){const s=G.shots[i];if(s.w>0){s.w-=dt;continue}G.wlv=s.lv!=null?s.lv:(s.own.lv||0);const mv=s.mv,type=mvT(mv,s.own),v=other(s.own);s.bt+=dt;
     if(mv.boom){if(s.bt<.42){const k=1-s.bt/.45;s.vx=s.dx*mv.sp*k;s.vy=s.dy*mv.sp*k}else{if(!s.ph){s.ph=1;s.done=false}const ox=s.own.x-s.x,oy=s.own.y-12-s.y,od=Math.hypot(ox,oy)||1,k=Math.min(1,(s.bt-.42)*3);s.vx=ox/od*mv.sp*k;s.vy=oy/od*mv.sp*k;if(od<16&&s.bt>.55)s.life=0}}
     if(mv.home&&vuln(v)&&seenBy(v,s.own)){const cur=Math.atan2(s.vy,s.vx),d=angDiff(Math.atan2(v.y-12-s.y,v.x-s.x),cur),na=cur+clamp(d,-mv.home*dt,mv.home*dt);s.vx=Math.cos(na)*mv.sp;s.vy=Math.sin(na)*mv.sp}
@@ -1785,20 +1808,19 @@ const ULT={
   u_knight:{dur:15.8,start(U,f){lockOwn(f,.8,.85);G.dark=1.2;SFX.play("buff")},
     upd(U){const f=U.own;if(U.t>=.8&&!U.go){U.go=1;FX.mega(f.x,f.y-14,"light",70);if(f.owned){f.cds=[0,0,0];f.cdB=0}SFX.play("ult")}},
     end(U){const f=U.own;FX.boom(f.x,f.y-14,"light",40);if(f.owned)f.cds=f.cds.map(()=>0)}},
-  /* Aurex: a rising charge followed by three expanding arena-breaking impacts */
-  u_impact:{dur:1.85,start(U,f,a){U.x=a.tx;U.y=a.ty;lockOwn(f,1.55,.95);G.dark=1.8;SFX.play("buff")},
-    upd(U){const t=U.t,f=U.own;if(t>=.56&&!U.land){U.land=1;if(f.owned){f.x=U.x;f.y=U.y;collide(f)}G.shake=8;uBlast(U,"aurex_u1",U.x,U.y,0,"r1",{big:1});SFX.play("boom")}
-      if(t>=.82&&!U.r2){U.r2=1;G.shake=9;uBlast(U,"aurex_u2",U.x,U.y,0,"r2",{big:1});SFX.play("boom")}
-      if(t>=1.12&&!U.r3){U.r3=1;G.shake=10;uBlast(U,"aurex_u3",U.x,U.y,0,"r3",{big:1});SFX.play("boom");FX.mega(U.x,U.y-12,"light",120)}}},
-  /* Chronox: freezes a target area, pulls it inward, then tears a lethal dimensional hole */
-  u_event:{dur:3.45,start(U,f,a){U.x=a.tx;U.y=a.ty;lockOwn(f,3.1,1);G.dark=3.4;SFX.play("buff")},
-    upd(U){const t=U.t;if(t>=.55&&!U.well){U.well=1;G.zones.push({id:U.id+"~well",own:U.own,mv:MOVES.event_tick,x:U.x,y:U.y,t:2.25,tk:0,n:0,pull:320});FX.mega(U.x,U.y-12,"shadow",90);SFX.play("beam","shadow")}
-      if(t>=2.62&&!U.end){U.end=1;uBlast(U,"event_end",U.x,U.y,0,"end",{big:1});G.shake=10;SFX.play("boom")}}},
-  /* Verdara: grows a healing crystal garden, erupts three root rings, then releases a prism shockwave */
-  u_worldtree:{dur:3.5,start(U,f,a){U.x=a.tx;U.y=a.ty;lockOwn(f,1.15,1);G.dark=2.2;SFX.play("buff")},
-    upd(U){const t=U.t;if(t>=.5&&!U.grow){U.grow=1;G.zones.push({id:U.id+"~garden",own:U.own,mv:MOVES.verd_bloom,x:U.x,y:U.y,t:3,tk:0,n:0,pull:0});FX.mega(U.x,U.y-20,"grass",78)}
-      for(let k=0;k<3;k++)if(t>=.85+k*.48&&(!U.roots||!U.roots[k])){U.roots=U.roots||[];U.roots[k]=1;const a=k*2.094+U.R()*.35;uBlast(U,"rootburst",U.x+Math.cos(a)*(54+k*24),U.y+Math.sin(a)*(46+k*20),0,"r"+k,{big:1});SFX.play("boom")}
-      if(t>=2.42&&!U.end){U.end=1;uBlast(U,"treeburst",U.x,U.y,0,"end",{big:1});if(U.own.owned)heal(U.own,28);G.shake=9;SFX.play("ult")}}},
+  /* Aurex: four arms seize the vector, then fire the victim and debris through the arena. */
+  u_impact:{dur:2.05,start(U,f,a){U.dx=a.dx;U.dy=a.dy;U.pow=clamp(a.p||0,0,1);U.x=f.x;U.y=f.y;lockOwn(f,.72,.78);G.dark=2;SFX.play("buff")},
+    upd(U){const t=U.t,f=U.own,v=uFoe(U);if(t>=.48&&!U.grab){U.grab=1;const d=Math.hypot(v.x-f.x,v.y-f.y);if(d<165){U.caught=1;if(v.owned&&v.ifr<=0)applyHit(v,f,{...MOVES.aurex_u2,pw:18+Math.round(U.pow*10),kb:120,stun:.65},U.id+"~grab",[U.dx,U.dy]);FX.mega(v.x,v.y-12,"metal",64)}else uBlast(U,"aurex_u1",f.x+U.dx*60,f.y+U.dy*60,0,"miss");SFX.play("melee","metal")}
+      if(t>=.95&&!U.throw){U.throw=1;const len=480+U.pow*180,ex=clamp(f.x+U.dx*len,FR+18,W-FR-18),ey=clamp(f.y+U.dy*len,FR+28,H-FR-10);beamLine(f,U.id+"~throw",{...MOVES.aurex_u3,pw:28+Math.round(U.pow*12),kind:"beam"},f.x,f.y,ex,ey,0,1);for(let s=50;s<len;s+=55)damageStructures(f.x+U.dx*s,f.y+U.dy*s,34,MOVES.aurex_u3,f);uBlast(U,"aurex_u2",ex,ey,.25,"land",{big:1});G.shake=10;SFX.play("boom")}}},
+  /* Chronox: attacks cast during the thirteenth hour are replayed by two future echoes. */
+  u_event:{dur:5.25,start(U,f){U.x=f.x;U.y=f.y;lockOwn(f,.58,.62);G.dark=5.1;SFX.play("buff")},
+    upd(U){const t=U.t,f=U.own;if(t>=.55&&!U.go){U.go=1;f.timeOver=4.15;FX.mega(f.x,f.y-16,"shadow",88);pop(f.x,f.y-74,"ชั่วโมงที่ 13","#d8c8ff",1);SFX.play("beam","shadow")}
+      if(t>=4.7&&!U.end){U.end=1;uBlast(U,"event_end",f.x,f.y,0,"end",{big:1});G.shake=10;SFX.play("boom")}}},
+  /* Verdara: the solar seed expands while the plant body becomes a steerable orbital blade. */
+  u_worldtree:{dur:4.15,start(U,f,a){U.ang=Math.atan2(a.dy,a.dx);U.bt=.55;lockOwn(f,.55,.6);G.dark=4;SFX.play("buff")},
+    upd(U,dt){const t=U.t,f=U.own;if(t<.5)return;if(!U.go){U.go=1;FX.mega(f.x+Math.cos(U.ang)*115,f.y+Math.sin(U.ang)*85-16,"light",92);SFX.play("ult")}
+      U.ang+=dt*3.9;U.bt-=dt;if(U.bt<=0&&t<3.55){U.bt=.28;U.n++;const sx=f.x+Math.cos(U.ang)*155,sy=f.y+Math.sin(U.ang)*105,ex=f.x-Math.cos(U.ang)*155,ey=f.y-Math.sin(U.ang)*105;beamLine(f,U.id+"~orbit"+U.n,{...MOVES.verd_line,pw:9},sx,sy,ex,ey,0,1);FX.burst(sx,sy-12,"#fff2a0",12,150,.25)}
+      if(t>=3.58&&!U.end){U.end=1;uBlast(U,"treeburst",f.x,f.y,0,"end",{big:1});G.shake=10;SFX.play("boom")}}},
   /* Umbra: levitates over a magic circle (invulnerable) and calls three shadow selves */
   u_phantom:{dur:1.95,start(U,f,a){U.x=a.x;U.y=a.y;lockOwn(f,1.8,1.85);G.dark=3;SFX.play("buff")},
     upd(U,dt){const t=U.t,f=U.own;
@@ -2185,22 +2207,17 @@ const UV={
         if(t>14&&Math.sin(t*20)>0)gO.lineStyle(2,0xffffff,.6).strokeEllipse(f.x,f.y-24,50,66)}}},
     mod(U){const t=U.t;if(t<.8)return{z:ez(t/.8)*18,sc:2};if(t<15.8)return{tex:"m_nivaraK",sc:2.25};return null}},
   u_impact:{make(){return[SCN.add.image(0,0,"orb").setBlendMode("ADD").setTint(0xffd84a).setAlpha(0).setDepth(D.AIR+8)]},
-    upd(U,o,dt,gG,gO,gA){const t=U.t,f=U.own,x=U.x,y=U.y,L=PALH.light,M=PALH.metal,orb=o[0];
-      if(t<.56){const k=ez(t/.56),h=Math.sin(k*Math.PI)*150;magicCircle(gA,f.x,f.y,34+42*k,t*5,L[2],M[1],.9);orb.setPosition(f.x,f.y-30-h).setScale(.5+k*2.5).setAlpha(k).setRotation(t*8);
-        for(let i=0;i<5;i++){const a=rnd(0,6.283),r=rnd(28,72);emit(i%2?"streak":"sq",f.x+Math.cos(a)*r,f.y-24+Math.sin(a)*r*.5,-Math.cos(a)*r*4,-Math.sin(a)*r*4,.25,pick([L[0],L[1],M[1],0xffffff]),a*57.3)}}
-      else{orb.setAlpha(Math.max(0,1-(t-.56)*3)).setPosition(x,y-20).setScale(3.2+(t-.56)*2);const waves=[[.56,72,L[2]],[.82,126,M[1]],[1.12,190,L[1]]];
-        for(const q of waves){const k=clamp((t-q[0])/.42,0,1);if(k>0&&k<1){gA.lineStyle(8*(1-k)+2,q[2],.9*(1-k)).strokeCircle(x,y,q[1]*k);gG.fillStyle(q[2],.12*(1-k)).fillCircle(x,y,q[1]*k)}}
-        if(t<1.5)for(let i=0;i<4;i++){const a=rnd(0,6.283),v=rnd(100,360);emit(i%2?"rock":"streak",x+rnd(-20,20),y-rnd(0,28),Math.cos(a)*v,Math.sin(a)*v-rnd(30,160),rnd(.3,.65),pick([L[1],M[1],0xffffff]),a*57.3)}}},
-    mod(U){const t=U.t;if(t<.56)return{z:Math.sin(t/.56*Math.PI)*150,sc:2+ez(t/.56)*.45};if(t<1.25)return{shake:Math.max(0,4-(t-.56)*5),sc:2.35};return null}},
+    upd(U,o,dt,gG,gO,gA){const t=U.t,f=U.own,k=clamp(t/.48,0,1),orb=o[0],an=Math.atan2(U.dy,U.dx);orb.setPosition(f.x+U.dx*34,f.y-20+U.dy*24).setScale(.7+k*2.4).setAlpha(t<1.35?1:Math.max(0,2.05-t)).setRotation(t*12);magicCircle(gA,f.x,f.y-18,36+20*k,t*5,0xffd23e,0xffffff,.85);
+      gA.lineStyle(7,0xffd23e,.3+.5*k);for(let d=50;d<470;d+=34)gA.lineBetween(f.x+U.dx*d,f.y+U.dy*d,f.x+U.dx*(d+17),f.y+U.dy*(d+17));for(let i=0;i<4;i++){const a=an+(i-1.5)*.55;gA.lineStyle(5,i<2?0xffffff:0xb9c3cd,.7).lineBetween(f.x,f.y-18,f.x+Math.cos(a)*(30+24*k),f.y-18+Math.sin(a)*(30+24*k))}if(Math.random()<.8)emit("streak",f.x+rnd(-24,24),f.y-rnd(0,38),U.dx*rnd(160,360),U.dy*rnd(160,360),.2,pick([0xffd23e,0xffffff,0xb9c3cd]),an*57.3)},
+    mod(U){return U.t<1.05?{sc:2.2+Math.sin(U.t*18)*.08,shake:U.t>.85?3:0}:null}},
   u_event:{make(){return[SCN.add.image(0,0,"swirl").setBlendMode("ADD").setTint(0x8f6ad8).setDepth(D.AIR-4),SCN.add.image(0,0,"orb").setBlendMode("ADD").setTint(0xbfefff).setDepth(D.AIR+4)]},
-    upd(U,o,dt,gG,gO,gA){const t=U.t,x=U.x,y=U.y,k=clamp(t/.55,0,1),end=clamp((t-2.45)/.7,0,1),r=24+k*108-end*74;o[0].setPosition(x,y).setScale(r/28).setRotation(-t*5).setAlpha(.35+.35*k);o[1].setPosition(x,y-18).setScale(.5+k*2.4-end*2).setRotation(t*9).setAlpha(Math.max(0,1-end));
-      magicCircle(gA,x,y,r,t*2,PALH.shadow[2],PALH.ice[1],.8);for(let i=0;i<6;i++){const a=rnd(0,6.283),rr=rnd(r*.7,r*1.4),v=120+end*240;emit(i%2?"smoke":"streak",x+Math.cos(a)*rr,y+Math.sin(a)*rr,-Math.cos(a)*v,-Math.sin(a)*v,.45,pick([PALH.shadow[1],PALH.ice[1],0xffffff]),a*57.3+180)}},
-    mod(U){return U.t<1?{z:Math.sin(U.t*Math.PI)*42,sc:2.15}:null}},
+    upd(U,o,dt,gG,gO,gA){const t=U.t,f=U.own,k=clamp(t/.55,0,1),end=clamp((t-4.65)/.55,0,1),r=38+k*54;o[0].setPosition(f.x,f.y-22).setScale(r/30).setRotation(-t*8).setAlpha((.35+.35*k)*(1-end));o[1].setPosition(f.x,f.y-22).setScale(.8+k*1.5).setRotation(t*12).setAlpha(1-end);magicCircle(gA,f.x,f.y-22,r,t*3,PALH.shadow[2],PALH.ice[1],.85*(1-end));
+      for(let j=0;j<3;j++){const a=t*(j%2?4:-4)+j*2.094,rr=52+j*14;gA.lineStyle(2,j%2?0x9fe8ff:0xc9b0ff,.6*(1-end)).strokeCircle(f.x+Math.cos(a)*rr*.18,f.y-22+Math.sin(a)*rr*.12,rr)}if(Math.random()<.8)emit("streak",f.x+rnd(-70,70),f.y-rnd(-10,70),rnd(-160,160),rnd(-100,100),.35,pick([PALH.shadow[1],PALH.ice[1],0xffffff]))},
+    mod(U){return U.t<.6?{z:Math.sin(U.t/.6*Math.PI)*32,sc:2.15}:null}},
   u_worldtree:{make(){return[SCN.add.image(0,0,"orb").setBlendMode("ADD").setTint(0x8fff8a).setDepth(D.AIR+3)]},
-    upd(U,o,dt,gG,gO,gA){const t=U.t,x=U.x,y=U.y,k=ez(clamp((t-.25)/.75,0,1)),fade=t>2.7?clamp((3.5-t)/.8,0,1):1;o[0].setPosition(x,y-30-k*62).setScale(.5+k*3.4).setAlpha(fade).setRotation(t*3);
-      for(let j=0;j<7;j++){const a=-1.4+j*.46,w=18+Math.sin(j*8)*6;gA.lineStyle(5-j*.35,j%2?PALH.grass[2]:PALH.light[2],.72*fade).lineBetween(x,y,x+Math.cos(a)*w*(1+k*2.6),y-10+Math.sin(a)*w*(1+k*2.6))}magicCircle(gG,x,y,50+100*k,-t,PALH.grass[1],PALH.light[1],.75*fade);
-      for(let i=0;i<5;i++){const a=rnd(0,6.283),rr=rnd(20,150*k+20);emit(i%3?"leaf":"sq",x+Math.cos(a)*rr,y+Math.sin(a)*rr*.55,Math.cos(a)*rnd(20,80),-rnd(50,150),.65,pick([PALH.grass[1],PALH.light[1],0xffffff]))}},
-    mod(U){return U.t<1.1?{z:Math.sin(U.t/1.1*Math.PI)*26,sc:2.08}:null}},
+    upd(U,o,dt,gG,gO,gA){const t=U.t,f=U.own,k=clamp((t-.35)/.5,0,1),fade=t>3.55?clamp((4.15-t)/.6,0,1):1,a=U.ang||0,sx=f.x+Math.cos(a)*155,sy=f.y-18+Math.sin(a)*105;o[0].setPosition(sx,sy).setScale(.8+k*4).setAlpha(fade).setRotation(t*6);gA.lineStyle(7,0xb9f58b,.55*fade).lineBetween(f.x,f.y-22,sx,sy);magicCircle(gA,sx,sy,28+30*k,-t*4,0xffd23e,0xffffff,.9*fade);
+      for(let j=0;j<6;j++){const q=a+j*1.047;gA.lineStyle(4,j%2?0xb9f58b:0xfff2a0,.75*fade).lineBetween(sx+Math.cos(q)*28,sy+Math.sin(q)*28,sx+Math.cos(q)*(58+16*k),sy+Math.sin(q)*(58+16*k))}for(let i=0;i<5;i++)emit(i%2?"leaf":"streak",sx+rnd(-28,28),sy+rnd(-28,28),rnd(-160,160),rnd(-160,160),.35,pick([0xb9f58b,0xffd23e,0xffffff]))},
+    mod(U){return U.t<.55?{z:Math.sin(U.t/.55*Math.PI)*22,sc:2.08}:null}},
   u_phantom:{make(U){const s=SCN,o=[];o.gm=s.add.graphics().setDepth(D.GFX+2);for(let k=0;k<3;k++)o.push(s.add.image(0,0,"m_"+U.own.key+"_0").setOrigin(.5,29/32).setScale(2).setTint(0x8a5ae0).setVisible(false));o.push(s.add.rectangle(U.x,U.y,44,640,0x9a6adf).setOrigin(.5,1).setBlendMode("ADD").setDepth(D.AIR-2).setAlpha(0));o.push(o.gm);return o},
     upd(U,o,dt,gG,gO,gA){const t=U.t,f=U.own,S=PALH.shadow,E=PALH.elec,x=U.x,y=U.y,k=ez(t/.45),R=84*k,fade=t>1.8?clamp(1-(t-1.8)/.15,0,1):1;
       const gm=o[4];gm.clear();gm.fillStyle(S[6],.5*k*fade).fillCircle(x,y,R+10);magicCircle(gm,x,y,R,t*1.6,S[4],S[5],fade);magicCircle(gA,x,y,R,t*1.6,S[1],E[2],.9*fade);magicCircle(gA,x,y,R*.45,-t*2.4,E[2],S[1],.7*fade);
@@ -2476,6 +2493,9 @@ const VIEW={ready:false,fx:[],keep:new Set(),t:0,camX:0,camY:0,
     fillTint(v.spr,f.flash>0);rideFx(f,v,x,y,z,sc,gG);if(ap>0){const PP=PALH[mvT(pm,f)]||PALH.norm,rr=24+ap*18;gA.lineStyle(2,PP[2],.35+ap*.45).strokeEllipse(x-f.ax*4,y-z-19,rr*2,rr);if(Math.random()<.55){const a=rnd(0,6.283);emit(sty==="wing"?"soft":sty==="assassin"?"smoke":sty==="tank"?"rock":"streak",x+Math.cos(a)*rr,y-z-20+Math.sin(a)*rr*.5,-Math.cos(a)*120,-Math.sin(a)*90,.28,pick(PP.slice(0,4)),a*57.3)}}
     if(f.frz>0){const hh=60*sc/2;gO.fillStyle(0xbfe6ff,.42).fillRect(x-22,y-hh-z,44,hh+4);gO.lineStyle(2,0xffffff,.85).strokeRect(x-22,y-hh-z,44,hh+4);gO.lineStyle(1.5,0xffffff,.7).lineBetween(x-14,y-hh+6-z,x-4,y-hh+16-z).lineBetween(x+6,y-24-z,x+14,y-14-z);if(Math.random()<.2)emit("sq",x+rnd(-20,20),y-rnd(0,hh),0,-20,.6,0xffffff)}
     else if(f.chill>0&&f.owned){gO.lineStyle(2,0x9fe6ff,.3+f.chill*.2).strokeEllipse(x,y-24,40,56);gO.fillStyle(0x0,.6).fillRect(x-20,y-86-z,40,4);gO.fillStyle(0x9fe6ff,1).fillRect(x-19,y-85-z,Math.round(38*Math.min(1,f.chill/3)),2)}
+    if(f.key==="aurex"){const q=(f.impact||0)/100,r=30+q*8;gA.lineStyle(3,0xffd23e,.3+q*.65).strokeCircle(x,y-z-24,r);for(let i=0;i<4;i++){const a=G.t*(1+q*3)+i*1.5708;gA.fillStyle(i<Math.ceil(q*4)?0xffffff:0x8a7434,.8).fillCircle(x+Math.cos(a)*r,y-z-24+Math.sin(a)*r,2+q*2)}if(f.counter>0)gA.lineStyle(5,0xffffff,.9).strokeEllipse(x,y-z-20,70,82)}
+    if(f.key==="chronox"){if(f.future){gA.fillStyle(0x9fe8ff,.13).fillEllipse(f.future.x,f.future.y-24,42,58);gA.lineStyle(2,0xc9b0ff,.65).strokeEllipse(f.future.x,f.future.y-24,42,58);gA.lineStyle(2,0x9fe8ff,.7).lineBetween(f.future.x,f.future.y-46,f.future.x+Math.cos(-G.t*4)*15,f.future.y-46+Math.sin(-G.t*4)*15)}if(f.timeOver>0){for(let i=0;i<3;i++)gA.lineStyle(2,i?0x9fe8ff:0xc9b0ff,.25+i*.15).strokeCircle(x,y-z-24,26+i*9+Math.sin(G.t*8+i)*3)}}
+    if(f.key==="verdara"){const sp=sunPos(f),sx=sp[0],sy=sp[1]-18,rr=10+Math.sin(G.t*7)*2;gA.lineStyle(2,0xb9f58b,.38).lineBetween(x,y-z-22,sx,sy);gA.fillStyle(0xffd23e,.18).fillCircle(sx,sy,rr+9);gA.fillStyle(0xfff2a0,.95).fillCircle(sx,sy,rr);gA.fillStyle(0xffffff,.9).fillCircle(sx-3,sy-3,3);for(let i=0;i<6;i++){const a=G.t*2+i*1.047;gA.lineStyle(3,0xb9f58b,.8).lineBetween(sx+Math.cos(a)*(rr+2),sy+Math.sin(a)*(rr+2),sx+Math.cos(a)*(rr+8),sy+Math.sin(a)*(rr+8))}}
     if(me){gG.lineStyle(1.5,0xf5c542,.85).strokeEllipse(x,y+1,40,16);v.chev.setPosition(x+f.ax*36,y-8+f.ay*30).setRotation(Math.atan2(f.ay,f.ax))}
     v.gt-=dt;if(v.gt<=0&&(f.dash||f.roll>0||(f.haste>0&&f.moving))){v.gt=bird||ph?.016:.04;this.ghost(f,ph?pick([0x4ad8ff,0x9a6adf,0xfff06a]):f.dash?PALH[mvT(f.dash.mv,f)][2]:f.roll>0?0xffffff:0x8fe3d0,bird||ph?.85:.5)}if(ph)for(let i=0;i<4;i++){const a=rnd(0,6.283);emit("streak",x+rnd(-16,16),y-rnd(0,36),Math.cos(a)*260,Math.sin(a)*260,.16,pick([0xfff06a,0x4ad8ff,0xc8a0ff]),a*57.3)}
     if(bird){for(let i=0;i<5;i++)emit("soft",x+rnd(-24,24),y-rnd(0,44),-f.dash.dx*rnd(60,200)+rnd(-40,40),-f.dash.dy*rnd(60,200)-rnd(10,60),rnd(.3,.6),pick(PALH.fire.slice(1,5)));
