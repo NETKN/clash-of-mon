@@ -20,18 +20,19 @@ const eff=(a,ds)=>ds.reduce((m,d)=>m*eff1(a,d),1);
 const MOVES={
   /* basic attacks, one per monster, no cooldown to manage */
   b_pyros:{n:"ขนเพลิง",t:"fire",kind:"shot",aim:"line",pw:4,cd:.34,sp:380,r:4,cnt:2,gap:.07,life:.85,basic:1,d:"ยิงขนไฟ 2 ลูกรัว"},
-  b_crusta:{n:"ก้ามหนีบ",t:"water",kind:"melee",aim:"cone",pw:10,cd:.5,rng:56,arc:2.2,basic:1,d:"ฟาดก้ามระยะประชิด"},
+  b_crusta:{n:"ก้ามหนีบ",t:"water",kind:"melee",aim:"cone",pw:10,cd:.5,rng:56,arc:2.2,kb:110,basic:1,d:"ฟาดก้ามหนัก ผลักศัตรูออกจากระยะประชิด"},
   b_mekha:{n:"ประกายเขา",t:"elec",kind:"shot",aim:"line",pw:5,cd:.3,sp:470,r:4,cnt:1,life:.75,basic:1,d:"ยิงประกายไฟเร็ว"},
   b_prikky:{n:"พ่นเมล็ด",t:"grass",kind:"shot",aim:"cone",pw:3,cd:.42,sp:360,r:4,cnt:3,fan:.32,life:.8,basic:1,d:"พ่นเมล็ด 3 ลูกเป็นพัด"},
   b_sila:{n:"หมัดศิลา",t:"earth",kind:"melee",aim:"cone",pw:12,cd:.6,rng:58,arc:2,kb:120,heavy:1,basic:1,d:"ต่อยหนักระยะประชิด ผลักถอย"},
   b_eela:{n:"พ่นน้ำ",t:"water",kind:"shot",aim:"line",pw:5,cd:.34,sp:350,r:5,cnt:1,life:.9,basic:1,d:"พ่นลูกน้ำ"},
   b_fuwa:{n:"เป่าลม",t:"wind",kind:"shot",aim:"line",pw:4,cd:.36,sp:320,r:6,cnt:1,kb:70,life:.9,basic:1,d:"เป่าลูกลม ผลักเบา ๆ"},
-  b_lavarok:{n:"เขาลาวา",t:"fire",kind:"melee",aim:"cone",pw:11,cd:.56,rng:54,arc:1.8,burn:1,heavy:1,basic:1,d:"ขวิดด้วยเขาร้อน ติดไฟ"},
+  b_lavarok:{n:"เขาลาวา",t:"fire",kind:"melee",aim:"cone",pw:11,cd:.56,rng:54,arc:1.8,burn:1,kb:140,heavy:1,basic:1,d:"ขวิดด้วยเขาร้อน ติดไฟและผลักถอย"},
   b_blazar:{n:"ลูกไฟรัว",t:"fire",kind:"shot",aim:"line",pw:3,cd:.44,sp:400,r:5,cnt:3,gap:.06,life:.85,basic:1,d:"พ่นลูกไฟ 3 ลูกรัวเป็นชุด"},
   b_reya:{n:"ลูกน้ำวน",t:"water",kind:"shot",aim:"line",pw:5,cd:.34,sp:340,r:6,cnt:1,life:.9,basic:1,d:"ยิงลูกน้ำหมุน"},
   b_terran:{n:"ทุบพสุธา",t:"earth",kind:"melee",aim:"cone",pw:13,cd:.66,rng:66,arc:2.3,kb:150,heavy:1,basic:1,d:"ทุบพื้นเป็นคลื่นกระแทกวงกว้าง ผลักถอย"},
   b_nivara:{n:"ขนนกน้ำแข็ง",t:"ice",kind:"shot",aim:"line",pw:4,cd:.36,sp:430,r:4,cnt:2,gap:.07,life:.8,basic:1,d:"ยิงขนนกน้ำแข็ง 2 ลูกรัว"},
-  b_umbra:{n:"กรงเล็บเงา",t:"shadow",kind:"melee",aim:"cone",pw:7,cd:.32,rng:50,arc:1.7,basic:1,d:"ข่วนเร็วมากระยะประชิด"},
+  b_umbra:{n:"กรงเล็บเงา",t:"shadow",kind:"melee",aim:"cone",pw:7,cd:.32,rng:50,arc:1.7,kb:75,basic:1,d:"ข่วนเร็วต่อเนื่องและดันคู่ต่อสู้เสียจังหวะ"},
+  b_aurex:{n:"หมัดเกราะสุริยะ",t:"metal",kind:"melee",aim:"cone",pw:9,cd:.36,rng:62,arc:1.65,kb:95,heavy:1,basic:1,d:"หมัดเกราะแสงระยะประชิด ต่อยเร็วและผลักเล็กน้อย"},
   /* fire */
   wheel:{n:"กงล้อเพลิง",t:"fire",kind:"dash",aim:"line",pw:17,cd:3.2,sp:470,dur:.34,burn:3,d:"พุ่งชน ทำให้ติดไฟ"},
   blaze:{n:"ทะเลเพลิง",t:"fire",kind:"zone",aim:"point",pw:5,cd:7,rad:48,delay:.45,dur:4,rng:210,d:"จุดกองไฟที่จุดเล็ง ยืนอยู่โดนต่อเนื่อง"},
@@ -58,10 +59,10 @@ const MOVES={
   blink:{n:"วาร์ปสายฟ้า",t:"elec",kind:"blink",aim:"point",pw:12,cd:5,rad:44,rng:190,d:"วาร์ปไปจุดเล็งทันที ทิ้งระเบิดสายฟ้าไว้ที่จุดเดิม"},
   /* earth */
   rock:{n:"ขว้างหินคู่",t:"earth",kind:"shot",aim:"line",pw:10,cd:1.8,sp:250,r:9,cnt:2,gap:.16,kb:150,heavy:1,d:"หิน 2 ก้อน หนัก ทำลายลังและโขดหินได้"},
-  quake:{n:"แผ่นดินไหว",t:"earth",kind:"slam",aim:"self",pw:21,cd:5,rad:86,delay:.5,crater:1,stun:.5,heavy:1,d:"กระแทกพื้นรอบตัว ทิ้งหลุมไว้"},
+  quake:{n:"แผ่นดินไหว",t:"earth",kind:"slam",aim:"self",pw:21,cd:5,rad:86,delay:.5,crater:2,terrain:26,breach:1,stun:.5,kb:220,heavy:9,d:"กระแทกพื้นรอบตัว ฉีกพื้นเป็นหลุมอันตรายและเจาะกำแพง"},
   dig:{n:"ขุดดิน",t:"earth",kind:"dig",aim:"self",pw:19,cd:6.5,d:"มุดดินหลบทุกท่า แล้วโผล่ขึ้นโจมตี"},
   wall:{n:"กำแพงหิน",t:"earth",kind:"wall",aim:"point",pw:0,cd:7,rng:110,dur:5,d:"ตั้งกำแพงหิน 3 ก้อนขวางที่จุดเล็ง บังกระสุนได้ 5 วินาที"},
-  mortar:{n:"ระเบิดหินโค้ง",t:"earth",kind:"strike",aim:"point",pw:20,cd:4.5,rad:52,delay:.65,lob:1,crater:1,kb:180,heavy:1,rng:250,d:"โยนหินข้ามสิ่งกีดขวางไปตกที่จุดเล็ง"},
+  mortar:{n:"ระเบิดหินโค้ง",t:"earth",kind:"strike",aim:"point",pw:20,cd:4.5,rad:52,delay:.65,lob:1,crater:1,breach:1,kb:220,heavy:9,rng:250,d:"โยนหินข้ามสิ่งกีดขวาง ระเบิดเจาะผนังและผลักศัตรู"},
   /* wind */
   gust:{n:"ลมกรดสามสาย",t:"wind",kind:"shot",aim:"cone",pw:5,cd:1.6,sp:340,r:8,cnt:3,fan:.4,kb:200,d:"ยิง 3 ลูกเป็นพัด ผลักออกห่าง"},
   cyclone:{n:"พายุหมุน",t:"wind",kind:"shot",aim:"line",pw:15,cd:3.4,sp:170,r:15,cnt:1,pierce:1,life:2.6,d:"ลูกใหญ่ เคลื่อนช้า ทะลุสิ่งกีดขวาง"},
@@ -87,7 +88,7 @@ const MOVES={
   icewall:{n:"กำแพงน้ำแข็ง",t:"ice",kind:"wall",aim:"point",pw:0,cd:7,rng:120,dur:6,ice:1,d:"ตั้งกำแพงน้ำแข็ง 3 ก้อน บังกระสุน 6 วินาที"},
   frostarmor:{n:"เกราะเหมันต์",t:"ice",kind:"buff",aim:"self",pw:0,cd:10,buff:"armor",d:"ลดความเสียหาย 60% นาน 3 วินาที"},
   /* light */
-  holyray:{n:"ลำแสงศักดิ์สิทธิ์",t:"light",kind:"beam",aim:"line",pw:28,cd:4.5,heavy:1,d:"กดค้างชาร์จแล้วยิงลำแสงสีทอง"},
+  holyray:{n:"ลำแสงศักดิ์สิทธิ์",t:"light",kind:"beam",aim:"line",pw:28,cd:4.5,heavy:9,breach:2,recoil:115,d:"กดค้างชาร์จแล้วยิงลำแสงสีทอง เจาะฉากและผลักผู้ยิงถอย"},
   prism:{n:"ปริซึมกระจาย",t:"light",kind:"shot",aim:"cone",pw:5,cd:2,sp:440,r:5,cnt:5,fan:.8,bn:1,life:1.1,d:"แสง 5 สายเป็นพัด เด้งกำแพงได้ 1 ครั้ง"},
   sanctuary:{n:"วงแสงฟื้นพลัง",t:"light",kind:"zone",aim:"self",pw:0,heal:4,rad:66,delay:.1,dur:4,cd:12,d:"วงแสงรอบตัว ฟื้นพลัง 4 ทุกครึ่งวินาที นาน 4 วินาที"},
   halo:{n:"วงแหวนรัศมี",t:"light",kind:"ring",aim:"self",pw:14,cd:4,max:150,stun:.3,d:"วงแหวนแสงแผ่ออกรอบตัว ทำให้มึนเล็กน้อย"},
@@ -96,10 +97,25 @@ const MOVES={
   tackle:{n:"พุ่งชน",t:"norm",kind:"dash",aim:"line",pw:12,cd:2.2,sp:440,dur:.3,stun:.45,heavy:1,d:"ชนแล้วคู่ต่อสู้มึน พังลังไม้ได้"},
   leap:{n:"กระโดดทุ่ม",t:"norm",kind:"leap",aim:"point",pw:20,cd:4.5,rad:64,rng:180,d:"กระโดดข้ามสิ่งกีดขวางไปจุดเล็ง แล้วกระแทกพื้น"},
   ring:{n:"วงแหวนพลัง",t:"self",kind:"ring",aim:"self",pw:14,cd:4,max:140,d:"วงแหวนธาตุหลักแผ่ออกรอบตัว กลิ้งหลบผ่านได้"},
-  beam:{n:"ลำแสงทำลาย",t:"self",kind:"beam",aim:"line",pw:30,cd:4.5,heavy:1,d:"กดค้างเพื่อชาร์จและเล็ง ปล่อยเพื่อยิงลำแสงธาตุหลัก"},
+  beam:{n:"ลำแสงทำลาย",t:"self",kind:"beam",aim:"line",pw:30,cd:4.5,heavy:9,breach:3,recoil:150,d:"ชาร์จลำแสงธาตุหลัก เจาะผนัง ทำลายสะพาน และถีบผู้ยิงถอย"},
   clone:{n:"แยกร่าง",t:"norm",kind:"clone",aim:"self",pw:5,cd:12,d:"เรียกร่างแยก 2 ตัว พลังชีวิตน้อย วิ่งเข้าไปช่วยโจมตี"},
   guard:{n:"ตั้งการ์ด",t:"norm",kind:"buff",aim:"self",pw:0,cd:7,buff:"guard",d:"ลดความเสียหาย 60% นาน 1.6 วินาที"},
   rest:{n:"พักฟื้น",t:"norm",kind:"buff",aim:"self",pw:0,cd:13,buff:"rest",d:"หยุดนิ่ง 1 วินาที แล้วฟื้นพลัง 26"},
+  /* Aurex signature set: a fighting-game style rush, rising strike and projectile */
+  aurex_rush:{n:"หมัดดาวหาง",t:"light",kind:"dash",aim:"line",pw:18,cd:4,sp:610,dur:.32,kb:360,stun:.25,heavy:9,hidden:1,d:"พุ่งหมัดทะลวงแนวตรง ชนศัตรูกระเด็นและเตะวัตถุในสนาม"},
+  aurex_upper:{n:"หมัดเสยดาวรุ่ง",t:"metal",kind:"leap",aim:"point",pw:0,cd:5.2,rng:185,rad:76,land:"aurex_upperland",hidden:1,d:"กระโจนไปจุดเล็ง ก่อนเสยพื้นเป็นคลื่นกระแทกวงกว้าง"},
+  aurex_wave:{n:"คลื่นหมัดสุริยะ",t:"light",kind:"shot",aim:"line",pw:15,cd:2.8,sp:500,r:13,cnt:1,pierce:1,life:1.05,kb:230,heavy:1,crescent:1,hidden:1,d:"เหวี่ยงหมัดปล่อยคลื่นแสงทะลุเป้าหมายและผลักศัตรู"},
+  aurex_upperland:{t:"metal",kind:"slam",pw:22,rad:76,delay:0,crater:1,kb:470,stun:.4,heavy:9,hidden:1},
+  /* Chronox: shadow/ice time hunter */
+  b_chronox:{n:"เข็มกาลเยือกแข็ง",t:"ice",kind:"shot",aim:"line",pw:6,cd:.38,sp:500,r:5,cnt:1,life:.9,chill:.3,basic:1,d:"ยิงเข็มเวลาน้ำแข็ง สะสมความเย็นจนแช่แข็ง"},
+  chrono_step:{n:"ย่างก้าวข้ามวินาที",t:"shadow",kind:"dash",aim:"line",pw:15,cd:3,sp:720,dur:.24,kb:180,stun:.2,hidden:1,d:"หายเข้าเงาแล้วพุ่งผ่านเป้าหมายอย่างฉับพลัน"},
+  chrono_orb:{n:"ดาวค้างเวลา",t:"ice",kind:"shot",aim:"line",pw:14,cd:4.2,sp:175,r:11,cnt:1,home:2.8,life:3.4,slow:2,chill:1,hidden:1,d:"ดาวน้ำแข็งติดตามเป้าหมาย ทำให้ช้าและเร่งสถานะแช่แข็ง"},
+  chrono_well:{n:"หลุมแรงโน้มถ่วงนิรันดร์",t:"shadow",kind:"zone",aim:"point",pw:5,cd:7.5,rad:78,delay:.35,dur:2.2,pull:250,rng:230,hidden:1,d:"บิดเวลาเป็นหลุมแรงโน้มถ่วง ดูดศัตรูเข้าศูนย์กลาง"},
+  /* Verdara: grass/light prism guardian */
+  b_verdara:{n:"เกสรปริซึม",t:"grass",kind:"shot",aim:"cone",pw:3,cd:.4,sp:410,r:4,cnt:3,fan:.28,life:.9,basic:1,d:"ยิงเกสรผลึกสามสายเป็นพัด"},
+  verd_lance:{n:"เขากวางแสงทะลวง",t:"light",kind:"shot",aim:"line",pw:17,cd:3.2,sp:560,r:10,cnt:1,pierce:1,life:1.05,kb:280,heavy:1,crescent:1,hidden:1,d:"ปล่อยคมหอกแสงทะลุเป้าหมายและผลักออก"},
+  verd_bloom:{n:"สวนผลึกมีชีวิต",t:"grass",kind:"zone",aim:"point",pw:4,cd:8,rad:72,delay:.3,dur:4,heal:4,rng:210,hidden:1,d:"สร้างสวนผลึกที่ทำร้ายศัตรูและฟื้นพลังผู้สร้าง"},
+  verd_wall:{n:"แนวไม้ปริซึม",t:"light",kind:"wall",aim:"point",pw:0,cd:7,rng:125,dur:6,ice:1,hidden:1,d:"ปลูกกำแพงผลึกสามต้น ใช้บังทางหรือบีบพื้นที่"},
   /* helpers the player never picks */
   digout:{t:"earth",kind:"slam",pw:19,rad:58,delay:.25,crater:2,heavy:1,hidden:1},
   leapland:{t:"norm",kind:"slam",pw:20,rad:64,delay:0,crater:1,kb:200,heavy:1,hidden:1},
@@ -122,6 +138,9 @@ const MOVES={
   u_cage:{n:"คุกศิลาพันปี",t:"earth",kind:"u_cage",aim:"point",rng:260,rad:90,pw:7,ult:1,d:"เสาหิน 13 ต้นผุดขึ้นล้อมจุดเล็งเป็นกรง หนามรากไม้ผุดในกรง 3 ระลอก ปิดท้ายด้วยหินยักษ์ถล่มลงกลางกรง"},
   u_phantom:{n:"เงาอัสนีสามภพ",t:"shadow",kind:"u_phantom",aim:"self",rad:84,pw:13,ult:1,d:"ลอยขึ้นร่ายวงเวทย์ (อมตะระหว่างร่าย) เรียกร่างเงา 3 ร่าง HP ครึ่งหนึ่ง ตีแรงเท่าร่างต้น พุ่งสายฟ้าเข้าหาศัตรู"},
   u_knight:{n:"อัศวินแสงเหมันต์",t:"light",kind:"u_knight",aim:"self",rad:70,pw:10,ult:1,d:"แปลงร่างเป็นอัศวินแสงถือดาบ 15 วินาที สกิลเปลี่ยนเป็นคลื่นดาบแสง กระโดดปักดาบ และพุ่งฟันพร้อมกำแพงน้ำแข็ง"},
+  u_impact:{n:"มหาสังเวียนดาวตก",t:"light",kind:"u_impact",aim:"point",rng:290,rad:190,pw:26,ult:1,d:"ทะยานขึ้นแล้วทิ้งหมัดดาวตก เกิดแรงกระแทก 3 ชั้น ทำลายฉาก เตะวัตถุ และผลักศัตรูอย่างรุนแรง"},
+  u_event:{n:"สุริยคราสหยุดกาล",t:"shadow",kind:"u_event",aim:"point",rng:300,rad:180,pw:26,ult:1,d:"หยุดเวลาในจุดเล็ง ดูดทุกสิ่งเข้าศูนย์กลาง ก่อนยุบตัวเป็นหลุมมิติที่ตกลงไปได้"},
+  u_worldtree:{n:"มหาพฤกษาปริซึม",t:"grass",kind:"u_worldtree",aim:"point",rng:270,rad:170,pw:22,ult:1,d:"ปลูกมหาพฤกษาผลึก รากสามระลอกยกศัตรูและฉาก ก่อนระเบิดแสงผลักออกพร้อมฟื้นพลัง"},
   /* light knight form */
   k_slash:{n:"ฟันดาบแสง",t:"light",kind:"melee",aim:"cone",pw:11,cd:.42,rng:72,arc:2.4,kb:140,hidden:1},
   k_wave:{n:"คลื่นดาบแสง",t:"light",kind:"shot",aim:"line",pw:16,cd:1.3,sp:540,r:16,cnt:1,pierce:1,life:.9,heavy:1,crescent:1,hidden:1},
@@ -130,32 +149,39 @@ const MOVES={
   k_dashwall:{n:"พุ่งฟันน้ำแข็ง",t:"ice",kind:"dash",aim:"line",pw:16,cd:3.5,sp:600,dur:.28,slow:1.5,wallAfter:1,hidden:1},
   /* ult parts (hidden) */
   birdpass:{t:"fire",kind:"env",pw:11,burn:2,kb:220,heavy:9,hidden:1},
-  birdland:{t:"fire",kind:"strike",pw:18,rad:100,burn:3,kb:280,heavy:9,crater:1,hidden:1},
+  birdland:{t:"fire",kind:"strike",pw:18,rad:100,burn:3,kb:320,heavy:9,breach:1,bridge:3,crater:1,hidden:1},
   shard:{t:"water",kind:"shot",pw:3,sp:300,r:6,life:.7,hidden:1},
-  shellend:{t:"water",kind:"strike",pw:10,rad:74,kb:300,slow:1.5,heavy:9,hidden:1},
+  shellend:{t:"water",kind:"strike",pw:10,rad:74,kb:360,slow:1.5,heavy:9,breach:1,bridge:3,hidden:1},
   cbolt:{t:"elec",kind:"strike",pw:8,rad:36,stun:.25,hidden:1},
-  cmega:{t:"elec",kind:"strike",pw:18,rad:96,stun:.6,heavy:9,crater:1,hidden:1},
-  chili1:{t:"fire",kind:"strike",pw:16,rad:78,burn:3,kb:240,heavy:9,crater:1,hidden:1},
+  cmega:{t:"elec",kind:"strike",pw:18,rad:96,stun:.6,kb:280,heavy:9,breach:2,bridge:4,crater:1,hidden:1},
+  chili1:{t:"fire",kind:"strike",pw:16,rad:78,burn:3,kb:280,heavy:9,breach:2,crater:2,terrain:30,hidden:1},
   chili2:{t:"fire",kind:"strike",pw:9,rad:48,burn:2,heavy:1,hidden:1},
   chili3:{t:"fire",kind:"strike",pw:7,rad:42,burn:2,heavy:1,hidden:1},
   colring:{t:"earth",kind:"ring",pw:10,max:150,stun:.5,kb:200,heavy:9,hidden:1},
   stomp:{t:"earth",kind:"strike",pw:6,rad:54,heavy:9,hidden:1},
   b_giant:{n:"หมัดยักษ์ศิลา",t:"earth",kind:"melee",aim:"cone",pw:17,cd:.62,rng:98,arc:2.3,kb:260,heavy:9,hidden:1},
   dbite:{t:"elec",kind:"env",pw:7,stun:.15,hidden:1},
-  dragend:{t:"elec",kind:"strike",pw:12,rad:72,stun:.4,heavy:1,hidden:1},
+  dragend:{t:"elec",kind:"strike",pw:12,rad:72,stun:.4,kb:260,heavy:9,breach:1,bridge:3,hidden:1},
   bubcatch:{t:"water",kind:"env",pw:4,hard:1.7,hidden:1},
   bubpop:{t:"water",kind:"env",pw:5,hidden:1},
   bubburst:{t:"wind",kind:"strike",pw:14,rad:60,kb:360,hidden:1},
   lavapool:{t:"fire",kind:"zone",pw:4,burn:2,rad:150,heavy:1,hidden:1},
-  lavabomb:{t:"fire",kind:"strike",pw:8,rad:44,burn:2,heavy:1,crater:1,hidden:1},
+  lavabomb:{t:"fire",kind:"strike",pw:8,rad:44,burn:2,kb:120,heavy:9,breach:1,crater:1,hidden:1},
   bfb1:{t:"fire",kind:"shot",pw:3,sp:500,r:9,life:.95,burn:1,heavy:1,hidden:1},
   bfb2:{t:"fire",kind:"shot",pw:3.5,sp:540,r:11,life:.95,burn:2,heavy:1,hidden:1},
   bfb3:{t:"fire",kind:"shot",pw:5,sp:580,r:14,life:1,burn:2,kb:120,heavy:9,hidden:1},
   spout:{t:"water",kind:"env",pw:4,hidden:1},
-  spoutend:{t:"water",kind:"strike",pw:9,rad:62,kb:260,hidden:1},
+  spoutend:{t:"water",kind:"strike",pw:9,rad:62,kb:300,heavy:9,bridge:2,hidden:1},
   thorn:{t:"grass",kind:"strike",pw:7,rad:40,slow:1,hidden:1},
-  boulder:{t:"earth",kind:"strike",pw:20,rad:94,stun:.6,kb:200,heavy:9,crater:1,hidden:1},
-  phclone:{t:"elec",kind:"env",pw:13,stun:.15,hidden:1}
+  boulder:{t:"earth",kind:"strike",pw:20,rad:94,stun:.6,kb:260,heavy:9,breach:2,crater:2,terrain:34,hidden:1},
+  phclone:{t:"elec",kind:"env",pw:13,stun:.15,hidden:1},
+  aurex_u1:{t:"light",kind:"slam",pw:9,rad:72,kb:220,heavy:1,crater:1,hidden:1},
+  aurex_u2:{t:"metal",kind:"slam",pw:15,rad:126,kb:380,stun:.25,heavy:9,crater:1,hidden:1},
+  aurex_u3:{t:"light",kind:"slam",pw:24,rad:190,kb:680,stun:.65,heavy:9,breach:3,bridge:9,crater:2,terrain:46,hidden:1},
+  event_tick:{t:"shadow",kind:"zone",pw:4,rad:132,dur:2.4,pull:320,slow:1,hidden:1},
+  event_end:{t:"shadow",kind:"slam",pw:28,rad:180,kb:760,stun:.75,heavy:9,breach:3,bridge:9,crater:2,terrain:54,hidden:1},
+  rootburst:{t:"grass",kind:"slam",pw:9,rad:74,kb:180,stun:.25,heavy:1,hidden:1},
+  treeburst:{t:"light",kind:"slam",pw:22,rad:170,kb:560,stun:.45,heavy:9,breach:2,bridge:5,crater:1,hidden:1}
 };
 /* thrown/kicked arena objects: an attack that touches a kickable prop launches it away from the attacker */
 const KICK={barrel:{pw:10,r:11,sp:420,xpl:1},boulder:{pw:18,r:13,sp:380,stun:.4,kb:300,heavy:9},snowball:{pw:12,r:12,sp:440,slow:2},log:{pw:14,r:12,sp:400,kb:380,heavy:1},
@@ -180,11 +206,20 @@ const MONS={
   terran:{n:"เทอร์รัน",t:["earth","grass"],hp:250,atk:0.86,def:1.45,spd:90,basic:"b_terran",ult:"u_cage",role:"แทงค์",ds:"ผู้พิทักษ์กระดองหิน ทุบพื้นเป็นแรงกระแทก"},
   nivara:{n:"นิวาร่า",t:["ice","light"],hp:175,atk:1.2,def:.95,spd:122,basic:"b_nivara",ult:"u_knight",role:"สมดุล · อัศวิน",ds:"นกฮูกหิมะมงกุฎผลึก ปล่อยคลื่นความเย็นแช่แข็งศัตรู แปลงร่างเป็นอัศวินแสงได้"},
   umbra:{n:"อัมบร้า",t:["elec","shadow"],hp:125,atk:1.08,def:0.85,spd:172,basic:"b_umbra",ult:"u_phantom",role:"สปีด",ds:"จิ้งจอกเงาสายฟ้า เร็วที่สุด ทิ้งภาพติดตาไว้ข้างหลัง"},
-  lavarok:{n:"ลาวาร็อก",t:["fire","earth"],hp:190,atk:1.32,def:0.82,spd:110,basic:"b_lavarok",ult:"u_volcano",role:"ไฮบริด",ds:"ด้วงแรดหลังภูเขาไฟ เดินบนลาวาได้สบาย"}
+  lavarok:{n:"ลาวาร็อก",t:["fire","earth"],hp:190,atk:1.32,def:0.82,spd:110,basic:"b_lavarok",ult:"u_volcano",role:"ไฮบริด",ds:"ด้วงแรดหลังภูเขาไฟ เดินบนลาวาได้สบาย"},
+  aurex:{n:"ออเร็กซ์",t:["metal","light"],hp:205,atk:1.18,def:1.08,spd:118,basic:"b_aurex",ult:"u_impact",sig:["aurex_rush","aurex_upper","aurex_wave"],role:"คอมโบ · คุมสนาม",ds:"แรดนักสู้เกราะสุริยะ ใช้หมัดพุ่ง หมัดเสย และคลื่นแสง ผลักศัตรูพร้อมกวาดวัตถุในสนาม"},
+  chronox:{n:"โครน็อกซ์",t:["shadow","ice"],hp:158,atk:1.16,def:.94,spd:154,basic:"b_chronox",ult:"u_event",sig:["chrono_step","chrono_orb","chrono_well"],role:"ลอบโจมตี · ควบคุมเวลา",ds:"หมาในจักรกลผู้เฝ้านาฬิกาดารา หยุดทางหนีด้วยความเย็นและยุบสนามเป็นหลุมมิติ"},
+  verdara:{n:"เวอร์ดารา",t:["grass","light"],hp:188,atk:1.08,def:1.12,spd:126,basic:"b_verdara",ult:"u_worldtree",sig:["verd_lance","verd_bloom","verd_wall"],role:"สนับสนุน · สร้างพื้นที่",ds:"กวางผลึกพฤกษา ปลูกสวนรักษา สร้างแนวปริซึม และระเบิดรากไม้เพื่อแบ่งสนาม"}
 };
+const OLD_KITS={
+  pyros:["wheel","breath","frain"],crusta:["geyser","shield","mortar"],mekha:["fork","thunder","homing"],prikky:["leaf","trap","breath"],
+  sila:["quake","wall","rock"],eela:["jet","thunder","bubble"],fuwa:["gust","vac","cyclone"],blazar:["ram","shrap","breath"],
+  reya:["bounce","vac","jet"],terran:["quake","mortar","wall"],nivara:["icelance","frostwave","holyray"],umbra:["lunge","pit","wisp"],lavarok:["wheel","quake","mortar"]};
+for(const k in OLD_KITS)MONS[k].kit=OLD_KITS[k];
+const MONSTYLE={pyros:"wing",crusta:"tank",mekha:"caster",prikky:"wild",sila:"tank",eela:"serpent",fuwa:"float",blazar:"gunner",reya:"float",terran:"tank",nivara:"caster",umbra:"beast",lavarok:"beast",aurex:"fighter",chronox:"assassin",verdara:"caster"};
 const typedMoves=t=>Object.keys(MOVES).filter(m=>{const v=MOVES[m];return!v.ult&&!v.hidden&&!v.basic&&v.t===t});
-const poolOf=k=>[...typedMoves(MONS[k].t[0]),...typedMoves(MONS[k].t[1]),...COMMON];
-const defMoves=k=>[typedMoves(MONS[k].t[0])[1],typedMoves(MONS[k].t[1])[2],"beam"];
+const poolOf=k=>[...(MONS[k].sig||[]),...typedMoves(MONS[k].t[0]),...typedMoves(MONS[k].t[1]),...COMMON];
+const defMoves=k=>MONS[k].sig?[...MONS[k].sig]:MONS[k].kit?[...MONS[k].kit]:[typedMoves(MONS[k].t[0])[1],typedMoves(MONS[k].t[1])[2],"beam"];
 const ARENAS=[
   {k:"stadium",n:"สนามประลอง",d:"ลังไม้พังได้ ถังระเบิดจะระเบิดเมื่อโดนโจมตี"},
   {k:"forest",n:"ป่าทึบ",d:"ซ่อนตัวในพุ่มไม้และใต้ต้นไม้ได้ ท่าไฟเผาให้ไหม้หายไป"},
@@ -195,7 +230,9 @@ const ARENAS=[
   {k:"ruins",n:"ซากวิหาร",d:"กำแพงหินบังกระสุนและลำแสง มีแท่นวาร์ป 2 จุดเชื่อมถึงกัน"},
   {k:"swamp",n:"หนองพิษ",d:"บึงพิษกัดพลังและทำให้ช้า บ่อน้ำพุกลางสนามฟื้นพลังให้คนที่ยืน"},
   {k:"city",n:"มหานครยามค่ำ",d:"ถนน ตึก 2 ชั้นเข้าไปหลบได้ บันไดขึ้นลง สะพานกระจกเชื่อมตึก รถและของบนถนนเตะกระเด็นได้",big:1},
-  {k:"moba",n:"สมรภูมิสามเลน",d:"แผนที่ใหญ่ที่สุด 3 เลน ป้อม ครีป ครีปป่าให้บัฟ บอสป่า ชนะด้วยการทำลายออร์บฐานศัตรู",big:1}
+  {k:"moba",n:"สมรภูมิสามเลน",d:"แผนที่ใหญ่ที่สุด 3 เลน ป้อม ครีป ครีปป่าให้บัฟ บอสป่า ชนะด้วยการทำลายออร์บฐานศัตรู",big:1},
+  {k:"skyforge",n:"โรงหลอมเวหจักร",d:"ต่อสู้สองระดับชั้น ใช้ลิฟต์ขึ้นแท่นลอยและสะพานที่เคลื่อนตลอดเวลา มีแกนแรงโน้มถ่วงเฉพาะด่าน",big:1},
+  {k:"titanback",n:"หลังไททันเดินสมุทร",d:"สนามบนหลังอสูรยักษ์ที่เอียงและสั่น แผ่นเกราะเคลื่อน พื้นน้ำซัด และมีสว่านมิติเฉพาะด่าน",big:1}
 ];
 /* ================= collectible items =================
    now: applied the moment you walk over it. use: goes into the item slot (key G / item button), hold to aim, release to use.
@@ -230,7 +267,9 @@ const ITEMS={
   smoke:{n:"ระเบิดควัน",d:"ม่านควันซ่อนตัว 7 วินาที 2 ลูก",kind:"use",uses:2,mv:"it_smoke",w:3},
   hook:{n:"ตะขอเกี่ยว",d:"ยิงตะขอดึงคู่ต่อสู้เข้ามา 3 ครั้ง",kind:"use",uses:3,mv:"it_hook",w:3},
   meteor:{n:"ลูกไฟจากฟ้า",d:"เรียกอุกกาบาตยักษ์ลงจุดเล็ง",kind:"use",uses:1,mv:"it_meteor",w:1},
-  frost:{n:"ระเบิดเยือกแข็ง",d:"ระเบิดความเย็นทำให้ช้า 3 วินาที 2 ลูก",kind:"use",uses:2,mv:"it_frost",w:3}};
+  frost:{n:"ระเบิดเยือกแข็ง",d:"ระเบิดความเย็นทำให้ช้า 3 วินาที 2 ลูก",kind:"use",uses:2,mv:"it_frost",w:3},
+  gravityCore:{n:"แกนแรงโน้มถ่วง",d:"ปล่อยวงแรงโน้มถ่วงผลักทุกอย่างอย่างรุนแรง ใช้ได้ 2 ครั้ง",kind:"use",uses:2,mv:"it_gravity",w:0},
+  phaseDrill:{n:"สว่านมิติ",d:"เจาะพื้นเป็นหลุมอันตรายและเปิดช่องกำแพง ใช้ได้ครั้งเดียว",kind:"use",uses:1,mv:"it_phaseDrill",w:0}};
 Object.assign(MOVES,{
   it_pistol:{n:"ปืนพก",t:"norm",kind:"shot",aim:"line",pw:6,sp:720,r:4,cnt:1,life:.8,hidden:1,gun:1},
   it_shotgun:{n:"ลูกซอง",t:"norm",kind:"shot",aim:"cone",pw:4,sp:560,r:4,cnt:6,fan:.6,life:.5,kb:120,hidden:1,gun:1},
@@ -253,6 +292,8 @@ Object.assign(MOVES,{
   it_hook:{n:"ตะขอเกี่ยว",t:"grass",kind:"shot",aim:"line",pw:6,sp:620,r:7,cnt:1,hook:1,life:.6,hidden:1},
   it_meteor:{n:"ลูกไฟจากฟ้า",t:"fire",kind:"strike",aim:"point",pw:30,rad:92,delay:1.1,burn:3,kb:300,heavy:9,crater:2,rng:300,hidden:1,fall:1},
   it_frost:{n:"ระเบิดเยือกแข็ง",t:"water",kind:"strike",aim:"point",pw:8,rad:70,delay:.6,lob:1,slow:3,rng:230,hidden:1,lobk:"i_frost"},
+  it_gravity:{n:"แกนแรงโน้มถ่วง",t:"wind",kind:"ring",aim:"self",pw:12,max:190,kb:620,stun:.35,heavy:9,hidden:1},
+  it_phaseDrill:{n:"สว่านมิติ",t:"shadow",kind:"strike",aim:"point",pw:24,rad:82,delay:.8,rng:250,kb:460,stun:.5,heavy:9,breach:4,bridge:12,crater:2,terrain:48,fall:1,hidden:1},
   /* helper-bot attacks (fired from the bot's position) */
   bt_spark:{t:"fire",kind:"shot",pw:5,sp:420,r:6,cnt:3,fan:.35,life:1,hidden:1},
   bt_dash:{t:"elec",kind:"env",pw:9,stun:.15,hidden:1},
@@ -408,7 +449,36 @@ Object.assign(DRAW,{
     g.E(9,13+b,5,4,N);g.E(5,15+b,3,2,N);g.P(2,15+b,V);g.P(3,16+b,V);
     g.L(8,10+b,6,4+b,N);g.L(9,10+b,7,4+b,N);g.L(9,10+b,8,5+b,C);g.L(12,10+b,13,4+b,N);g.L(13,10+b,14,5+b,N);g.L(12,9+b,13,6+b,C);
     g.R(7,12+b,2,2,Y);g.P(7,13+b,OUT);g.L(6,11+b,9,11+b,OUT);g.P(4,17+b,"#fff");g.P(6,17+b,"#fff");g.L(4,16+b,7,16+b,V);
-    g.P(21,31,Y);g.P(23,30,Y);g.P(5,31,Y);g.P(27,31,Y);g.P(15,31,C);}
+    g.P(21,31,Y);g.P(23,30,Y);g.P(5,31,Y);g.P(27,31,Y);g.P(15,31,C);},
+  chronox(g,b){const N="#201934",V="#59428c",I="#9fe8ff",C="#e8fbff",G="#d6b85a",D="#6e5a32",bob=b?1:0;
+    /* clockwork jackal: split cloak, crescent clock and frozen hour hand */
+    g.R(9,25,5,6,N);g.R(19,25,5,6,N);g.R(8,30,7,1,I);g.R(18,30,7,1,I);g.E(16,20+bob,7,7,V);g.E(16,20+bob,4,5,N);
+    g.L(10,18+bob,5,25+bob,N);g.L(22,18+bob,28,24+bob,N);g.P(5,25,I);g.P(28,24,I);g.E(16,10+bob,6,6,N);
+    g.L(11,7+bob,8,1+bob,N);g.L(21,7+bob,24,1+bob,N);g.L(10,6+bob,9,2+bob,V);g.L(22,6+bob,23,2+bob,V);
+    g.R(11,9+bob,11,3,V);g.R(12,9+bob,9,1,I);g.P(13,10+bob,C);g.P(20,10+bob,C);g.L(16,13+bob,16,16+bob,G);
+    g.E(16,20+bob,3,3,D);g.E(16,20+bob,2,2,G);g.L(16,20+bob,18,18+bob,C);g.L(16,20+bob,14,22+bob,I);
+    g.L(23,20+bob,29,15+bob,V);g.L(28,15+bob,31,17+bob,I);g.P(30,16+bob,C)},
+  verdara(g,b){const B="#5b3a2a",L="#9a6b42",G="#56b86b",E="#baf08a",C="#d9ffff",P="#b88cff",W="#ffffff",bob=b?1:0;
+    /* crystal stag: rooted hooves, leaf mantle and branching prism antlers */
+    g.R(10,25,4,6,B);g.R(19,25,4,6,B);g.R(9,30,6,1,P);g.R(18,30,6,1,P);g.E(16,20+bob,7,7,L);g.E(16,19+bob,6,4,G);
+    g.L(9,18+bob,5,23+bob,G);g.L(23,18+bob,27,23+bob,G);g.P(5,23,E);g.P(27,23,E);g.E(16,11+bob,6,6,B);g.E(16,12+bob,4,4,L);
+    g.L(12,7+bob,8,1+bob,C);g.L(10,5+bob,6,3+bob,P);g.L(9,3+bob,5,0+bob,E);g.L(20,7+bob,24,1+bob,C);g.L(22,5+bob,27,3+bob,P);g.L(24,3+bob,29,0+bob,E);
+    g.R(11,9+bob,11,3,G);g.P(12,10+bob,W);g.P(20,10+bob,W);g.P(13,10+bob,P);g.P(19,10+bob,P);g.P(16,14+bob,C);
+    g.E(16,20+bob,3,4,C);g.E(16,20+bob,1,2,W);g.P(11,18+bob,E);g.P(21,18+bob,E)},
+  aurex(g,b){const M="#8a94a2",MD="#4e5868",ML="#c8d2dc",G="#ffd84a",L="#fff3a0",W="#ffffff",R="#ef6a3a",bob=b?1:0;
+    /* planted boxer stance and oversized meteor gauntlets */
+    g.R(8,26,6,5,MD);g.R(19,26,6,5,MD);g.R(7,30,7,1,G);g.R(19,30,7,1,G);
+    g.E(16,20+bob,8,7,M);g.E(16,21+bob,5,4,ML);g.R(13,18+bob,7,2,G);g.P(16,17+bob,L);
+    g.E(6,20+(b?0:1),5,5,MD);g.E(26,18+(b?1:0),5,5,MD);g.E(5,19+(b?0:1),3,3,M);g.E(27,17+(b?1:0),3,3,M);
+    g.R(3,18+(b?0:1),5,3,G);g.R(24,16+(b?1:0),5,3,G);g.P(3,18,L);g.P(28,16,W);
+    /* rhinoceros helmet, solar horn and visor */
+    g.E(16,10+bob,7,6,M);g.E(16,11+bob,5,4,ML);g.L(15,5+bob,17,0+bob,L);g.L(16,5+bob,19,1+bob,G);g.P(18,0+bob,W);
+    g.L(9,8+bob,6,4+bob,MD);g.L(23,8+bob,26,4+bob,MD);g.P(6,4+bob,G);g.P(26,4+bob,G);
+    g.R(10,9+bob,13,3,"#33284a");g.R(11,9+bob,11,1,R);g.P(12,10+bob,W);g.P(20,10+bob,W);
+    g.R(13,14+bob,7,2,MD);g.P(14,14+bob,L);g.P(18,14+bob,L);
+    /* luminous shoulder reactors */
+    g.E(8,15+bob,3,3,G);g.E(24,15+bob,3,3,G);g.E(8,15+bob,1,1,W);g.E(24,15+bob,1,1,W);
+    g.P(11,23+bob,G);g.P(21,23+bob,G);g.L(13,24+bob,19,24+bob,MD);}
 });
 const KNIGHTDRAW=(g,b)=>{const W="#f4f8ff",S="#c8d2e0",SL="#eef2f8",SD="#7a8498",Y="#ffd84a",B="#7fd0ff",BD="#3a8ad0",C="#e2f8ff";
   g.L(4,26,2,31,BD);g.R(5,18+b,6,12,B);g.R(5,18+b,2,12,C);
@@ -546,7 +616,7 @@ function renderMoves(msg){const cur=SEL.mv[SEL.mon],m=MONS[SEL.mon],lo=$("loadou
   lo.append(slotCard("โจมตีพื้นฐาน",MOVES[m.basic],null,"fixed"));
   for(let i=0;i<3;i++){const c=slotCard("สกิล "+(i+1),cur[i]?MOVES[cur[i]]:null,cur[i]);if(cur[i]){c.classList.add("rm");c.title="กดเพื่อถอดท่านี้";c.onclick=()=>{cur.splice(i,1);saveSel();SFX.play("ui");renderMoves()}}lo.append(c)}
   lo.append(slotCard("ท่าไม้ตาย",MOVES[m.ult],null,"fixed ult"));
-  const groups=[["ท่าธาตุ"+TY[m.t[0]].n,typedMoves(m.t[0])],["ท่าธาตุ"+TY[m.t[1]].n,typedMoves(m.t[1])],["ท่าทั่วไป",COMMON]];
+  const groups=[...(m.sig?[["ท่าเฉพาะตัว",m.sig]]:[]),["ท่าธาตุ"+TY[m.t[0]].n,typedMoves(m.t[0])],["ท่าธาตุ"+TY[m.t[1]].n,typedMoves(m.t[1])],["ท่าทั่วไป",COMMON]];
   for(const [title,list] of groups){pool.append(el("h3","grp",title));const g=el("div","grid");
     for(const k of list){const mv=MOVES[k],t=mvTypeOf(mv,SEL.mon);const b=el("button","mv");b.type="button";b.style.setProperty("--tc",TY[t].c);const on=cur.includes(k);b.setAttribute("aria-pressed",String(on));
       const head=el("span","h");head.append(el("b",null,mv.n),chip(t));
@@ -658,17 +728,17 @@ function renderLobPick(ps){const mb=$("lobMons");if(!mb)return;mb.textContent=""
 /* ================= arena layouts =================
    Classic arenas are authored on a 960x600 grid and scaled up 1.4x (1344x840).
    City and MOBA build their own, larger worlds (see c_city.js / c_moba.js). */
-const ASIZE={city:[1900,1260],moba:[3000,1800]};
+const ASIZE={city:[1900,1260],moba:[3000,1800],skyforge:[1700,1000],titanback:[1760,1060]};
 const PDEF={crate:{r:14,hp:3},barrel:{r:11,hp:1,kick:1},rock:{r:15,hp:3},tree:{r:8,R:32,hp:1},bush:{r:0,R:30,hp:1},cactus:{r:10,hp:2},icep:{r:13,hp:2},
   boulder:{r:13,hp:4,kick:1},snowball:{r:12,hp:2,kick:1},log:{r:12,hp:3,kick:1},tumble:{r:9,hp:1,kick:1},urn:{r:9,hp:1,kick:1},
   car:{r:22,hp:6,kick:1},bin:{r:9,hp:1,kick:1},hydrant:{r:7,hp:2},lamp:{r:6,hp:3},bench:{r:12,hp:2},vend:{r:12,hp:3},cone:{r:6,hp:1,kick:1},
   desk:{r:13,hp:2},shelf:{r:12,hp:2},sofa:{r:14,hp:2},plant:{r:8,hp:1},cooler:{r:8,hp:1,kick:1},
   locker:{r:0,R:15,hp:4,hide:1},wardrobe:{r:0,R:17,hp:4,hide:1},bed:{r:16,hp:3},tub:{r:15,hp:4},toilet:{r:7,hp:2},sink:{r:7,hp:2},fridge:{r:10,hp:4},tv:{r:9,hp:1,kick:1},counter:{r:13,hp:4},
   pillar:{r:14,hp:9},stele:{r:12,hp:5}};
-function newArena(key){return{key,props:[],water:[],bridges:[],lava:[],ice:[],sand:[],bog:[],walls:[],pads:[],spring:null,blds:[],sky:[],stairs:[],units:null,lanes:null}}
+function newArena(key){return{key,props:[],water:[],bridges:[],lava:[],ice:[],sand:[],bog:[],walls:[],pads:[],spring:null,blds:[],sky:[],stairs:[],holes:[],platforms:[],lifts:[],units:null,lanes:null}}
 function addProp(A,k,x,y,lv){const d=PDEF[k];const p={i:A.props.length,k,x,y,r:d.r,R:d.R||d.r,hp:d.hp,dead:false,kick:!!d.kick,lv:lv||0};A.props.push(p);return p}
 function buildArena(key){
-  if(key==="city"||key==="moba"){[W,H]=ASIZE[key];const A=newArena(key);(key==="city"?buildCity:buildMoba)(A);return A}
+  if(ASIZE[key]){[W,H]=ASIZE[key];const A=newArena(key);({city:buildCity,moba:buildMoba,skyforge:buildSkyforge,titanback:buildTitanBack}[key])(A);return A}
   W=960;H=600;const A=newArena(key);
   const P=(k,pts,sym)=>{for(const[x,y]of pts){for(const q of sym===0?[[x,y]]:[[x,y],[W-x,H-y]]){if(A.props.some(p=>p.x===q[0]&&p.y===q[1]))continue;addProp(A,k,q[0],q[1])}}};
   const E=(arr,list)=>{for(const[x,y,rx,ry]of list)for(const q of (x===W/2&&y===H/2)?[[x,y]]:[[x,y],[W-x,H-y]])arr.push({x:q[0],y:q[1],rx,ry,cool:0,e:1})};
@@ -694,6 +764,32 @@ function buildArena(key){
   for(const w of A.walls){sp(w);if(w.w>w.h)w.w=Math.round(w.w*k);else w.h=Math.round(w.h*k)}
   for(const p of A.pads)sp(p);if(A.spring){sp(A.spring);A.spring.r=Math.round(A.spring.r*1.2)}
   return A}
+
+/* ================= moving multi-level arenas ================= */
+function deck(A,x,y,w,h,mx,my,phase){const p={x,y,bx:x,by:y,w,h,mx:mx||0,my:my||0,phase:phase||0,lv:1};A.platforms.push(p);return p}
+function deckXY(p,t){return[p.bx+Math.sin(t*.72+p.phase)*p.mx,p.by+Math.cos(t*.64+p.phase)*p.my]}
+function deckAt(A,x,y,t){return A.platforms.find(p=>{const q=deckXY(p,t==null?(G?G.t:0):t);return x>=q[0]&&x<=q[0]+p.w&&y>=q[1]&&y<=q[1]+p.h})}
+function movingArenaEnv(f,dt){const A=G.A,t=G.t;
+  if(f.lv===1){const p=deckAt(A,f.x,f.y,t);if(p){const a=deckXY(p,t-dt),b=deckXY(p,t);f.x+=b[0]-a[0];f.y+=b[1]-a[1]}
+    else{f.lv=0;f.hp=Math.max(0,f.hp-18);f.stun=Math.max(f.stun,.45);f.kx+=Math.sin(t*2)*150;f.ky+=120;pop(f.x,f.y-55,"ตกจากชั้นบน!","#ff9a8a",1);FX.boom(f.x,f.y,"wind",34);if(f===G.me)VIEW.lvT=.5}}
+  if(A.tilt&&f.lv===0&&f.roll<=0){const q=Math.sin(t*.68);f.kx+=q*18*dt;if(Math.floor(t/8)!==f.tremN){f.tremN=Math.floor(t/8);f.kx+=q*120;f.ky+=Math.cos(t)*70;G.shake=Math.max(G.shake,5);pop(f.x,f.y-55,"ไททันขยับ!","#ffe066")}}
+  let on=null;for(const p of A.lifts)if(Math.hypot(f.x-p.x,f.y-p.y)<24)on=p;if(!on){f.stairLock=0;return}if(f.stairLock)return;
+  f.stairLock=1;if(f.lv){f.lv=0}else if(deckAt(A,f.x,f.y,t)){f.lv=1}else return;f.chg=null;f.ifr=Math.max(f.ifr,.2);FX.burst(f.x,f.y-14,"#bfe6ff",18,150,.5);SFX.play("dash");if(f===G.me)VIEW.lvT=.5}
+function movingArenaFx(gG,gA,t){const A=G.A,me=G.me;for(const p of A.platforms){const q=deckXY(p,t),on=(me.lv||0)===1;gG.fillStyle(A.key==="skyforge"?0x56677b:0x8b7358,on?.92:.48).fillRoundedRect(q[0],q[1],p.w,p.h,8);gG.lineStyle(3,A.key==="skyforge"?0xffd84a:0x9fe8ff,on?1:.6).strokeRoundedRect(q[0],q[1],p.w,p.h,8);
+    for(let x=q[0]+18;x<q[0]+p.w-10;x+=32)gG.fillStyle(0xffffff,.18).fillRect(x,q[1]+8,14,3);if(p.mx||p.my)for(let i=0;i<3;i++)emit("streak",q[0]+rnd(0,p.w),q[1]+p.h/2,rnd(-20,20),rnd(-30,30),.25,A.key==="skyforge"?0xffd84a:0x9fe8ff)}
+  for(const p of A.lifts){gG.fillStyle(0x26354a,.9).fillCircle(p.x,p.y,24);gG.lineStyle(2,0xbfe6ff,.8).strokeCircle(p.x,p.y,20+Math.sin(t*5)*2);gA.lineStyle(1,0xffffff,.35).lineBetween(p.x,p.y-50,p.x,p.y+8)}}
+function buildSkyforge(A){
+  deck(A,110,90,430,270);deck(A,1160,640,430,270);deck(A,690,155,300,76,0,180,0);deck(A,710,760,280,76,0,170,3.14);
+  A.lifts.push({x:210,y:205},{x:1490,y:790});A.lava.push({x:760,y:400,rx:180,ry:92,e:1,cool:0},{x:1040,y:600,rx:150,ry:76,e:1,cool:0});
+  for(const q of [["crate",620,310],["barrel",850,500],["barrel",1050,480],["boulder",560,700],["pillar",850,170],["pillar",850,830]])addProp(A,q[0],q[1],q[2],0);
+  for(const q of [["crate",290,190],["barrel",420,260],["crate",1320,730],["barrel",1450,820]])addProp(A,q[0],q[1],q[2],1);
+  A.fixed=[["gravityCore",320,180,1],["gravityCore",1380,780,1]];A.fixRe=35;A.spawn=[[120,500],[1580,500]];A.envHook=movingArenaEnv;A.extra=movingArenaFx;A.visFn=(o,v)=>(o.lv||0)===(v.lv||0);A.noItem=(x,y,lv)=>lv===1&&!deckAt(A,x,y,G?G.t:0);A.itemSpot=R=>R()<.35?[320,180,1]:[100+R()*1500,120+R()*760,0];A.thumbExtra=g=>{g.fillStyle="#596879";for(const p of A.platforms)g.fillRect(p.bx/2,p.by/2,p.w/2,p.h/2)}}
+function buildTitanBack(A){
+  deck(A,160,120,460,250);deck(A,1140,690,460,250);deck(A,720,430,320,110,220,0,0);deck(A,720,610,320,100,180,0,3.14);
+  A.lifts.push({x:270,y:220},{x:1490,y:810});A.water.push({x:0,y:0,w:W,h:105},{x:0,y:H-105,w:W,h:105});A.bog.push({x:880,y:530,rx:130,ry:76,e:1});
+  for(const q of [["boulder",540,520],["boulder",1220,540],["log",700,300],["log",1060,760],["urn",880,250],["urn",880,840]])addProp(A,q[0],q[1],q[2],0);
+  for(const q of [["pillar",320,210],["urn",490,250],["pillar",1440,800],["urn",1270,760]])addProp(A,q[0],q[1],q[2],1);
+  A.fixed=[["phaseDrill",390,210,1],["phaseDrill",1370,820,1]];A.fixRe=42;A.spawn=[[130,530],[1630,530]];A.tilt=1;A.envHook=movingArenaEnv;A.extra=movingArenaFx;A.visFn=(o,v)=>(o.lv||0)===(v.lv||0);A.noItem=(x,y,lv)=>lv===1&&!deckAt(A,x,y,G?G.t:0);A.itemSpot=R=>R()<.3?[390,210,1]:[120+R()*1520,140+R()*780,0];A.thumbExtra=g=>{g.fillStyle="#8b7358";for(const p of A.platforms)g.fillRect(p.bx/2,p.by/2,p.w/2,p.h/2)}}
 /* ================= terrain painter =================
    The ground is painted once per match into a half-resolution canvas (1 canvas pixel = 2 world pixels),
    pixel by pixel with value noise, then decorated with small hand-made stamps. Terrain regions (water, lava,
@@ -744,10 +840,13 @@ const REGION={
     const dep=clamp((e-4)/10,0,1);let c=mixc(cc(0x4fd8c8),cc(0x1f8a8a),dep);if(hsh(x,y,s)>.98)c=cc(0xe8fffa);return c},
   bridge(e,x,y,s,l){if(e<0)return null;const vert=l.w<l.h,u=vert?y:x;if(e<1.5)return cc(0x3b2412);const pl=Math.floor(u/5);if(u%5===0)return cc(0x5a3a1c);
     let c=hsh(pl,0,s)>.5?cc(0xa8743c):cc(0x96683a);if(hsh(x,y,s)>.9)c=shade(c,.85);if(e<3)c=shade(c,1.15);return c}};
+GROUND.skyforge=(x,y,s)=>{const tx=Math.floor(x/18),ty=Math.floor(y/18),ix=x%18,iy=y%18,n=nz(x/22,y/22,s);let c=mixc(cc(0x313746),cc(0x566070),n);if(ix===0||iy===0)c=cc(0x1e2430);if(ix===1||iy===1)c=shade(c,1.28);if((tx+ty)%7===0&&ix>5&&ix<12&&iy>7&&iy<11)c=cc(0xd8a83e);return c};
+GROUND.titanback=(x,y,s)=>{const n=nz(x/38,y/38,s),m=nz(x/9,y/9,s+2);let c=mixc(cc(0x665442),cc(0xa88a68),n);c=shade(c,.88+m*.2);if(Math.abs(nz(x/15,y/11,s+4)-.5)<.018)c=cc(0x3e5360);if(hsh(x,y,s)>.975)c=cc(0xc8b28e);return c};
 const DECOR={
   forest:[["flower",90],["tuft",260],["mush",26],["leaf",120],["pebble",40]],river:[["flower",70],["tuft",240],["pebble",80],["reed",40]],
   stadium:[["scuff",80]],volcano:[["ember",90],["bone",8],["pebble",120]],ice:[["foot",40],["pebble",40],["spark",70]],
-  desert:[["bone",14],["pebble",120],["twig",60],["crack",20]],ruins:[["tuft",120],["rubble",70],["flower",30]],swamp:[["lily",50],["tuft",160],["mush",40],["reed",60]]};
+  desert:[["bone",14],["pebble",120],["twig",60],["crack",20]],ruins:[["tuft",120],["rubble",70],["flower",30]],swamp:[["lily",50],["tuft",160],["mush",40],["reed",60]],
+  skyforge:[["spark",150],["scuff",120],["ember",55]],titanback:[["rubble",100],["crack",70],["bone",18],["spark",40]]};
 const STAMP={
   flower(c,x,y,R){const col=["#ffe680","#ff9ab0","#ffffff","#c8a0ff"][(R()*4)|0];c.fillStyle="#2a6a2a";c.fillRect(x,y+1,1,2);c.fillStyle=col;c.fillRect(x-1,y,3,1);c.fillRect(x,y-1,1,3);c.fillStyle="#ffd23e";c.fillRect(x,y,1,1)},
   tuft(c,x,y){c.fillStyle="#1e5a26";c.fillRect(x,y,1,2);c.fillRect(x+2,y,1,2);c.fillStyle="#5cb85a";c.fillRect(x+1,y-1,1,3);c.fillRect(x-1,y+1,1,1);c.fillRect(x+3,y+1,1,1)},
@@ -807,13 +906,14 @@ function buildCity(A){const T=CITY.T;
   const mir=b=>({x:W-b.x-b.w,y:H-b.y-b.h,w:b.w,h:b.h,doors:b.doors.map(([s,p])=>[{t:"b",b:"t",l:"r",r:"l"}[s],(s==="t"||s==="b"?b.w:b.h)-p]),sty:b.sty+3});
   A.blds=[...B,...B.map(mir)];A.blds.forEach((b,i)=>{b.i=i;b.stair={x:b.x+(i%3===1?b.w-62:58),y:b.y+70}});
   const SK=[{x:480,y:118,w:220,h:CITY.BRW},{x:1200,y:118,w:220,h:CITY.BRW}];A.sky=[...SK,...SK.map(s=>({x:W-s.x-s.w,y:H-s.y-s.h,w:s.w,h:s.h}))];
+  A.sky.forEach((s,i)=>{s.i=i;s.hp=12;s.max=12;s.dead=false});
   /* walls: outline with gaps for doors (level 0) and for bridges (level 1) */
   const seg=(lv,b,side,gaps)=>{const horiz=side==="t"||side==="b",len=horiz?b.w:b.h;let cur=0;const out=[];for(const [g0,g1] of gaps.sort((p,q)=>p[0]-q[0])){if(g0>cur)out.push([cur,g0]);cur=Math.max(cur,g1)}if(cur<len)out.push([cur,len]);
     for(const [s0,s1] of out){if(s1-s0<2)continue;if(side==="t")A.walls.push({x:b.x+s0,y:b.y,w:s1-s0,h:T,lv});else if(side==="b")A.walls.push({x:b.x+s0,y:b.y+b.h-T,w:s1-s0,h:T,lv});
       else if(side==="l")A.walls.push({x:b.x,y:b.y+s0,w:T,h:s1-s0,lv});else A.walls.push({x:b.x+b.w-T,y:b.y+s0,w:T,h:s1-s0,lv})}};
   for(const b of A.blds){for(const side of ["t","b","l","r"]){seg(0,b,side,b.doors.filter(d=>d[0]===side).map(d=>[d[1]-CITY.DOOR/2,d[1]+CITY.DOOR/2]));
       const bg=[];for(const s of A.sky){if(s.y<b.y||s.y+s.h>b.y+b.h)continue;if(side==="r"&&Math.abs(s.x-(b.x+b.w))<4)bg.push([s.y-b.y,s.y-b.y+s.h]);if(side==="l"&&Math.abs(s.x+s.w-b.x)<4)bg.push([s.y-b.y,s.y-b.y+s.h])}seg(1,b,side,bg)}}
-  for(const s of A.sky){A.walls.push({x:s.x,y:s.y-6,w:s.w,h:6,lv:1,nodraw:1},{x:s.x,y:s.y+s.h,w:s.w,h:6,lv:1,nodraw:1})}
+  for(const s of A.sky){A.walls.push({x:s.x,y:s.y-6,w:s.w,h:6,lv:1,nodraw:1,sky:s},{x:s.x,y:s.y+s.h,w:s.w,h:6,lv:1,nodraw:1,sky:s})}
   for(const w of A.walls)if(!w.nodraw)w.style=w.lv?CITYWALL[1]:CITYWALL[0];
   const add=(lv,k,x,y)=>{addProp(A,k,x,y,lv);addProp(A,k,W-x,H-y,lv)};
   /* themed interiors (office / police station / house), laid out relative to each building and mirrored for fairness.
@@ -848,10 +948,11 @@ function buildCity(A){const T=CITY.T;
 const CITYWALL=[{top:[0xc8c0b4,0xb8b0a4],front:[0x9a8e80,0x8a7e70],mortar:0x6a6058,moss:0xa89c8c},{top:[0xd8d4cc,0xc8c4bc],front:[0xa8a49c,0x98948c],mortar:0x787470,moss:0xb8b4ac},
   {top:[0xeee6d6,0xe2dac8],front:[0xc8bca4,0xbcb098],mortar:0xa09480,moss:0xe2dac8}];
 const bldAt=(x,y)=>G.A.blds.find(b=>x>b.x+2&&x<b.x+b.w-2&&y>b.y+2&&y<b.y+b.h-2);
-const onUpper=(x,y)=>G.A.blds.some(b=>x>b.x+CITY.T&&x<b.x+b.w-CITY.T&&y>b.y+CITY.T&&y<b.y+b.h-CITY.T)||G.A.sky.some(s=>x>=s.x-4&&x<=s.x+s.w+4&&y>=s.y&&y<=s.y+s.h);
+const onUpper=(x,y)=>G.A.blds.some(b=>x>b.x+CITY.T&&x<b.x+b.w-CITY.T&&y>b.y+CITY.T&&y<b.y+b.h-CITY.T)||G.A.sky.some(s=>!s.dead&&x>=s.x-4&&x<=s.x+s.w+4&&y>=s.y&&y<=s.y+s.h);
 /* can viewer v see thing o (fighter, minion, item, prop) */
 function cityVis(o,v){const bo=bldAt(o.x,o.y),lv=o.lv||0;if(!bo)return true;if((v.lv||0)===1)return lv===1;return lv===0&&bldAt(v.x,v.y)===bo}
-function cityStairs(f,dt){const A=G.A;let on=null;for(const b of A.blds)if(Math.hypot(f.x-b.stair.x,f.y-b.stair.y)<20)on=b;
+function cityStairs(f,dt){const A=G.A;if(f.lv&&!onUpper(f.x,f.y)){f.lv=0;f.hp=Math.max(0,f.hp-22);f.stun=Math.max(f.stun,.55);f.kx+=rnd(-90,90);f.ky+=rnd(-90,90);pop(f.x,f.y-55,"สะพานพัง!","#ff9a8a",1);FX.boom(f.x,f.y,"metal",38);G.shake=Math.max(G.shake,7);if(f===G.me)VIEW.lvT=.5}
+  let on=null;for(const b of A.blds)if(Math.hypot(f.x-b.stair.x,f.y-b.stair.y)<20)on=b;
   if(!on){f.stairLock=0;return}if(f.stairLock)return;f.stairLock=1;f.lv=f.lv?0:1;f.chg=null;FX.burst(f.x,f.y-14,"#ffffff",14,120,.4);SFX.play("dash");if(f===G.me)VIEW.lvT=.5}
 function citySpot(R){const r=R();if(r<.35){const b=G.A.blds[(R()*G.A.blds.length)|0];return[b.x+40+R()*(b.w-80),b.y+40+R()*(b.h-80),R()<.5?1:0]}return[FR+60+R()*(W-120),FR+60+R()*(H-120),0]}
 function cityBotGoal(f,o){const A=G.A,bf=bldAt(f.x,f.y),bo=bldAt(o.x,o.y),lf=f.lv||0,lo=o.lv||0;
@@ -1090,10 +1191,18 @@ function crater(x,y,r,hole){BGD=true;const c=bgx;x=(x/2)|0;y=(y/2)|0;r=(r/2)|0;
 function scorch(x,y,r){BGD=true;const c=bgx;c.fillStyle="rgba(15,10,10,.55)";c.beginPath();c.ellipse((x/2)|0,(y/2)|0,r/2,r*.35,0,0,7);c.fill()}
 const inRect=(r,x,y,p)=>x>=r.x-(p||0)&&x<=r.x+r.w+(p||0)&&y>=r.y-(p||0)&&y<=r.y+r.h+(p||0);
 const inEll=(l,x,y,p)=>{const a=(x-l.x)/(l.rx+(p||0)),b=(y-l.y)/(l.ry+(p||0));return a*a+b*b<1};
-const inWater=(x,y)=>G.A.water.some(w=>w.e?inEll(w,x,y):inRect(w,x,y))&&!G.A.bridges.some(r=>inRect(r,x,y));
+const inWater=(x,y)=>G.A.water.some(w=>w.e?inEll(w,x,y):inRect(w,x,y))&&!G.A.bridges.some(r=>!r.dead&&inRect(r,x,y));
 const waterNear=(x,y,r)=>G.A.water.some(w=>w.e?inEll(w,x,y,r):inRect(w,x,y,r));
 const ellAt=(arr,x,y,p)=>arr.find(l=>inEll(l,x,y,p));
-const wallAt=(x,y,r,lv)=>{const L=lv==null?(G.wlv||0):lv;return G.A.walls.find(w=>(w.lv||0)===L&&inRect(w,x,y,r))};
+const wallOpen=(w,x,y,r)=>w.dead||(w.sky&&w.sky.dead)||(w.breach||[]).some(q=>Math.hypot(x-q.x,y-q.y)<q.r-(r||0));
+const wallAt=(x,y,r,lv)=>{const L=lv==null?(G.wlv||0):lv;return G.A.walls.find(w=>(w.lv||0)===L&&inRect(w,x,y,r)&&!wallOpen(w,x,y,r))};
+function makeHole(x,y,r,lv,id){const A=G.A;if(r<18)return;const h={id:id||"h"+G.t,x:clamp(x,FR+25,W-FR-25),y:clamp(y,FR+30,H-FR-20),r:clamp(r,20,62),lv:lv||0,t:18,arm:.55};
+  const old=A.holes.find(q=>(q.lv||0)===h.lv&&Math.hypot(q.x-h.x,q.y-h.y)<Math.max(q.r,h.r)*.65);if(old){old.r=Math.max(old.r,h.r);old.t=18;old.arm=Math.max(old.arm||0,.4);return old}A.holes.push(h);if(A.holes.length>10)A.holes.shift();crater(h.x,h.y,h.r*1.15,1);return h}
+function damageStructures(x,y,r,mv,att){const A=G.A,lv=att&&att.lv||0,power=(mv.breach||0)+(mv.heavy>=9?2:0);if(!power&&!mv.bridge)return;
+  for(const w of A.walls){if((w.lv||0)!==lv||w.dead)continue;const nx=clamp(x,w.x,w.x+w.w),ny=clamp(y,w.y,w.y+w.h);if(Math.hypot(x-nx,y-ny)>r+8)continue;if(w.sky){w.sky.hp-=mv.bridge||power*2;if(w.sky.hp<=0){w.sky.dead=true;FX.mega(w.sky.x+w.sky.w/2,w.sky.y+w.sky.h/2,"metal",70);G.shake=Math.max(G.shake,9)}continue}
+    if(power){w.breach=w.breach||[];if(!w.breach.some(q=>Math.hypot(q.x-nx,q.y-ny)<18)){w.breach.push({x:nx,y:ny,r:20+power*5});part(nx,ny,"#d8c8b0",18,190,.6);G.shake=Math.max(G.shake,4)}}}
+  for(const b of A.bridges){if(b.dead||!inRect(b,x,y,r))continue;b.hp=(b.hp==null?8:b.hp)-(mv.bridge||power*2);if(b.hp<=0){b.dead=true;FX.mega(b.x+b.w/2,b.y+b.h/2,"water",60);G.shake=Math.max(G.shake,8)}}
+  if(lv===1)for(const s of A.sky){if(s.dead||!inRect(s,x,y,r))continue;s.hp-=mv.bridge||power*2;if(s.hp<=0){s.dead=true;FX.mega(s.x+s.w/2,s.y+s.h/2,"metal",80);G.shake=Math.max(G.shake,10)}}}
 const inCover=f=>G.zones.some(z=>z.mv.smoke&&Math.hypot(z.x-f.x,z.y-f.y)<z.mv.rad)||G.A.props.some(p=>!p.dead&&((p.k==="bush"&&Math.hypot(p.x-f.x,p.y-f.y)<p.R-4)||(p.k==="tree"&&Math.hypot(p.x-f.x,p.y-14-f.y)<p.R-2)||(PDEF[p.k].hide&&(p.lv||0)===(f.lv||0)&&Math.hypot(p.x-f.x,p.y-f.y)<p.R)));
 const seenBy=(o,f)=>(!G.A.visFn||G.A.visFn(o,f))&&o.under<=0&&!(o.cloak>0&&o.reveal<=0&&Math.hypot(o.x-f.x,o.y-f.y)>70)&&!(inCover(o)&&o.reveal<=0&&o.burn<=0&&Math.hypot(o.x-f.x,o.y-f.y)>90);
 function meltIce(x,y,r){const A=G.A;for(let i=A.ice.length-1;i>=0;i--){const l=A.ice[i];if(inEll(l,x,y,r)){A.ice.splice(i,1);A.water.push(l);repaintRegion("water",l);FX.burst(l.x,l.y,"#e8f4ff",30,l.rx*2.4,.9);SFX.play("dash","water")}}}
@@ -1103,7 +1212,7 @@ let G=null;const ENV={mon:{atk:1,t:[]},owned:false,env:true,ult:0,x:0,y:0};
 function mkFighter(card,x,face,owned,tag){const m=MONS[card.mon];
   return{tag,card,mon:m,key:card.mon,moves:card.mv,x,y:H/2,tx:x,ty:H/2,ax:face,ay:0,hp:m.hp,max:m.hp,owned,seq:0,ult:0,cdB:0,
     cds:[0,0,0],dodgeCd:0,stun:0,stunImm:0,slow:0,burn:0,burnTick:0,guard:0,haste:0,rest:0,under:0,roll:0,rdx:0,rdy:0,ifr:0,root:0,air:0,airT:1,jx:0,jy:0,land:null,shield:0,shieldT:0,cast:0,faceT:0,cloak:0,chill:0,chT:0,frz:0,inv:0,busy:0,bub:0,U:null,fly:0,car:0,carHc:0,rage:0,regen:0,regT:0,cdr:0,cdI:0,item:null,lv:0,
-    dash:null,chg:null,chgF:0,kx:0,ky:0,ivx:0,ivy:0,hk:null,flash:0,walk:0,moving:false,reveal:0,envT:0,cacT:0,sprT:0,padCd:0,hitSet:new Set(),hits:[],atks:[],minions:[],ai:{t:1.2,s:1,st:1,lx:W/2,ly:H/2,hold:null}}}
+    dash:null,chg:null,chgF:0,kx:0,ky:0,ivx:0,ivy:0,hk:null,flash:0,walk:0,moving:false,reveal:0,envT:0,cacT:0,sprT:0,padCd:0,tremN:0,hitSet:new Set(),hits:[],atks:[],minions:[],ai:{t:1.2,s:1,st:1,lx:W/2,ly:H/2,hold:null}}}
 function goFull(){if(!touch)return;const d=document.documentElement;try{if(!document.fullscreenElement&&d.requestFullscreen)d.requestFullscreen({navigationUI:"hide"}).then(()=>{try{screen.orientation.lock("landscape").catch(()=>{})}catch(e){}setTimeout(layout,200)}).catch(()=>{})}catch(e){}}
 function spawnPt(A,left){if(A.spawn)return A.spawn[left?0:1];const bad=(x,y)=>{const t=l=>l.e?inEll(l,x,y,26):inRect(l,x,y,26);return A.water.some(t)||A.lava.some(t)||A.bog.some(t)||A.sand.some(t)||A.walls.some(t)||A.props.some(p=>!p.dead&&p.r&&Math.hypot(p.x-x,p.y-y)<p.r+30)};
   for(let r=0;r<400;r+=12)for(let a=0;a<6.28;a+=.5){const x=Math.round((left?W*.13:W*.87)+Math.cos(a)*r),y=Math.round(H/2+Math.sin(a)*r);if(x>40&&x<W-40&&y>60&&y<H-40&&!bad(x,y))return[x,y]}return[left?150:W-150,H/2]}
@@ -1171,8 +1280,10 @@ addEventListener("keydown",e=>{if(!G||$("game").hidden||e.repeat)return;if(e.tar
   else if(/^(Key[WASD]|Arrow)/.test(e.code)){IN.k[e.code]=1;e.preventDefault()}});
 addEventListener("keyup",e=>{if((e.code==="KeyG"||e.code==="KeyH")&&IN.slot.i.down){IN.slot.i.down=false;IN.rel.push("i")}else if(e.code in KM){const s=IN.slot[KM[e.code]];if(s.down){s.down=false;IN.rel.push(KM[e.code])}}else if(e.code==="Space"||e.code==="ShiftLeft")IN.dodge=0;else IN.k[e.code]=0});
 addEventListener("blur",()=>resetInput());
-{const st=$("stage");const mm=e=>{const c=st.querySelector("canvas");if(!c)return;const r=c.getBoundingClientRect();if(!r.width)return;IN.mouse.x=(e.clientX-r.left)/r.width;IN.mouse.y=(e.clientY-r.top)/r.height;IN.mouse.on=e.pointerType!=="touch"};
-  st.addEventListener("pointermove",mm);st.addEventListener("pointerdown",e=>{mm(e);if(e.pointerType!=="touch"&&e.button===0&&G&&!G.over){IN.slot.b.down=true;IN.slot.b.manual=false}});
+{const st=$("stage");const mm=e=>{const c=st.querySelector("canvas:not(#mini)");if(!c)return;const r=c.getBoundingClientRect();if(!r.width||!r.height)return;IN.mouse.x=clamp((e.clientX-r.left)/r.width,0,1);IN.mouse.y=clamp((e.clientY-r.top)/r.height,0,1);IN.mouse.on=true};
+  /* Desktop aiming deliberately uses mouse events, independently of touch-device
+     detection. Touch controls keep their existing aim-button path below. */
+  addEventListener("mousemove",mm,{passive:true});st.addEventListener("pointerdown",e=>{if(e.pointerType!=="touch"){mm(e);if(e.button===0&&G&&!G.over){IN.slot.b.down=true;IN.slot.b.manual=false}}});
   addEventListener("pointerup",e=>{if(e.pointerType!=="touch")IN.slot.b.down=false})}
 {const base=$("joyBase"),knob=$("joyKnob");let pid=null;
   const mv=e=>{const r=base.getBoundingClientRect();let dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2);const m=r.width/2-8,l=Math.hypot(dx,dy);
@@ -1196,9 +1307,15 @@ function buildButtons(){const box=$("pad");box.textContent="";ABS=[];const f=G.m
   aimBtn(mk("pu","u","ท่าไม้ตาย","F",MOVES[f.mon.ult].t),"u");aimBtn(mk("pi","i","ไอเทม","G",null),"i");itemBtn()}
 $("game").addEventListener("contextmenu",e=>e.preventDefault());
 /* where a slot would fire right now */
+function mouseWorld(){
+  /* Map the normalized DOM pointer over the exact world rectangle currently
+     visible through the camera. This avoids applying the 2x render zoom twice. */
+  if(SCN&&SCN.cameras){const cam=SCN.cameras.main,v=cam&&cam.worldView;if(v&&v.width&&v.height)return{x:v.x+IN.mouse.x*v.width,y:v.y+IN.mouse.y*v.height}}
+  return{x:VIEW.camX+IN.mouse.x*VW,y:VIEW.camY+IN.mouse.y*VH}
+}
 function slotAim(f,key,mv){const s=IN.slot[key],o=other(f),rng=mv.rng||200;
   if(s.manual)return{ax:s.ax,ay:s.ay,mag:s.mag,manual:true};
-  if(!touch&&IN.mouse.on){const wx=VIEW.camX+IN.mouse.x*VW,wy=VIEW.camY+IN.mouse.y*VH,dx=wx-f.x,dy=wy-(f.y-(mv.aim==="point"?0:12)),l=Math.hypot(dx,dy)||1;return{ax:dx/l,ay:dy/l,mag:clamp(l/rng,0,1)}}
+  if(IN.mouse.on){const p=mouseWorld(),dx=p.x-f.x,dy=p.y-(f.y-(mv.aim==="point"?0:12)),l=Math.hypot(dx,dy)||1;return{ax:dx/l,ay:dy/l,mag:clamp(l/rng,0,1)}}
   if(seenBy(o,f)){const dx=o.x-f.x,dy=o.y-f.y,l=Math.hypot(dx,dy)||1;return{ax:dx/l,ay:dy/l,mag:clamp(l/rng,0,1),auto:true}}
   return{ax:f.ax,ay:f.ay,mag:.7,auto:true}}
 const knight=f=>!!(f.U&&f.U.k==="u_knight"&&f.U.t>=.8);const mkey=(f,i)=>f.tank>0?"tk_rocket":f.jet>0?"jt_bomb":knight(f)?KNIGHT[i]:f.moves[i];
@@ -1206,7 +1323,7 @@ const basicKey=f=>giant(f)?"b_giant":f.tank>0?"tk_mg":f.jet>0?"jt_gun":knight(f)
 const slotMove=(f,key)=>key==="i"?(f.item?MOVES[ITEMS[f.item.k].mv]:null):MOVES[key==="b"?basicKey(f):key==="u"?f.mon.ult:mkey(f,key)];
 function myInput(){const f=G.me;let x=(IN.k.KeyD||IN.k.ArrowRight?1:0)-(IN.k.KeyA||IN.k.ArrowLeft?1:0)+IN.joy.x,y=(IN.k.KeyS||IN.k.ArrowDown?1:0)-(IN.k.KeyW||IN.k.ArrowUp?1:0)+IN.joy.y;
   const l=Math.hypot(x,y);if(l>1){x/=l;y/=l}
-  const face=!touch&&IN.mouse.on?slotAim(f,"b",MOVES[f.mon.basic]):null;
+  const face=IN.mouse.on?slotAim(f,"b",MOVES[f.mon.basic]):null;
   const rel=IN.rel.map(k=>({i:k,aim:slotAim(f,k,slotMove(f,k)||MOVES[f.mon.basic])}));IN.rel=[];
   return{mx:x,my:y,face,basic:IN.slot.b.down?slotAim(f,"b",MOVES[f.mon.basic]):null,sk:[0,1,2].map(i=>({held:IN.slot[i].down,aim:IN.slot[i].down?slotAim(f,i,MOVES[mkey(f,i)]):null})),rel,dodge:IN.dodge,ua:IN.slot.u.down&&IN.slot.u.manual?slotAim(f,"u",MOVES[f.mon.ult]):null}}
 
@@ -1268,6 +1385,7 @@ function hurtTwall(w,mv){w.hp-=mv.heavy?3:1;part(w.x,w.y-8,"#b08a5a",4,80,.3);if
 function touchEnv(x,y,r,att,mv,id){const type=mvT(mv,att);
   for(const p of G.A.props){if(p.dead)continue;const d=Math.hypot(p.x-x,p.y-y);if(d<r+(p.k==="bush"||p.k==="tree"?p.R*.6:p.r))hurtProp(p,att,mv,type)}
   for(const w of G.twalls)if(Math.hypot(w.x-x,w.y-y)<r+w.r)hurtTwall(w,mv);
+  damageStructures(x,y,r,mv,att);
   if(type==="elec"&&waterNear(x,y,r))zap(id);if(type==="fire")meltIce(x,y,r*.7);
   if(type==="water")for(const l of G.A.lava){if(Math.hypot(l.x-x,l.y-y)<r+l.rx){if(l.cool<=0)part(l.x,l.y,"#e8f4ff",16,90,.8);l.cool=6}}}
 function touchEnvLite(x,y,type,id){if(type==="elec"&&inWater(x,y))zap(id);if(type==="fire")meltIce(x,y,0);if(type==="water"){const l=ellAt(G.A.lava,x,y,4);if(l){if(l.cool<=0)part(l.x,l.y,"#e8f4ff",16,90,.8);l.cool=6}}}
@@ -1281,6 +1399,14 @@ function addShots(f,a,mv,n,base,opt){opt=opt||{};for(let i=0;i<n;i++){const ang=
 function spawnAttack(f,a){const mv=MOVES[a.m];if(!mv)return;G.wlv=f.lv||0;
   if(mv.ult&&!a.cut&&!G.cut){G.cut={t:1.05,f,mv,a};SFX.play("ult");return}
   f.reveal=1.2;const ang=Math.atan2(a.dy,a.dx),R=seeded(a.id),type=mvT(mv,f),self=mv.aim!=="point",px=self?a.x:a.tx,py=self?a.y:a.ty;
+  if(!["buff","trap","wall"].includes(mv.kind)){
+    f.poseK=a.m;f.pose=mv.kind==="leap"?.52:mv.kind==="dash"?.34:mv.kind==="beam"?.46:mv.kind==="breath"?.4:.26;f.poseMax=f.pose;
+    if(!mv.basic){const fx=a.x+a.dx*20,fy=a.y-14+a.dy*14;FX.burst(fx,fy,TY[type].c,8,110,.22)}}
+  if(f.key==="aurex"&&["b_aurex","aurex_rush","aurex_upper","aurex_wave"].includes(a.m)){
+    const fx=a.x+a.dx*22,fy=a.y-14+a.dy*16;if(a.m==="aurex_wave"){FX.burst(fx,fy,"#fff3a0",16,170,.3);G.shake=Math.max(G.shake,3)}
+    else if(a.m==="aurex_upper"){FX.boom(a.x,a.y-4,"metal",28);part(a.x,a.y,"#ffd84a",12,130,.35)}
+    else if(a.m==="aurex_rush"){FX.burst(fx,fy,"#ffd84a",12,150,.25);G.shake=Math.max(G.shake,2)}
+    else part(fx,fy,"#fff3a0",7,90,.2)}
   switch(mv.kind){
     case"shot":addShots(f,a,mv,mv.cnt||1,ang);SFX.play("shot",type);break;
     case"melee":{G.slashes.push({own:f,mv,x:a.x,y:a.y-12,ang,t:.22,full:.22});SFX.play("melee",type);
@@ -1302,7 +1428,7 @@ function spawnAttack(f,a){const mv=MOVES[a.m];if(!mv)return;G.wlv=f.lv||0;
     case"buff":if(f.owned){if(mv.buff==="guard")f.guard=1.6;else if(mv.buff==="haste")f.haste=4;else if(mv.buff==="shield"){f.shield=32;f.shieldT=5}else if(mv.buff==="armor")f.guard=3;else if(mv.buff==="cloak"){f.cloak=3.5;f.haste=Math.max(f.haste,3.5)}else f.rest=1}if(mv.buff==="cloak")f.reveal=0;part(f.x,f.y-12,TY[type].c,10,80,.5);SFX.play("buff");break;
     case"leap":if(f.owned){f.air=f.airT=.5;f.jx=(a.tx-a.x)/.5;f.jy=(a.ty-a.y)/.5;f.land=mv.land||"leapland"}part(a.x,a.y,"#fff",8,90,.3);SFX.play("dash");break;
     case"ring":G.rings.push({id:a.id,own:f,mv,x:a.x,y:a.y,r:10,max:mv.max,sp:250,done:false});SFX.play("beam",type);break;
-    case"beam":{const p=clamp(a.p||0,0,1);G.beams.push({id:a.id,own:f,mv,x:a.x,y:a.y-12,dx:a.dx,dy:a.dy,p,wd:8+14*p,sc:.4+.6*p,w:0,t:.26,done:false,len:rayLen(a.x,a.y,a.dx,a.dy,1200)});SFX.play("beam",type);break}
+    case"beam":{const p=clamp(a.p||0,0,1);G.beams.push({id:a.id,own:f,mv,x:a.x,y:a.y-12,dx:a.dx,dy:a.dy,p,wd:8+14*p,sc:.4+.6*p,w:0,t:.26,done:false,len:rayLen(a.x,a.y,a.dx,a.dy,1200)});if(f.owned&&mv.recoil){f.kx-=a.dx*mv.recoil*(.45+.55*p);f.ky-=a.dy*mv.recoil*(.45+.55*p)}SFX.play("beam",type);break}
     case"fly":if(f.owned){f.fly=9;f.dash=null}FX.burst(a.x,a.y-20,"#ffffff",24,180,.6);SFX.play("buff");break;
     case"drive":if(f.owned){f.car=8;f.dash=null}FX.boom(a.x,a.y,"metal",34);SFX.play("dash","metal");break;
     case"capsule":G.blasts.push({id:a.id,own:f,mv,x:a.tx,y:a.ty,t:.7,full:.7,ox:a.x,oy:a.y-16,lob:"i_capsule",ls:2.2,lh:100,cap:1});SFX.play("dash");break;
@@ -1318,15 +1444,16 @@ function record(f,m,aim,p){const mv=MOVES[m];aim=aim||{ax:f.ax,ay:f.ay,mag:.7};c
   if(mv.aim!=="self"){f.ax=aim.ax;f.ay=aim.ay;f.faceT=.4}
   if(mv.drain)G.myDrain.set(a.id,mv);f.atks.push(a);if(f.atks.length>12)f.atks.shift();spawnAttack(f,a);return a}
 function collide(f){f.x=clamp(f.x,FR+8,W-FR-8);f.y=clamp(f.y,FR+18,H-FR);if(f.air>0||f.fly>0)return;if(G.A.collide&&G.A.collide(f))return;
-  for(const w of G.A.walls){if((w.lv||0)!==(f.lv||0))continue;const nx=clamp(f.x,w.x,w.x+w.w),ny=clamp(f.y,w.y,w.y+w.h);let dx=f.x-nx,dy=f.y-ny;const d=Math.hypot(dx,dy),r=11;
+  for(const w of G.A.walls){if((w.lv||0)!==(f.lv||0)||w.dead||(w.sky&&w.sky.dead))continue;const nx=clamp(f.x,w.x,w.x+w.w),ny=clamp(f.y,w.y,w.y+w.h);if(wallOpen(w,nx,ny,9))continue;let dx=f.x-nx,dy=f.y-ny;const d=Math.hypot(dx,dy),r=11;
     if(d<r){if(d<.01){const cx=w.x+w.w/2,cy=w.y+w.h/2;if(Math.abs(f.x-cx)/w.w>Math.abs(f.y-cy)/w.h)f.x=f.x<cx?w.x-r:w.x+w.w+r;else f.y=f.y<cy?w.y-r:w.y+w.h+r}else{f.x+=dx/d*(r-d);f.y+=dy/d*(r-d)}}}
   if(f.under>0)return;
   const push=(px,py,pr)=>{let dx=f.x-px,dy=f.y-py;const d=Math.hypot(dx,dy),r=pr+9;if(d<r){if(d<.01){dx=1;dy=0}f.x+=dx/(d||1)*(r-d);f.y+=dy/(d||1)*(r-d)}};
   for(const p of G.A.props)if(!p.dead&&p.r&&(p.lv||0)===(f.lv||0))push(p.x,p.y,p.r);if(G.units)for(const u of G.units)if(UK[u.k].solid)push(u.x,u.y,UK[u.k].r-4);if(!f.lv)for(const w of G.twalls)push(w.x,w.y,w.r)}
-function tick(f,dt){for(const k of ["stun","stunImm","slow","guard","haste","roll","ifr","root","dodgeCd","flash","reveal","cdB","cast","faceT","padCd","shieldT","cloak","inv","busy","bub","fly","car","rage","regen","cdr","cdI","carHc","b_red","b_blue","b_boss","frz","chT","tank","jet"])if(f[k]>0)f[k]=Math.max(0,f[k]-dt);
+function tick(f,dt){for(const k of ["stun","stunImm","slow","guard","haste","roll","ifr","root","dodgeCd","flash","reveal","cdB","cast","faceT","padCd","shieldT","cloak","inv","busy","bub","fly","car","rage","regen","cdr","cdI","carHc","b_red","b_blue","b_boss","frz","chT","tank","jet","pose"])if(f[k]>0)f[k]=Math.max(0,f[k]-dt);
   if(f.chT<=0&&f.chill>0)f.chill=Math.max(0,f.chill-dt*1.5);
   for(let i=0;i<3;i++)if(f.cds[i]>0)f.cds[i]=Math.max(0,f.cds[i]-dt*(f.cdr>0?2:1)*(f.b_blue>0?1.5:1));if(f.shieldT<=0)f.shield=0}
 function envOwned(f,dt){if(G.A.envHook)G.A.envHook(f,dt);const A=G.A,gr=f.air<=0&&f.under<=0&&f.fly<=0&&f.car<=0;if(!gr)return{mul:1,ice:false};let mul=1,ice=false;
+  const hole=A.holes.find(h=>(h.arm||0)<=0&&(h.lv||0)===(f.lv||0)&&Math.hypot(f.x-h.x,f.y-h.y)<h.r-7);if(hole&&f.roll<=0){if(f.lv){f.lv=0;f.hp=Math.max(0,f.hp-28);f.stun=Math.max(f.stun,.7);f.kx+=(f.x-hole.x)*8;f.ky+=(f.y-hole.y)*8;pop(f.x,f.y-55,"พื้นชั้นบนทะลุ!","#ff9a8a",1)}else{f.hp=0;f.stun=1;pop(f.x,f.y-58,"ตกลงไปในหลุม!","#ff6a6a",1)}FX.mega(hole.x,hole.y,"shadow",hole.r);G.shake=Math.max(G.shake,9);return{mul:0,ice:false}}
   const wet=inWater(f.x,f.y);if(wet){mul*=f.mon.t.includes("water")?1.25:.6;if(f.burn>0)f.burn=0}
   if(ellAt(A.ice,f.x,f.y))ice=true;
   const sd=ellAt(A.sand,f.x,f.y);if(sd){mul*=f.mon.t.includes("earth")?.85:.5;const dx=sd.x-f.x,dy=sd.y-f.y,d=Math.hypot(dx,dy)||1;if(d>4&&f.roll<=0){f.x+=dx/d*34*dt;f.y+=dy/d*34*dt}}
@@ -1460,7 +1587,7 @@ function updWorld(dt){const A=G.A;
   for(let i=G.blasts.length-1;i>=0;i--){const b=G.blasts[i];b.t-=dt;if(b.t>0)continue;G.blasts.splice(i,1);const mv=b.mv,type=mvT(mv,b.own);
     if(b.cap){FX.boom(b.x,b.y-8,"norm",40);SFX.play("buff");if(b.own.owned)spawnBuddy(b.own,b.id,b.x,b.y);continue}
     if(mv.kind==="zone"){G.zones.push({id:b.id,own:b.own,mv,x:b.x,y:b.y,t:mv.dur,tk:0,n:0,pull:mv.pull||0});FX.boom(b.x,b.y,type,mv.rad*.6);if(mv.pw>0)touchEnv(b.x,b.y,mv.rad,b.own,mv,b.id);continue}
-    FX.boom(b.x,b.y,type,mv.rad);if(b.big)FX.mega(b.x,b.y,type,mv.rad);SFX.play("boom");G.shake=Math.min(10,G.shake+3);if(mv.crater)crater(b.x,b.y,mv.rad*.8,mv.crater===2);
+    FX.boom(b.x,b.y,type,mv.rad);if(b.big)FX.mega(b.x,b.y,type,mv.rad);SFX.play("boom");G.shake=Math.min(10,G.shake+3);if(mv.crater)crater(b.x,b.y,mv.rad*.8,mv.crater===2);if(mv.terrain)makeHole(b.x,b.y,mv.terrain,b.own.lv||0,b.id);
     touchEnv(b.x,b.y,mv.rad,b.own,mv,b.id);hurtMinions(b.own,(x,y)=>Math.hypot(b.x-x,b.y-y)<mv.rad+8,mv.pw,b.id);
     if(b.zone)G.zones.push({id:b.id+"z",own:b.own,mv:MOVES.trailz,x:b.x,y:b.y,t:3,tk:.4,n:0,pull:0});
     for(const v of victimsOf(b.own))if(vuln(v)&&v.ifr<=0){const dx=v.x-b.x,dy=v.y-b.y,d=Math.hypot(dx,dy);if(d<mv.rad+10)applyHit(v,b.own,mv,b.id,d>1?[dx/d,dy/d]:[1,0])}}
@@ -1468,7 +1595,7 @@ function updWorld(dt){const A=G.A;
     if(z.vx||z.vy){z.x=clamp(z.x+z.vx*dt,40,W-40);z.y=clamp(z.y+z.vy*dt,40,H-40)}
     if(z.pull)for(const v of victimsOf(z.own))if(vuln(v)){const dx=z.x-v.x,dy=z.y-v.y,d=Math.hypot(dx,dy);if(d<z.mv.rad*1.7&&d>6){v.x+=dx/d*z.pull*dt;v.y+=dy/d*z.pull*dt}}
     if(z.tk<=0){z.tk=z.pull?.4:.5;z.n++;if(type==="fire")touchEnv(z.x,z.y,z.mv.rad*.8,z.own,z.mv,z.id);
-      if(z.mv.heal){const o=z.own;if(o.owned&&o.hp>0&&o.hp<o.max&&Math.hypot(o.x-z.x,o.y-z.y)<z.mv.rad){o.hp=Math.min(o.max,o.hp+z.mv.heal);pop(o.x+rnd(-8,8),o.y-40,"+"+z.mv.heal,"#7dffa0")}continue}
+      if(z.mv.heal){const o=z.own;if(o.owned&&o.hp>0&&o.hp<o.max&&Math.hypot(o.x-z.x,o.y-z.y)<z.mv.rad){o.hp=Math.min(o.max,o.hp+z.mv.heal);pop(o.x+rnd(-8,8),o.y-40,"+"+z.mv.heal,"#7dffa0")}if(!z.mv.pw)continue}
       if(!z.mv.pw)continue;hurtMinions(z.own,(x,y)=>Math.hypot(z.x-x,z.y-y)<z.mv.rad,z.mv.pw,z.id+z.n);
       for(const v of victimsOf(z.own))if(vuln(v)&&v.ifr<=0&&Math.hypot(v.x-z.x,v.y-z.y)<z.mv.rad+6)applyHit(v,z.own,z.mv,z.id+":z"+z.n,null)}}
   for(let i=G.rings.length-1;i>=0;i--){const r=G.rings[i];if(r.w>0){r.w-=dt;continue}r.r+=r.sp*dt;if(r.r>r.max){G.rings.splice(i,1);continue}const type=mvT(r.mv,r.own);
@@ -1478,7 +1605,7 @@ function updWorld(dt){const A=G.A;
     const v=other(r.own);if(!r.done&&vuln(v)){const dx=v.x-r.x,dy=v.y-r.y,d=Math.hypot(dx,dy);if(Math.abs(d-r.r)<15){if(v.owned){r.done=true;if(v.ifr<=0)applyHit(v,r.own,r.mv,r.id,d>1?[dx/d,dy/d]:[1,0])}else if(v.roll<=0)r.done=true}}}
   for(let i=G.beams.length-1;i>=0;i--){const b=G.beams[i];if(b.w>0){b.w-=dt;continue}G.wlv=b.own.lv||0;const type=mvT(b.mv,b.own);
     if(!b.done){b.done=true;G.shake=Math.min(10,G.shake+(b.big?5:3));
-      for(let s=20;s<b.len;s+=18){const x=b.x+b.dx*s,y=b.y+12+b.dy*s;touchEnvLite(x,y,type,b.id);for(const p of A.props)if(!p.dead&&Math.hypot(p.x-x,p.y-y)<b.wd+(p.r||p.R*.5))hurtProp(p,b.own,b.mv,type);for(const w of G.twalls)if(Math.hypot(w.x-x,w.y-y)<b.wd+w.r)hurtTwall(w,b.mv)}
+      for(let s=20;s<b.len;s+=18){const x=b.x+b.dx*s,y=b.y+12+b.dy*s;touchEnvLite(x,y,type,b.id);for(const p of A.props)if(!p.dead&&Math.hypot(p.x-x,p.y-y)<b.wd+(p.r||p.R*.5))hurtProp(p,b.own,b.mv,type);for(const w of G.twalls)if(Math.hypot(w.x-x,w.y-y)<b.wd+w.r)hurtTwall(w,b.mv);if((b.mv.breach||b.mv.bridge)&&s%54<18)damageStructures(x,y,b.wd+8,b.mv,b.own)}
       hurtMinions(b.own,(x,y)=>segDist(x,y,b.x,b.y,b.dx,b.dy,b.len)<b.wd+8,b.mv.pw*b.sc,b.id);
       for(const v of victimsOf(b.own))if(vuln(v)&&v.ifr<=0&&segDist(v.x,v.y-12,b.x,b.y,b.dx,b.dy,b.len+10)<b.wd+13)applyHit(v,b.own,b.mv,b.id,[b.dx,b.dy],b.sc)}
     b.t-=dt;if(b.t<=0)G.beams.splice(i,1)}
@@ -1497,6 +1624,7 @@ function updWorld(dt){const A=G.A;
   for(let i=G.traps.length-1;i>=0;i--){const t=G.traps[i];t.t-=dt;if(t.arm>0)t.arm-=dt;if(t.t<=0){G.traps.splice(i,1);continue}const v=other(t.own);
     if(t.arm<=0&&v.owned&&vuln(v)&&v.roll<=0&&Math.hypot(v.x-t.x,v.y-t.y)<24){applyHit(v,t.own,t.mv.mine?MOVES.it_minego:MOVES.trapgo,t.id,null);FX.boom(t.x,t.y,t.mv.mine?"fire":"grass",t.mv.rad);SFX.play("boom");G.traps.splice(i,1)}}
   for(let i=G.twalls.length-1;i>=0;i--){const w=G.twalls[i];w.t-=dt;if(w.t<=0){part(w.x,w.y-8,"#8a6a4a",12,120,.4);G.twalls.splice(i,1)}}
+  for(let i=A.holes.length-1;i>=0;i--){const h=A.holes[i];h.t-=dt;if(h.arm>0)h.arm-=dt;if(h.t<=0)A.holes.splice(i,1)}
   for(const l of A.lava)if(l.cool>0)l.cool-=dt;if(G.zapT>0)G.zapT-=dt;if(G.dark>0)G.dark-=dt;
   if(G.shake>0)G.shake=Math.max(0,G.shake-dt*24)}
 
@@ -1657,6 +1785,20 @@ const ULT={
   u_knight:{dur:15.8,start(U,f){lockOwn(f,.8,.85);G.dark=1.2;SFX.play("buff")},
     upd(U){const f=U.own;if(U.t>=.8&&!U.go){U.go=1;FX.mega(f.x,f.y-14,"light",70);if(f.owned){f.cds=[0,0,0];f.cdB=0}SFX.play("ult")}},
     end(U){const f=U.own;FX.boom(f.x,f.y-14,"light",40);if(f.owned)f.cds=f.cds.map(()=>0)}},
+  /* Aurex: a rising charge followed by three expanding arena-breaking impacts */
+  u_impact:{dur:1.85,start(U,f,a){U.x=a.tx;U.y=a.ty;lockOwn(f,1.55,.95);G.dark=1.8;SFX.play("buff")},
+    upd(U){const t=U.t,f=U.own;if(t>=.56&&!U.land){U.land=1;if(f.owned){f.x=U.x;f.y=U.y;collide(f)}G.shake=8;uBlast(U,"aurex_u1",U.x,U.y,0,"r1",{big:1});SFX.play("boom")}
+      if(t>=.82&&!U.r2){U.r2=1;G.shake=9;uBlast(U,"aurex_u2",U.x,U.y,0,"r2",{big:1});SFX.play("boom")}
+      if(t>=1.12&&!U.r3){U.r3=1;G.shake=10;uBlast(U,"aurex_u3",U.x,U.y,0,"r3",{big:1});SFX.play("boom");FX.mega(U.x,U.y-12,"light",120)}}},
+  /* Chronox: freezes a target area, pulls it inward, then tears a lethal dimensional hole */
+  u_event:{dur:3.45,start(U,f,a){U.x=a.tx;U.y=a.ty;lockOwn(f,3.1,1);G.dark=3.4;SFX.play("buff")},
+    upd(U){const t=U.t;if(t>=.55&&!U.well){U.well=1;G.zones.push({id:U.id+"~well",own:U.own,mv:MOVES.event_tick,x:U.x,y:U.y,t:2.25,tk:0,n:0,pull:320});FX.mega(U.x,U.y-12,"shadow",90);SFX.play("beam","shadow")}
+      if(t>=2.62&&!U.end){U.end=1;uBlast(U,"event_end",U.x,U.y,0,"end",{big:1});G.shake=10;SFX.play("boom")}}},
+  /* Verdara: grows a healing crystal garden, erupts three root rings, then releases a prism shockwave */
+  u_worldtree:{dur:3.5,start(U,f,a){U.x=a.tx;U.y=a.ty;lockOwn(f,1.15,1);G.dark=2.2;SFX.play("buff")},
+    upd(U){const t=U.t;if(t>=.5&&!U.grow){U.grow=1;G.zones.push({id:U.id+"~garden",own:U.own,mv:MOVES.verd_bloom,x:U.x,y:U.y,t:3,tk:0,n:0,pull:0});FX.mega(U.x,U.y-20,"grass",78)}
+      for(let k=0;k<3;k++)if(t>=.85+k*.48&&(!U.roots||!U.roots[k])){U.roots=U.roots||[];U.roots[k]=1;const a=k*2.094+U.R()*.35;uBlast(U,"rootburst",U.x+Math.cos(a)*(54+k*24),U.y+Math.sin(a)*(46+k*20),0,"r"+k,{big:1});SFX.play("boom")}
+      if(t>=2.42&&!U.end){U.end=1;uBlast(U,"treeburst",U.x,U.y,0,"end",{big:1});if(U.own.owned)heal(U.own,28);G.shake=9;SFX.play("ult")}}},
   /* Umbra: levitates over a magic circle (invulnerable) and calls three shadow selves */
   u_phantom:{dur:1.95,start(U,f,a){U.x=a.x;U.y=a.y;lockOwn(f,1.8,1.85);G.dark=3;SFX.play("buff")},
     upd(U,dt){const t=U.t,f=U.own;
@@ -1675,16 +1817,16 @@ function phantomAI(f,o,m,dt){if(G.cd>0||G.over)return;
 /* ================= items: timed drops, pickups, use, helper bots =================
    Drops follow a schedule seeded per match, so both players see the same item at the same place.
    Each client decides its own pickups and tells the other side through presence (pk). */
-const ITEM_CFG=k=>k==="moba"?{first:3,gap:3.2}:k==="city"?{first:3,gap:4}:{first:3.5,gap:5};
+const ITEM_CFG=k=>k==="moba"?{first:3,gap:3.2}:k==="city"||k==="skyforge"||k==="titanback"?{first:3,gap:4}:{first:3.5,gap:5};
 function itemBad(x,y,lv){const A=G.A,t=l=>l.e?inEll(l,x,y,20):inRect(l,x,y,20);if(A.water.some(t)||A.lava.some(t)||A.bog.some(t)||A.walls.some(w=>(w.lv||0)===lv&&inRect(w,x,y,20)))return true;
-  if(A.props.some(p=>!p.dead&&p.r&&Math.hypot(p.x-x,p.y-y)<p.r+22))return true;if(A.noItem&&A.noItem(x,y,lv))return true;return false}
+  if(A.holes.some(h=>(h.lv||0)===lv&&Math.hypot(h.x-x,h.y-y)<h.r+20)||A.props.some(p=>!p.dead&&p.r&&Math.hypot(p.x-x,p.y-y)<p.r+22))return true;if(A.noItem&&A.noItem(x,y,lv))return true;return false}
 function updItems(dt){if(G.cd>0)return;const cfg=ITEM_CFG(G.A.key);
   if(!G.over&&G.t>=3.2+cfg.first+G.itemN*cfg.gap){const n=G.itemN++,R=seeded(G.seed+":it"+n),k=pickItem(R());let pos=null,lv=0;
     for(let i=0;i<40&&!pos;i++){let x,y;if(G.A.itemSpot){const q=G.A.itemSpot(R);x=q[0];y=q[1];lv=q[2]||0}else{x=FR+50+R()*(W-2*FR-100);y=FR+70+R()*(H-2*FR-110)}if(!itemBad(x,y,lv))pos=[x,y]}
     if(pos&&!G.picked.has("it"+n)){G.items.push({id:"it"+n,k,x:pos[0]|0,y:pos[1]|0,t:50,b:R()*6,lv});FX.burst(pos[0],pos[1]-10,"#ffe066",10,80,.4)}}
   /* hand-placed items on maps that restock them (MOBA jungle) */
   if(G.A.fixRe&&G.fixId)for(let i=0;i<G.fixId.length;i++){if(!G.picked.has(G.fixId[i]))continue;if(!G.fixDue[i])G.fixDue[i]=G.t+G.A.fixRe;else if(G.t>=G.fixDue[i]){const q=G.A.fixed[i],id="fx"+i+"g"+(++G.fixGen[i]);G.fixId[i]=id;G.fixDue[i]=0;
-      if(!G.picked.has(id)){G.items.push({id,k:q[0],x:q[1],y:q[2],t:1e9,b:i*.7,lv:0,fix:1});FX.burst(q[1],q[2]-10,"#ffe066",10,80,.4)}}}
+      if(!G.picked.has(id)){G.items.push({id,k:q[0],x:q[1],y:q[2],t:1e9,b:i*.7,lv:q[3]||0,fix:1});FX.burst(q[1],q[2]-10,"#ffe066",10,80,.4)}}}
   for(let i=G.items.length-1;i>=0;i--){const it=G.items[i];it.t-=dt;if(it.t<=0||G.picked.has(it.id)){G.items.splice(i,1);continue}
     for(const f of [G.me,G.op]){if(!f.owned||f.hp<=0||f.under>0||(f.lv||0)!==it.lv||Math.hypot(f.x-it.x,f.y-it.y)>=28)continue;
       G.items.splice(i,1);G.picked.add(it.id);if(f===G.me){G.myPicks.push(it.id);if(G.myPicks.length>12)G.myPicks.shift()}gainItem(f,it.k,it);break}}}
@@ -2042,6 +2184,23 @@ const UV={
       else{o[0].setAlpha(Math.max(0,o[0].alpha-dt*2));if(t<15.6){gA.fillStyle(L[2],.12+.06*Math.sin(t*6)).fillEllipse(f.x,f.y-24,54,70);if(Math.random()<.5)emit("sq",f.x+rnd(-16,16),f.y-rnd(10,50),0,-rnd(30,70),.6,pick([...L.slice(0,3),...I.slice(0,2)]));
         if(t>14&&Math.sin(t*20)>0)gO.lineStyle(2,0xffffff,.6).strokeEllipse(f.x,f.y-24,50,66)}}},
     mod(U){const t=U.t;if(t<.8)return{z:ez(t/.8)*18,sc:2};if(t<15.8)return{tex:"m_nivaraK",sc:2.25};return null}},
+  u_impact:{make(){return[SCN.add.image(0,0,"orb").setBlendMode("ADD").setTint(0xffd84a).setAlpha(0).setDepth(D.AIR+8)]},
+    upd(U,o,dt,gG,gO,gA){const t=U.t,f=U.own,x=U.x,y=U.y,L=PALH.light,M=PALH.metal,orb=o[0];
+      if(t<.56){const k=ez(t/.56),h=Math.sin(k*Math.PI)*150;magicCircle(gA,f.x,f.y,34+42*k,t*5,L[2],M[1],.9);orb.setPosition(f.x,f.y-30-h).setScale(.5+k*2.5).setAlpha(k).setRotation(t*8);
+        for(let i=0;i<5;i++){const a=rnd(0,6.283),r=rnd(28,72);emit(i%2?"streak":"sq",f.x+Math.cos(a)*r,f.y-24+Math.sin(a)*r*.5,-Math.cos(a)*r*4,-Math.sin(a)*r*4,.25,pick([L[0],L[1],M[1],0xffffff]),a*57.3)}}
+      else{orb.setAlpha(Math.max(0,1-(t-.56)*3)).setPosition(x,y-20).setScale(3.2+(t-.56)*2);const waves=[[.56,72,L[2]],[.82,126,M[1]],[1.12,190,L[1]]];
+        for(const q of waves){const k=clamp((t-q[0])/.42,0,1);if(k>0&&k<1){gA.lineStyle(8*(1-k)+2,q[2],.9*(1-k)).strokeCircle(x,y,q[1]*k);gG.fillStyle(q[2],.12*(1-k)).fillCircle(x,y,q[1]*k)}}
+        if(t<1.5)for(let i=0;i<4;i++){const a=rnd(0,6.283),v=rnd(100,360);emit(i%2?"rock":"streak",x+rnd(-20,20),y-rnd(0,28),Math.cos(a)*v,Math.sin(a)*v-rnd(30,160),rnd(.3,.65),pick([L[1],M[1],0xffffff]),a*57.3)}}},
+    mod(U){const t=U.t;if(t<.56)return{z:Math.sin(t/.56*Math.PI)*150,sc:2+ez(t/.56)*.45};if(t<1.25)return{shake:Math.max(0,4-(t-.56)*5),sc:2.35};return null}},
+  u_event:{make(){return[SCN.add.image(0,0,"swirl").setBlendMode("ADD").setTint(0x8f6ad8).setDepth(D.AIR-4),SCN.add.image(0,0,"orb").setBlendMode("ADD").setTint(0xbfefff).setDepth(D.AIR+4)]},
+    upd(U,o,dt,gG,gO,gA){const t=U.t,x=U.x,y=U.y,k=clamp(t/.55,0,1),end=clamp((t-2.45)/.7,0,1),r=24+k*108-end*74;o[0].setPosition(x,y).setScale(r/28).setRotation(-t*5).setAlpha(.35+.35*k);o[1].setPosition(x,y-18).setScale(.5+k*2.4-end*2).setRotation(t*9).setAlpha(Math.max(0,1-end));
+      magicCircle(gA,x,y,r,t*2,PALH.shadow[2],PALH.ice[1],.8);for(let i=0;i<6;i++){const a=rnd(0,6.283),rr=rnd(r*.7,r*1.4),v=120+end*240;emit(i%2?"smoke":"streak",x+Math.cos(a)*rr,y+Math.sin(a)*rr,-Math.cos(a)*v,-Math.sin(a)*v,.45,pick([PALH.shadow[1],PALH.ice[1],0xffffff]),a*57.3+180)}},
+    mod(U){return U.t<1?{z:Math.sin(U.t*Math.PI)*42,sc:2.15}:null}},
+  u_worldtree:{make(){return[SCN.add.image(0,0,"orb").setBlendMode("ADD").setTint(0x8fff8a).setDepth(D.AIR+3)]},
+    upd(U,o,dt,gG,gO,gA){const t=U.t,x=U.x,y=U.y,k=ez(clamp((t-.25)/.75,0,1)),fade=t>2.7?clamp((3.5-t)/.8,0,1):1;o[0].setPosition(x,y-30-k*62).setScale(.5+k*3.4).setAlpha(fade).setRotation(t*3);
+      for(let j=0;j<7;j++){const a=-1.4+j*.46,w=18+Math.sin(j*8)*6;gA.lineStyle(5-j*.35,j%2?PALH.grass[2]:PALH.light[2],.72*fade).lineBetween(x,y,x+Math.cos(a)*w*(1+k*2.6),y-10+Math.sin(a)*w*(1+k*2.6))}magicCircle(gG,x,y,50+100*k,-t,PALH.grass[1],PALH.light[1],.75*fade);
+      for(let i=0;i<5;i++){const a=rnd(0,6.283),rr=rnd(20,150*k+20);emit(i%3?"leaf":"sq",x+Math.cos(a)*rr,y+Math.sin(a)*rr*.55,Math.cos(a)*rnd(20,80),-rnd(50,150),.65,pick([PALH.grass[1],PALH.light[1],0xffffff]))}},
+    mod(U){return U.t<1.1?{z:Math.sin(U.t/1.1*Math.PI)*26,sc:2.08}:null}},
   u_phantom:{make(U){const s=SCN,o=[];o.gm=s.add.graphics().setDepth(D.GFX+2);for(let k=0;k<3;k++)o.push(s.add.image(0,0,"m_"+U.own.key+"_0").setOrigin(.5,29/32).setScale(2).setTint(0x8a5ae0).setVisible(false));o.push(s.add.rectangle(U.x,U.y,44,640,0x9a6adf).setOrigin(.5,1).setBlendMode("ADD").setDepth(D.AIR-2).setAlpha(0));o.push(o.gm);return o},
     upd(U,o,dt,gG,gO,gA){const t=U.t,f=U.own,S=PALH.shadow,E=PALH.elec,x=U.x,y=U.y,k=ez(t/.45),R=84*k,fade=t>1.8?clamp(1-(t-1.8)/.15,0,1):1;
       const gm=o[4];gm.clear();gm.fillStyle(S[6],.5*k*fade).fillCircle(x,y,R+10);magicCircle(gm,x,y,R,t*1.6,S[4],S[5],fade);magicCircle(gA,x,y,R,t*1.6,S[1],E[2],.9*fade);magicCircle(gA,x,y,R*.45,-t*2.4,E[2],S[1],.7*fade);
@@ -2085,7 +2244,9 @@ const ICONART={
   smoke:g=>{shE(g,7,9,5,5,["#c4ced8","#98a4b0","#6c7884"]);g.R(6,2,3,3,"#4a4e58");g.E(4,3,2,2,"#e8eef4");g.E(10,2,2,1,"#e8eef4")},
   hook:g=>{g.L(4,1,4,8,"#c4ced8");g.L(4,8,7,12,"#c4ced8");g.L(7,12,11,10,"#c4ced8");g.L(11,10,11,7,"#c4ced8");g.P(10,7,"#ffffff");g.L(4,1,9,1,"#a87444")},
   meteor:g=>{shE(g,9,9,4,4,["#ffe070","#ff7a1a","#c2360a","#5a1a10"]);g.L(1,1,6,6,"#ffa030");g.L(2,0,7,5,"#ff6a1a");g.L(0,2,5,7,"#ff6a1a")},
-  frost:g=>{shE(g,7,8,5,5,["#ffffff","#bfe6ff","#7cc4ff","#3a7ad0"]);g.L(7,3,7,13,"#ffffff");g.L(2,8,12,8,"#ffffff");g.R(6,1,3,2,"#98a4b0")}};
+  frost:g=>{shE(g,7,8,5,5,["#ffffff","#bfe6ff","#7cc4ff","#3a7ad0"]);g.L(7,3,7,13,"#ffffff");g.L(2,8,12,8,"#ffffff");g.R(6,1,3,2,"#98a4b0")},
+  gravityCore:g=>{g.E(7,7,6,6,"#31234f");g.E(7,7,4,4,"#8f6ad8");g.E(7,7,2,2,"#ffffff");for(const q of [[7,0],[14,7],[7,14],[0,7]])g.P(q[0],q[1],"#bfe6ff")},
+  phaseDrill:g=>{g.L(1,13,10,4,"#6c7884");g.L(2,13,11,4,"#c4ced8");g.L(4,12,12,4,"#8f6ad8");g.E(11,3,3,3,"#2a1850");g.P(12,2,"#ffffff")}};
 const BOTART={
   bot2:g=>{shE(g,10,11,8,7,["#ffb06a","#ff8a3a","#d0601a","#8a3a10"]);g.R(5,9,10,4,"#2a1a14");g.R(6,10,2,2,"#fff06a");g.R(12,10,2,2,"#fff06a");g.R(9,2,2,3,"#4a4e58");g.E(10,2,2,1,"#fff06a");g.R(3,17,4,2,"#4a4e58");g.R(13,17,4,2,"#4a4e58")},
   bot3:g=>{for(let y=3;y<17;y++){const w=(y-2)*.65;g.R(Math.round(10-w),y,Math.round(w*2),1,y<9?"#fff06a":y<13?"#f7d23e":"#c89a10")}g.R(7,10,2,2,"#2a1a00");g.R(11,10,2,2,"#2a1a00");g.L(4,17,2,19,"#fff06a");g.L(16,17,18,19,"#fff06a");g.P(10,1,"#ffffff")},
@@ -2174,7 +2335,8 @@ function cityMode(b,me){if((me.lv||0)===1)return"upper";return bldAt(me.x,me.y)=
 function cityViewUpd(A){const V=A.cv,me=G.me;if(!V)return;
   for(const o of V.b){const m=cityMode(o.b,me);o.roof.setVisible(m==="roof");o.up.setVisible(m==="upper");
     const near=Math.hypot(me.x-o.b.stair.x,me.y-o.b.stair.y)<520;o.st.setVisible(m!=="roof"&&near).setText(m==="upper"?"▼ ลงชั้น 1":"▲ ขึ้นชั้น 2").setY(o.b.stair.y-38+Math.sin(G.t*4)*3)}
-  for(const w of A.walls)if(w.img&&w.lv===1){const b=A.blds.find(b=>inRect(b,w.x+w.w/2,w.y+w.h/2,2));w.img.setVisible(!b||cityMode(b,me)==="upper")}
+  V.sk.forEach((o,i)=>o.setVisible(!A.sky[i].dead).setAlpha(A.sky[i].hp<A.sky[i].max ? .55 : 1));
+  for(const w of A.walls)if(w.img&&w.lv===1){const b=A.blds.find(b=>inRect(b,w.x+w.w/2,w.y+w.h/2,2));w.img.setVisible(!w.dead&&(!b||cityMode(b,me)==="upper")).setAlpha(w.breach&&w.breach.length?.42:1)}
   const k=(me.lv||0)===1?.32:0;V.dim.setAlpha(V.dim.alpha+(k-V.dim.alpha)*.2);
   if(VIEW.lvT>0){VIEW.lvT-=1/60;V.lvTxt.setVisible(true).setPosition(me.x,me.y-90).setText(me.lv?"ชั้น 2":"ชั้น 1").setAlpha(Math.min(1,VIEW.lvT*3))}else V.lvTxt.setVisible(false)}
 /* ================= MOBA view: unit art, units, tower shots, minimap, terrain ================= */
@@ -2212,8 +2374,8 @@ const MV={
     let y=0;for(const [k,B] of Object.entries(BUFFS))if(me["b_"+k]>0){gO.fillStyle(0,.55).fillRect(VIEW.camX+8,VIEW.camY+46+y,92,12);gO.fillStyle(hex(B.c),1).fillRect(VIEW.camX+9,VIEW.camY+47+y,Math.round(90*me["b_"+k]/B.t),10);y+=15}}};
 /* minimap (DOM canvas over the stage) for the big maps */
 const MINI={t:0,
-  upd(dt){const c=$("mini");if(!G||!(G.A.key==="moba"||G.A.key==="city")){c.hidden=true;return}c.hidden=false;this.t-=dt;if(this.t>0)return;this.t=.15;
-    const src=arenaThumbSrc(G.A.key),w=c.width=Math.round(W/(G.A.key==="moba"?20:14)),h=c.height=Math.round(H/(G.A.key==="moba"?20:14)),g=c.getContext("2d"),sx=w/W,sy=h/H;g.imageSmoothingEnabled=true;g.drawImage(src,0,0,w,h);
+  upd(dt){const c=$("mini");if(!G||!ARENAS.find(a=>a.k===G.A.key)?.big){c.hidden=true;return}c.hidden=false;this.t-=dt;if(this.t>0)return;this.t=.15;
+    const src=arenaThumbSrc(G.A.key),div=G.A.key==="moba"?20:14,w=c.width=Math.round(W/div),h=c.height=Math.round(H/div),g=c.getContext("2d"),sx=w/W,sy=h/H;g.imageSmoothingEnabled=true;g.drawImage(src,0,0,w,h);
     g.strokeStyle="rgba(255,255,255,.8)";g.lineWidth=1;g.strokeRect(VIEW.camX*sx,VIEW.camY*sy,VW*sx,VH*sy);
     if(G.units){const myT=fTeam(G.me);for(const u of G.units){const d=UK[u.k];g.fillStyle=u.team===2?"#f5c542":u.team===myT?"#5fd38a":"#ef5a5a";const r=d.still?3:d.camp?2:1.5;g.fillRect(u.x*sx-r,u.y*sy-r,r*2,r*2)}}
     for(const it of G.items){g.fillStyle="#ffe066";g.fillRect(it.x*sx-1,it.y*sy-1,2,2)}
@@ -2309,8 +2471,9 @@ const VIEW={ready:false,fx:[],keep:new Set(),t:0,camX:0,camY:0,
     if(m.hide){v.spr.setVisible(false);v.sh.setVisible(false);if(v.chev)v.chev.setVisible(false)}
     v.sh.setPosition(x,y+1).setScale(Math.max(.3,1-z*.004)*(m.sc||2)/2).setDepth(D.ENT+y-1+(f.lv?LV1:0));
     const fr=f.moving?(Math.floor(f.walk)%2):(Math.floor(G.t*2.2)%2),sc=m.sc||(bird?2.6:f.dash?2.15:2),hb=Math.max(0,(sc-2)*28),punch=f.cdB>0&&MOVES[f.mon.basic].kind==="melee"?Math.max(0,f.cdB-MOVES[f.mon.basic].cd+.12)*60:0;
-    v.spr.setTexture((m.tex||"m_"+f.key)+"_"+fr).setOrigin(.5,m.og||29/32).setPosition(x+f.ax*punch+(m.shake?rnd(-m.shake,m.shake):0),y-z+(f.roll>0?10:0)+f.ay*punch-(m.og?(29/32-m.og)*32*sc:0)).setFlipX(f.ax<0).setScale(sc).setDepth(D.ENT+y+(f.lv?LV1:0)).setAlpha(f.hp<=0?.5:f.roll>0?.55:f.cloak>0&&f.reveal<=0?.38:me&&inCover(f)?.6:1).setRotation(m.rot!=null?m.rot:f.hp<=0?1.4:f.roll>0?(.28-f.roll)*22*(f.ax<0?-1:1):0);
-    fillTint(v.spr,f.flash>0);rideFx(f,v,x,y,z,sc,gG);
+    const ap=f.pose>0?Math.sin((1-f.pose/(f.poseMax||f.pose))*Math.PI):0,ak=ap?f.poseK:"",pm=MOVES[ak]||{},sty=MONSTYLE[f.key]||"caster",pk=pm.kind||"",poseD=pk==="dash"?13:pk==="shot"||pk==="beam"?-7:pk==="leap"?6:pk==="melee"?9:3,poseR=(sty==="wing"||sty==="float"?-f.ay*.2:sty==="assassin"?f.ay*.3:pk==="leap"?(f.ax<0?.2:-.2):pk==="dash"?f.ay*.24:0)*ap,poseSX=1+(pk==="shot"||pk==="beam"?.15:pk==="dash"?.1:.05)*ap,poseSY=1-(sty==="tank"?.14:.06)*ap;
+    v.spr.setTexture((m.tex||"m_"+f.key)+"_"+fr).setOrigin(.5,m.og||29/32).setPosition(x+f.ax*(punch+poseD*ap)+(m.shake?rnd(-m.shake,m.shake):0),y-z+(f.roll>0?10:0)+f.ay*(punch+poseD*ap)-(m.og?(29/32-m.og)*32*sc:0)).setFlipX(f.ax<0).setScale(sc*poseSX,sc*poseSY).setDepth(D.ENT+y+(f.lv?LV1:0)).setAlpha(f.hp<=0?.5:f.roll>0?.55:f.cloak>0&&f.reveal<=0?.38:me&&inCover(f)?.6:1).setRotation(m.rot!=null?m.rot:f.hp<=0?1.4:f.roll>0?(.28-f.roll)*22*(f.ax<0?-1:1):poseR);
+    fillTint(v.spr,f.flash>0);rideFx(f,v,x,y,z,sc,gG);if(ap>0){const PP=PALH[mvT(pm,f)]||PALH.norm,rr=24+ap*18;gA.lineStyle(2,PP[2],.35+ap*.45).strokeEllipse(x-f.ax*4,y-z-19,rr*2,rr);if(Math.random()<.55){const a=rnd(0,6.283);emit(sty==="wing"?"soft":sty==="assassin"?"smoke":sty==="tank"?"rock":"streak",x+Math.cos(a)*rr,y-z-20+Math.sin(a)*rr*.5,-Math.cos(a)*120,-Math.sin(a)*90,.28,pick(PP.slice(0,4)),a*57.3)}}
     if(f.frz>0){const hh=60*sc/2;gO.fillStyle(0xbfe6ff,.42).fillRect(x-22,y-hh-z,44,hh+4);gO.lineStyle(2,0xffffff,.85).strokeRect(x-22,y-hh-z,44,hh+4);gO.lineStyle(1.5,0xffffff,.7).lineBetween(x-14,y-hh+6-z,x-4,y-hh+16-z).lineBetween(x+6,y-24-z,x+14,y-14-z);if(Math.random()<.2)emit("sq",x+rnd(-20,20),y-rnd(0,hh),0,-20,.6,0xffffff)}
     else if(f.chill>0&&f.owned){gO.lineStyle(2,0x9fe6ff,.3+f.chill*.2).strokeEllipse(x,y-24,40,56);gO.fillStyle(0x0,.6).fillRect(x-20,y-86-z,40,4);gO.fillStyle(0x9fe6ff,1).fillRect(x-19,y-85-z,Math.round(38*Math.min(1,f.chill/3)),2)}
     if(me){gG.lineStyle(1.5,0xf5c542,.85).strokeEllipse(x,y+1,40,16);v.chev.setPosition(x+f.ax*36,y-8+f.ay*30).setRotation(Math.atan2(f.ay,f.ax))}
@@ -2397,6 +2560,9 @@ const VIEW={ready:false,fx:[],keep:new Set(),t:0,camX:0,camY:0,
       if(Math.random()<.3)emit("sq",p.x+rnd(-p.r,p.r)*.7,p.y+rnd(-p.r,p.r)*.6,0,-rnd(30,60),.6,pick([0xb8fff0,0xffffff,0x7dffe0]))}
     for(const p of A.pads){if(!vis(p.x-30,p.y-20,60,40))continue;gG.fillStyle(0x2a1a40,1).fillEllipse(p.x,p.y,48,26);gG.lineStyle(2,0xc58cff,1).strokeEllipse(p.x,p.y,42,22);gG.lineStyle(2,0xffffff,.8);const a=t*2.4;gG.beginPath();gG.arc(p.x,p.y,13,a,a+2.2);gG.strokePath();gG.beginPath();gG.arc(p.x,p.y,8,-a,-a+2.6);gG.strokePath();
       if(Math.random()<.15)emit("sq",p.x+rnd(-16,16),p.y+rnd(-6,6),0,-rnd(40,80),.5,pick([0xc58cff,0xffffff]))}
+    for(const b of A.bridges)if(b.dead){gG.fillStyle(0x101522,.94).fillRect(b.x,b.y,b.w,b.h);gG.lineStyle(3,0x78b8d8,.65).strokeRect(b.x+4,b.y+4,b.w-8,b.h-8)}
+    for(const h of A.holes)if((h.lv||0)===(G.me.lv||0)&&vis(h.x-h.r,h.y-h.r,h.r*2,h.r*2)){const pulse=1+Math.sin(t*4+h.x)*.05;gG.fillStyle(0x090611,.98).fillCircle(h.x,h.y,h.r*pulse);gG.lineStyle(4,0x5b427a,.8).strokeCircle(h.x,h.y,h.r);gA.lineStyle(2,0xb88cff,.42).strokeCircle(h.x,h.y,h.r*(.72+.08*Math.sin(t*7)));if(Math.random()<.35){const a=rnd(0,6.283);emit("smoke",h.x+Math.cos(a)*h.r,h.y+Math.sin(a)*h.r,-Math.cos(a)*80,-Math.sin(a)*80,.6,0x43287a)}}
+    for(const w of A.walls)for(const q of w.breach||[]){gA.fillStyle(0x08070c,.72).fillCircle(q.x,q.y,q.r);gA.lineStyle(2,0xd8c8b0,.55).strokeCircle(q.x,q.y,q.r)}
     if(A.extra)A.extra(gG,gA,t,vis)},
   sync(dt){const s=SCN,A=G.A,gG=this.gG,gO=this.gO,gA=this.gA,me=G.me,st=this.st;this.t+=dt;
     if(BGD){this.bgTex.refresh();BGD=false}
@@ -2413,6 +2579,7 @@ const VIEW={ready:false,fx:[],keep:new Set(),t:0,camX:0,camY:0,
         if(b.lob==="chili"||b.lob==="shot_fire")emit("soft",o.x+rnd(-4,4),o.y+rnd(-4,4),rnd(-20,20),-rnd(10,40),.35,pick(PALH.fire.slice(1,5)));else if(Math.random()<.5)emit("smoke",o.x,o.y,0,0,.3,0x8a6a4a)});
     for(const p of A.props){const v=p.v;if(!v)continue;if(p.k==="tree"){v.a.setVisible(!p.dead);v.c.setVisible(!p.dead);v.s.setVisible(p.dead);if(!p.dead)v.c.setAlpha(Math.hypot(p.x-me.x,p.y-14-me.y)<p.R+6?.5:.97)}
       else{const pv=!p.dead&&(!A.visFn||A.visFn(p,me));v.a.setVisible(pv);if(v.sh)v.sh.setVisible(pv);if(PDEF[p.k].hide&&!p.dead)v.a.setAlpha((p.lv||0)===(me.lv||0)&&Math.hypot(p.x-me.x,p.y-me.y)<p.R?.5:1);if(p.k==="bush"&&!p.dead)v.a.setAlpha(Math.hypot(p.x-me.x,p.y-me.y)<p.R-4?.5:1)}}
+    if(A.key!=="city")for(const w of A.walls)if(w.img)w.img.setVisible(!w.dead).setAlpha(w.breach&&w.breach.length?.42:1);
     syncList(G.twalls,st.tw,w=>{const o=s.add.image(w.x,w.y+8,"p_twall").setOrigin(.5,1).setScale(2,0).setDepth(D.ENT+w.y);if(w.tall)o.setTint(0xd8d0b8);if(w.ice){o.setTexture("p_icewall").setAlpha(.92)}return o},(w,o)=>{const k=clamp((G.t-w.born)/.15,0,1);o.setScale(w.tall?2.3:2,(w.tall?3:2)*k).setAlpha(Math.min(1,w.t*2));if(w.tall&&k>0&&!o.fx){o.fx=1;FX.boom(w.x,w.y,"earth",16)}});
     syncList(G.traps,st.traps,t=>s.add.image(t.x,t.y,t.mv.mine?"i_mine":"p_trap").setScale(2).setDepth(D.GFX+5),(t,o)=>{const mine=t.own===me;o.setAlpha(t.arm>0?.5+.4*Math.sin(G.t*30):mine?.95:.42).setScale(2+(t.arm>0?0:.12*Math.sin(G.t*5)))});
     this.fighter(G.me,dt,gG,gO,gA);this.fighter(G.op,dt,gG,gO,gA);
