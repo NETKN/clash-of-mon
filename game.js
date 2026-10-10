@@ -330,8 +330,9 @@ function pix(w,h,draw,arg){
 const SS=32;
 const HERO_SPRITES=new Set(Object.keys(MONS));
 const HERO_FRAME=96;
-const heroSrc=k=>"assets/characters/"+k+".png";
-const HERO_ART={};for(const k of HERO_SPRITES){const im=new Image();im.src=heroSrc(k);HERO_ART[k]=im}
+const ASSET_VERSION="20";
+const heroSrc=k=>"assets/characters/"+k+".png?v="+ASSET_VERSION;
+const HERO_ART={};for(const k of HERO_SPRITES){const im=new Image();im.decoding="async";im.src=heroSrc(k);HERO_ART[k]=im}
 const DRAW={
   pyros(g,b){const R="#e2412e",O="#ff8a2a",Y="#ffd23e",T="#2fd0b5";
     g.L(13,25,9,30,T);g.L(16,25,16,31,T);g.L(19,25,23,30,T);g.L(14,25,11,29,"#1fa38e");g.L(18,25,21,29,"#1fa38e");g.P(9,31,Y);g.P(16,31,Y);g.P(23,31,Y);
@@ -598,7 +599,7 @@ const ANIM=[];let animF=0;
 function spriteCanvas(k,animate){const hd=HERO_SPRITES.has(k),sz=hd?HERO_FRAME:SS,c=document.createElement("canvas");c.width=c.height=sz;c.dataset.k=k;
   if(hd){const im=new Image();c._hero=im;im.onload=()=>c.getContext("2d").drawImage(im,0,0,HERO_FRAME,HERO_FRAME,0,0,HERO_FRAME,HERO_FRAME);im.src=heroSrc(k)}
   else c.getContext("2d").drawImage(SPR[k].f[0],0,0);if(animate)ANIM.push(c);return c}
-setInterval(()=>{animF^=1;for(let i=ANIM.length-1;i>=0;i--){const c=ANIM[i];if(!c.isConnected){ANIM.splice(i,1);continue}const g=c.getContext("2d"),k=c.dataset.k;if(c._hero&&c._hero.complete){g.clearRect(0,0,HERO_FRAME,HERO_FRAME);g.drawImage(c._hero,animF*HERO_FRAME,0,HERO_FRAME,HERO_FRAME,0,0,HERO_FRAME,HERO_FRAME)}else if(!c._hero){g.clearRect(0,0,SS,SS);g.drawImage(SPR[k].f[animF],0,0)}}},420);
+setInterval(()=>{animF^=1;for(let i=ANIM.length-1;i>=0;i--){const c=ANIM[i];if(!c.isConnected){ANIM.splice(i,1);continue}const g=c.getContext("2d"),k=c.dataset.k;if(c._hero&&c._hero.complete&&c._hero.naturalWidth){g.clearRect(0,0,HERO_FRAME,HERO_FRAME);g.drawImage(c._hero,animF*HERO_FRAME,0,HERO_FRAME,HERO_FRAME,0,0,HERO_FRAME,HERO_FRAME)}else if(!c._hero){g.clearRect(0,0,SS,SS);g.drawImage(SPR[k].f[animF],0,0)}}},420);
 const mvTypeOf=(mv,monKey)=>mv.t==="self"?MONS[monKey].t[0]:mv.t;
 function statRow(lab,v){const r=el("div","stat");r.append(el("span",null,lab));const i=el("i");const u=el("u");u.style.width=Math.round(clamp(v,0,1)*100)+"%";i.append(u);r.append(i);return r}
 function renderMons(){const box=$("mons");box.textContent="";const keys=Object.keys(MONS),per=6,pages=Math.ceil(keys.length/per);
@@ -1908,7 +1909,7 @@ function buddyAI(f,o,m,dt){if(G.cd>0||G.over)return;
   else if(m.k===6){m.an=Math.atan2(dy,dx);if(seen&&d<340&&m.w<=0){m.w=.55;recordAt(f,"bt_gun",m.x,m.y,dx/d,dy/d)}}
   m.x=clamp(m.x,FR+6,W-FR-6);m.y=clamp(m.y,FR+16,H-FR)}
 /* ================= 2D helpers for the splash canvas ================= */
-function drawSprite(c,key,frame,x,y,scale,flip,white){const sheet=HERO_ART[key];if(sheet&&sheet.complete&&sheet.naturalWidth){const sc=scale/3;c.save();c.translate(x,y);c.scale(flip?-sc:sc,sc);c.drawImage(sheet,(frame%4)*HERO_FRAME,0,HERO_FRAME,HERO_FRAME,-HERO_FRAME/2,-HERO_FRAME+3,HERO_FRAME,HERO_FRAME);if(white){c.globalCompositeOperation="lighter";c.globalAlpha=.55;c.drawImage(sheet,(frame%4)*HERO_FRAME,0,HERO_FRAME,HERO_FRAME,-HERO_FRAME/2,-HERO_FRAME+3,HERO_FRAME,HERO_FRAME)}c.restore();return}const s=SPR[key],img=(white?s.w:s.f)[frame%2];c.save();c.translate(x,y);c.scale(flip?-scale:scale,scale);c.drawImage(img,-SS/2,-SS+3);c.restore()}
+function drawSprite(c,key,frame,x,y,scale,flip,white){const sheet=HERO_ART[key];if(!(sheet&&sheet.complete&&sheet.naturalWidth))return false;const sc=scale/3;c.save();c.translate(x,y);c.scale(flip?-sc:sc,sc);c.drawImage(sheet,(frame%4)*HERO_FRAME,0,HERO_FRAME,HERO_FRAME,-HERO_FRAME/2,-HERO_FRAME+3,HERO_FRAME,HERO_FRAME);if(white){c.globalCompositeOperation="lighter";c.globalAlpha=.55;c.drawImage(sheet,(frame%4)*HERO_FRAME,0,HERO_FRAME,HERO_FRAME,-HERO_FRAME/2,-HERO_FRAME+3,HERO_FRAME,HERO_FRAME)}c.restore();return true}
 function drawBolt(c,x,y,col){c.strokeStyle=col;c.lineWidth=3;c.beginPath();let px=x+rnd(-30,30),py=-10;c.moveTo(px,py);while(py<y-14){py+=rnd(18,34);px+=(x-px)*.4+rnd(-16,16);c.lineTo(px,Math.min(py,y))}c.lineTo(x,y);c.stroke()}
 
 /* ================= logo: chunky pixel lettering, cold steel CLASH against molten MON ================= */
@@ -1956,7 +1957,7 @@ function spTick(dt){const S=SP,c=S.c.getContext("2d"),r=S.c.getBoundingClientRec
     else if(k<.9){const x=rnd(60,640-60),y=rnd(80,400-30);S.fx.push({k:"l",x,y,t:.2});spBoom(x,y,"#f7d23e",16)}
     else{spBoom(a.x,a.y-20,"#ff7a3d",30);spBoom(a.x,a.y-20,"#ffd84a",16);a.fl=.15}}
   c.drawImage(bg,0,0,640,400);c.fillStyle="rgba(9,7,18,.3)";c.fillRect(0,0,640,400);c.fillStyle="rgba(79,232,255,.08)";c.fillRect(438,0,3,400);c.fillStyle="rgba(245,197,66,.12)";c.fillRect(441,0,2,400);
-  for(const a of [...S.a].sort((p,q)=>p.y-q.y)){c.fillStyle="rgba(0,0,0,.48)";c.beginPath();c.ellipse(a.x,a.y+2,12*a.sc,3.2*a.sc,0,0,7);c.fill();drawSprite(c,a.k,Math.floor(a.w)%4,Math.round(a.x),Math.round(a.y),a.sc,a.flip,a.fl>0)}
+  for(const a of [...S.a].sort((p,q)=>p.y-q.y)){const ready=HERO_ART[a.k]?.complete&&HERO_ART[a.k].naturalWidth;if(!ready)continue;c.fillStyle="rgba(0,0,0,.48)";c.beginPath();c.ellipse(a.x,a.y+2,12*a.sc,3.2*a.sc,0,0,7);c.fill();drawSprite(c,a.k,Math.floor(a.w)%4,Math.round(a.x),Math.round(a.y),a.sc,a.flip,a.fl>0)}
   for(let i=S.fx.length-1;i>=0;i--){const f=S.fx[i];if(f.w>0){f.w-=dt;continue}f.t-=dt;if(f.t<=0){S.fx.splice(i,1);continue}
     if(f.k==="s"){f.x+=f.vx*dt;f.y+=f.vy*dt;c.fillStyle=f.c;c.fillRect(f.x-5,f.y-5,10,10);c.fillStyle="#fff";c.fillRect(f.x-2,f.y-2,4,4);if(Math.random()<.5)S.pt.push({x:f.x,y:f.y,vx:rnd(-30,30),vy:rnd(-30,30),c:f.c,t:.3});
       for(const a of S.a)if(Math.hypot(a.x-f.x,a.y-20-f.y)<18&&f.t<1.05){a.fl=.12;spBoom(f.x,f.y,f.c,8);f.t=0;break}}
@@ -2708,7 +2709,7 @@ const VIEW={ready:false,fx:[],keep:new Set(),t:0,camX:0,camY:0,
 };
 class Battle extends Phaser.Scene{
   constructor(){super("battle")}
-  preload(){for(const k of HERO_SPRITES)this.load.spritesheet("hero_"+k,heroSrc(k),{frameWidth:HERO_FRAME,frameHeight:HERO_FRAME});this.load.spritesheet("hero_nivaraK","assets/characters/nivara-knight.png",{frameWidth:HERO_FRAME,frameHeight:HERO_FRAME});this.load.image("verd_seed","assets/characters/verdara-seed.png");for(const a of ["skyforge_deck","skyforge_lift","titanback_deck","titanback_lift"])this.load.image("arena_"+a,"assets/arenas/"+a.replace("_","-")+".png")}
+  preload(){for(const k of HERO_SPRITES)this.load.spritesheet("hero_"+k,heroSrc(k),{frameWidth:HERO_FRAME,frameHeight:HERO_FRAME});this.load.spritesheet("hero_nivaraK","assets/characters/nivara-knight.png?v="+ASSET_VERSION,{frameWidth:HERO_FRAME,frameHeight:HERO_FRAME});this.load.image("verd_seed","assets/characters/verdara-seed.png?v="+ASSET_VERSION);for(const a of ["skyforge_deck","skyforge_lift","titanback_deck","titanback_lift"])this.load.image("arena_"+a,"assets/arenas/"+a.replace("_","-")+".png?v="+ASSET_VERSION)}
   create(){SCN=this;makeTextures(this);makeUltTex(this);makeItemTex(this);makeShopTex(this);makeUnitTex(this);const cam=this.cameras.main;cam.setZoom(2);cam.centerOn(VW/2,VH/2);VIEW.bx=cam.scrollX;VIEW.by=cam.scrollY;
     VIEW.bgTex=this.textures.addCanvas("bg",bg);VIEW.bgImg=this.add.image(0,0,"bg").setOrigin(0).setScale(2).setDepth(0);
     VIEW.gG=this.add.graphics().setDepth(D.GFX);VIEW.gO=this.add.graphics().setDepth(D.AIR+60);VIEW.gA=this.add.graphics().setDepth(D.AIR+40).setBlendMode("ADD");
