@@ -327,6 +327,9 @@ function pix(w,h,draw,arg){
   return{c,w:wc};
 }
 const SS=32;
+const HERO_SPRITES=new Set(["aurex","chronox","verdara"]);
+const HERO_FRAME=96;
+const heroSrc=k=>"assets/characters/"+k+".png";
 const DRAW={
   pyros(g,b){const R="#e2412e",O="#ff8a2a",Y="#ffd23e",T="#2fd0b5";
     g.L(13,25,9,30,T);g.L(16,25,16,31,T);g.L(19,25,23,30,T);g.L(14,25,11,29,"#1fa38e");g.L(18,25,21,29,"#1fa38e");g.P(9,31,Y);g.P(16,31,Y);g.P(23,31,Y);
@@ -589,8 +592,10 @@ const SEL={mon:"pyros",mv:{},nick:"ผู้เล่น",ar:"random",step:1,dif
   for(const k in MONS){const pool=poolOf(k);let m=s&&s.mv&&Array.isArray(s.mv[k])?s.mv[k].filter(x=>pool.includes(x)):[];m=[...new Set(m)].slice(0,3);SEL.mv[k]=m.length===3?m:defMoves(k)}})();
 const saveSel=()=>store.set("com.sel3",{mon:SEL.mon,mv:SEL.mv,ar:SEL.ar,diff:SEL.diff});
 const ANIM=[];let animF=0;
-function spriteCanvas(k,animate){const c=document.createElement("canvas");c.width=c.height=SS;c.getContext("2d").drawImage(SPR[k].f[0],0,0);if(animate){c.dataset.k=k;ANIM.push(c)}return c}
-setInterval(()=>{animF^=1;for(let i=ANIM.length-1;i>=0;i--){const c=ANIM[i];if(!c.isConnected){ANIM.splice(i,1);continue}const g=c.getContext("2d");g.clearRect(0,0,SS,SS);g.drawImage(SPR[c.dataset.k].f[animF],0,0)}},420);
+function spriteCanvas(k,animate){const hd=HERO_SPRITES.has(k),sz=hd?HERO_FRAME:SS,c=document.createElement("canvas");c.width=c.height=sz;c.dataset.k=k;
+  if(hd){const im=new Image();c._hero=im;im.onload=()=>c.getContext("2d").drawImage(im,0,0,HERO_FRAME,HERO_FRAME,0,0,HERO_FRAME,HERO_FRAME);im.src=heroSrc(k)}
+  else c.getContext("2d").drawImage(SPR[k].f[0],0,0);if(animate)ANIM.push(c);return c}
+setInterval(()=>{animF^=1;for(let i=ANIM.length-1;i>=0;i--){const c=ANIM[i];if(!c.isConnected){ANIM.splice(i,1);continue}const g=c.getContext("2d"),k=c.dataset.k;if(c._hero&&c._hero.complete){g.clearRect(0,0,HERO_FRAME,HERO_FRAME);g.drawImage(c._hero,animF*HERO_FRAME,0,HERO_FRAME,HERO_FRAME,0,0,HERO_FRAME,HERO_FRAME)}else if(!c._hero){g.clearRect(0,0,SS,SS);g.drawImage(SPR[k].f[animF],0,0)}}},420);
 const mvTypeOf=(mv,monKey)=>mv.t==="self"?MONS[monKey].t[0]:mv.t;
 function statRow(lab,v){const r=el("div","stat");r.append(el("span",null,lab));const i=el("i");const u=el("u");u.style.width=Math.round(clamp(v,0,1)*100)+"%";i.append(u);r.append(i);return r}
 function renderMons(){const box=$("mons");box.textContent="";const keys=Object.keys(MONS),per=6,pages=Math.ceil(keys.length/per);
@@ -2466,11 +2471,11 @@ const VIEW={ready:false,fx:[],keep:new Set(),t:0,camX:0,camY:0,
       else if(p.k==="bush")v.a=s.add.image(p.x,p.y-4,"p_bush").setScale(2).setDepth(D.ENT+p.y+8);
       else{const L=p.lv?LV1:0;v.sh=s.add.image(p.x,p.y+3,"shadow").setScale((p.r+4)/16,.9).setDepth(D.ENT+p.y-1+L);v.a=s.add.image(p.x,p.y+8,"p_"+p.k).setOrigin(.5,1).setScale(2).setDepth(D.ENT+p.y+L+(PDEF[p.k].hide?14:0))}}
     A.walls.forEach((w,i)=>{if(w.nodraw)return;const key="wall_"+i;if(s.textures.exists(key))s.textures.remove(key);s.textures.addCanvas(key,w.bars?barsCanvas(w):wallCanvas(w,w.inner?w.style:A.wallStyle));w.img=s.add.image(w.x,w.y-16,key).setOrigin(0).setScale(2).setDepth(D.ENT+w.y+w.h+(w.lv?LV1:0))});if(A.key==="city")cityViewInit(s,A);
-    for(const f of [G.me,G.op]){const me=f===G.me;f.v={sh:s.add.image(f.x,f.y,"shadow"),spr:s.add.image(f.x,f.y,"m_"+f.key+"_0").setOrigin(.5,29/32).setScale(2),chev:me?s.add.image(0,0,"chev").setDepth(D.ENT+2):null,
+    for(const f of [G.me,G.op]){const me=f===G.me,hd=HERO_SPRITES.has(f.key),spr=hd?s.add.image(f.x,f.y,"hero_"+f.key,0).setOrigin(.5,94/96).setScale(.84):s.add.image(f.x,f.y,"m_"+f.key+"_0").setOrigin(.5,29/32).setScale(2);f.v={sh:s.add.image(f.x,f.y,"shadow"),spr,chev:me?s.add.image(0,0,"chev").setDepth(D.ENT+2):null,
       orb:s.add.image(0,0,"orb").setBlendMode("ADD").setDepth(D.AIR+2).setVisible(false),mound:s.add.image(0,0,"mound").setVisible(false),
       stars:[0,1,2].map(()=>s.add.image(0,0,"star").setTint(0xffd84a).setScale(1.4).setVisible(false)),zz:s.add.text(0,0,"z",{fontFamily:'"Silkscreen",monospace',fontSize:"12px",color:"#fff"}).setResolution(2).setVisible(false),mins:new Map(),gt:0,aura:null}}
     this.cdT=s.add.text(W/2,H/2,"",{fontFamily:'"Silkscreen","Chakra Petch",monospace',fontSize:"64px",fontStyle:"bold",color:"#f5c542",stroke:"#000",strokeThickness:8}).setOrigin(.5).setDepth(D.UI).setResolution(2)},
-  ghost(f,tint,al){const o=SCN.add.image(f.v.spr.x,f.v.spr.y,f.v.spr.texture.key).setOrigin(.5,29/32).setScale(f.v.spr.scaleX,f.v.spr.scaleY).setFlipX(f.ax<0).setDepth(D.ENT+f.y-2).setBlendMode("ADD").setAlpha(al);o.setTint(tint);
+  ghost(f,tint,al){const src=f.v.spr,o=SCN.add.image(src.x,src.y,src.texture.key,src.frame.name).setOrigin(src.originX,src.originY).setScale(src.scaleX,src.scaleY).setFlipX(f.ax<0).setDepth(D.ENT+f.y-2).setBlendMode("ADD").setAlpha(al);o.setTint(tint);
     SCN.tweens.add({targets:o,alpha:0,duration:260,onComplete:()=>o.destroy()})},
   fighter(f,dt,gG,gO,gA){const v=f.v,me=f===G.me,x=Math.round(f.x),y=Math.round(f.y),P=PALH[f.mon.t[0]];
     syncList(f.minions,v.mins,m=>SCN.add.image(0,0,m.k>=2&&m.k!==7?"bot"+m.k:"m_"+f.key+"_0").setOrigin(.5,m.k>=2&&m.k!==7?.95:29/32).setScale(m.k===1||m.k>=2?2:1.1).setAlpha(m.k===7?1:.8),(m,o)=>{const ph=m.k===1||m.k===3||m.k===7,mx=m.mx||22;if(m.k===7)m.wk+=1/60*8;if(m.k<2||m.k===7)o.setTexture("m_"+f.key+"_"+(Math.floor(m.wk)%2));o.setPosition(Math.round(m.x),Math.round(m.y-(m.k===4?10+Math.sin(G.t*4)*3:m.k>=2&&m.k!==6&&m.k!==7?Math.abs(Math.sin(m.wk*.6))*3:0))).setFlipX(ph||m.k>=2?Math.cos(m.an)<0:f.ax<0).setDepth(D.ENT+m.y+(m.lv?LV1:0)).setVisible(!G.A.visFn||G.A.visFn(m,G.me));if(m.k>=2&&m.k!==7){o.setAlpha(1);buddyFx(m,o,gG,gO,gA)}if(m.k===7&&o.visible){const pc=f.hp/f.max;gG.fillStyle(0,.25).fillEllipse(m.x,m.y,30,9);gO.fillStyle(0,1).fillRect(m.x-23,m.y-75,46,6);gO.fillStyle(pc>.5?0x49b6ff:pc>.25?0xf5c542:0xef5a5a,1).fillRect(m.x-22,m.y-74,Math.round(44*pc),4)}
@@ -2489,7 +2494,8 @@ const VIEW={ready:false,fx:[],keep:new Set(),t:0,camX:0,camY:0,
     v.sh.setPosition(x,y+1).setScale(Math.max(.3,1-z*.004)*(m.sc||2)/2).setDepth(D.ENT+y-1+(f.lv?LV1:0));
     const fr=f.moving?(Math.floor(f.walk)%2):(Math.floor(G.t*2.2)%2),sc=m.sc||(bird?2.6:f.dash?2.15:2),hb=Math.max(0,(sc-2)*28),punch=f.cdB>0&&MOVES[f.mon.basic].kind==="melee"?Math.max(0,f.cdB-MOVES[f.mon.basic].cd+.12)*60:0;
     const ap=f.pose>0?Math.sin((1-f.pose/(f.poseMax||f.pose))*Math.PI):0,ak=ap?f.poseK:"",pm=MOVES[ak]||{},sty=MONSTYLE[f.key]||"caster",pk=pm.kind||"",poseD=pk==="dash"?13:pk==="shot"||pk==="beam"?-7:pk==="leap"?6:pk==="melee"?9:3,poseR=(sty==="wing"||sty==="float"?-f.ay*.2:sty==="assassin"?f.ay*.3:pk==="leap"?(f.ax<0?.2:-.2):pk==="dash"?f.ay*.24:0)*ap,poseSX=1+(pk==="shot"||pk==="beam"?.15:pk==="dash"?.1:.05)*ap,poseSY=1-(sty==="tank"?.14:.06)*ap;
-    v.spr.setTexture((m.tex||"m_"+f.key)+"_"+fr).setOrigin(.5,m.og||29/32).setPosition(x+f.ax*(punch+poseD*ap)+(m.shake?rnd(-m.shake,m.shake):0),y-z+(f.roll>0?10:0)+f.ay*(punch+poseD*ap)-(m.og?(29/32-m.og)*32*sc:0)).setFlipX(f.ax<0).setScale(sc*poseSX,sc*poseSY).setDepth(D.ENT+y+(f.lv?LV1:0)).setAlpha(f.hp<=0?.5:f.roll>0?.55:f.cloak>0&&f.reveal<=0?.38:me&&inCover(f)?.6:1).setRotation(m.rot!=null?m.rot:f.hp<=0?1.4:f.roll>0?(.28-f.roll)*22*(f.ax<0?-1:1):poseR);
+    const hero=HERO_SPRITES.has(f.key)&&!m.tex,heroFr=ap>.08||punch>0?3:f.moving?(Math.floor(f.walk)%2?2:1):(Math.floor(G.t*2.2)%2),tex=hero?"hero_"+f.key:(m.tex||"m_"+f.key)+"_"+fr,rs=hero?sc*.42:sc,og=hero?94/96:(m.og||29/32);
+    v.spr.setTexture(tex,hero?heroFr:undefined).setOrigin(.5,og).setPosition(x+f.ax*(punch+poseD*ap)+(m.shake?rnd(-m.shake,m.shake):0),y-z+(f.roll>0?10:0)+f.ay*(punch+poseD*ap)-(!hero&&m.og?(29/32-m.og)*32*sc:0)).setFlipX(f.ax<0).setScale(rs*poseSX,rs*poseSY).setDepth(D.ENT+y+(f.lv?LV1:0)).setAlpha(f.hp<=0?.5:f.roll>0?.55:f.cloak>0&&f.reveal<=0?.38:me&&inCover(f)?.6:1).setRotation(m.rot!=null?m.rot:f.hp<=0?1.4:f.roll>0?(.28-f.roll)*22*(f.ax<0?-1:1):poseR);
     fillTint(v.spr,f.flash>0);rideFx(f,v,x,y,z,sc,gG);if(ap>0){const PP=PALH[mvT(pm,f)]||PALH.norm,rr=24+ap*18;gA.lineStyle(2,PP[2],.35+ap*.45).strokeEllipse(x-f.ax*4,y-z-19,rr*2,rr);if(Math.random()<.55){const a=rnd(0,6.283);emit(sty==="wing"?"soft":sty==="assassin"?"smoke":sty==="tank"?"rock":"streak",x+Math.cos(a)*rr,y-z-20+Math.sin(a)*rr*.5,-Math.cos(a)*120,-Math.sin(a)*90,.28,pick(PP.slice(0,4)),a*57.3)}}
     if(f.frz>0){const hh=60*sc/2;gO.fillStyle(0xbfe6ff,.42).fillRect(x-22,y-hh-z,44,hh+4);gO.lineStyle(2,0xffffff,.85).strokeRect(x-22,y-hh-z,44,hh+4);gO.lineStyle(1.5,0xffffff,.7).lineBetween(x-14,y-hh+6-z,x-4,y-hh+16-z).lineBetween(x+6,y-24-z,x+14,y-14-z);if(Math.random()<.2)emit("sq",x+rnd(-20,20),y-rnd(0,hh),0,-20,.6,0xffffff)}
     else if(f.chill>0&&f.owned){gO.lineStyle(2,0x9fe6ff,.3+f.chill*.2).strokeEllipse(x,y-24,40,56);gO.fillStyle(0x0,.6).fillRect(x-20,y-86-z,40,4);gO.fillStyle(0x9fe6ff,1).fillRect(x-19,y-85-z,Math.round(38*Math.min(1,f.chill/3)),2)}
@@ -2646,7 +2652,7 @@ const VIEW={ready:false,fx:[],keep:new Set(),t:0,camX:0,camY:0,
       const band=c.band=s.add.container(w/2,h/2).setRotation(-.12);band.add(s.add.rectangle(0,0,w*2,150,P[3]));band.add(s.add.rectangle(0,0,w*2,134,0x14121f));
       c.lines=[];for(let i=0;i<18;i++){const r=s.add.rectangle(rnd(-w,w),-60+((i*29)%120),50+(i%4)*34,i%3?2:3,i%2?P[2]:P[1]).setBlendMode("ADD");band.add(r);c.lines.push(r)}c.add(band);
       c.aura=s.add.image(0,h/2+60,"swirl").setTint(P[2]).setBlendMode("ADD").setAlpha(.5);c.add(c.aura);
-      c.por=s.add.image(0,h/2+104,"m_"+f.key+"_0").setOrigin(.5,29/32).setScale(6.4).setFlipX(!left);c.add(c.por);
+      const hd=HERO_SPRITES.has(f.key);c.por=hd?s.add.image(0,h/2+104,"hero_"+f.key,0).setOrigin(.5,94/96).setScale(2.15).setFlipX(!left):s.add.image(0,h/2+104,"m_"+f.key+"_0").setOrigin(.5,29/32).setScale(6.4).setFlipX(!left);c.add(c.por);
       c.sub=s.add.text(0,h/2-34,f.mon.n+" · ท่าไม้ตาย",{fontFamily:'"Chakra Petch",sans-serif',fontSize:"15px",fontStyle:"bold",color:"#fff"}).setOrigin(left?1:0,.5).setResolution(2);
       c.nm=s.add.text(0,h/2+10,C.mv.n,{fontFamily:'"Chakra Petch",sans-serif',fontSize:(C.mv.n.length>14?34:40)+"px",fontStyle:"bold",color:PAL[C.mv.t][2],stroke:"#000",strokeThickness:7}).setOrigin(left?1:0,.5).setResolution(2);c.add([c.sub,c.nm])}
     const c=this.cutO,k=1-C.t/1.05,e=Math.min(1,k*5),e3=1-Math.pow(1-e,3);c.setPosition(Math.round(cx),Math.round(cy));c.band.setScale(1,e3);for(const r of c.lines){r.x+=(left?1:-1)*24;if(r.x>w)r.x-=w*2;if(r.x<-w)r.x+=w*2}
@@ -2655,6 +2661,7 @@ const VIEW={ready:false,fx:[],keep:new Set(),t:0,camX:0,camY:0,
 };
 class Battle extends Phaser.Scene{
   constructor(){super("battle")}
+  preload(){for(const k of HERO_SPRITES)this.load.spritesheet("hero_"+k,heroSrc(k),{frameWidth:HERO_FRAME,frameHeight:HERO_FRAME})}
   create(){SCN=this;makeTextures(this);makeUltTex(this);makeItemTex(this);makeShopTex(this);makeUnitTex(this);const cam=this.cameras.main;cam.setZoom(2);cam.centerOn(VW/2,VH/2);VIEW.bx=cam.scrollX;VIEW.by=cam.scrollY;
     VIEW.bgTex=this.textures.addCanvas("bg",bg);VIEW.bgImg=this.add.image(0,0,"bg").setOrigin(0).setScale(2).setDepth(0);
     VIEW.gG=this.add.graphics().setDepth(D.GFX);VIEW.gO=this.add.graphics().setDepth(D.AIR+60);VIEW.gA=this.add.graphics().setDepth(D.AIR+40).setBlendMode("ADD");
