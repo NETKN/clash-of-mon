@@ -1,0 +1,18 @@
+/* Hallmark design tokens · Clash of Mon midnight arena */
+:root {
+  --ink-0: oklch(9% 0.025 285);
+  --ink-1: oklch(14% 0.035 285);
+  --ink-2: oklch(21% 0.045 285);
+  --paper-0: oklch(94% 0.018 82);
+  --muted-0: oklch(72% 0.03 285);
+  --solar: oklch(83% 0.17 83);
+  --solar-hot: oklch(72% 0.19 54);
+  --arc: oklch(81% 0.15 211);
+  --danger: oklch(66% 0.22 25);
+  --success: oklch(77% 0.16 151);
+  --ease-out: cubic-bezier(.16,1,.3,1);
+  --ease-in: cubic-bezier(.7,0,.84,0);
+  --dur-fast: 100ms;
+  --dur-ui: 180ms;
+  --dur-scene: 420ms;
+}

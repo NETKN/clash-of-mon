@@ -1,0 +1,14 @@
+{
+  "version": "1.1",
+  "date": "2026-10-10",
+  "mode": "redesign",
+  "stack": "vanilla HTML/CSS and Phaser",
+  "fonts": ["Chakra Petch", "Silkscreen"],
+  "theme": "Midnight",
+  "genre": "atmospheric",
+  "macrostructure": "Marquee Hero",
+  "enrichment": "Tier C generated app icon plus in-engine character art",
+  "preserved": ["game flow", "DOM ids", "character selection", "mobile controls", "brand palette"],
+  "pre_emit_critique": "P4 H4 E4 S5 R4 V4",
+  "slop_test": "pass — scoped redesign; desktop 1280x720 and mobile 844x390 rendered and verified"
+}

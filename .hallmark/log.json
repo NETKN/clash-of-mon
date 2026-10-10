@@ -1,0 +1,11 @@
+[
+  {
+    "date": "2026-10-10",
+    "scope": "splash, app icon, arena previews, terrain effects, item presentation",
+    "genre": "atmospheric",
+    "macrostructure": "Marquee Hero",
+    "theme": "Midnight",
+    "enrichment": "Tier C generated app icon, post-processed to PWA sizes; existing in-engine monster sheets",
+    "notes": "Kept all existing game flow and controls. Replaced geometric presentation with readable pixel-art silhouettes and restrained motion."
+  }
+]
