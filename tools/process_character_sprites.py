@@ -46,5 +46,8 @@ def build(name: str) -> None:
 
 if __name__ == "__main__":
     OUTPUT.mkdir(parents=True, exist_ok=True)
-    for character in ("aurex", "chronox", "verdara"):
-        build(character)
+    sources = sorted(SOURCE.glob("*-source.png"))
+    if not sources:
+        raise SystemExit(f"No character sources found in {SOURCE}")
+    for source in sources:
+        build(source.name.removesuffix("-source.png"))

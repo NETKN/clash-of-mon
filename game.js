@@ -327,7 +327,7 @@ function pix(w,h,draw,arg){
   return{c,w:wc};
 }
 const SS=32;
-const HERO_SPRITES=new Set(["aurex","chronox","verdara"]);
+const HERO_SPRITES=new Set(Object.keys(MONS));
 const HERO_FRAME=96;
 const heroSrc=k=>"assets/characters/"+k+".png";
 const DRAW={
@@ -496,7 +496,8 @@ const PROP={
   bush:pix(38,26,g=>{const A="#2f8f3f",B="#49b356",D="#226e30";g.E(10,16,8,7,A);g.E(27,16,8,7,A);g.E(19,12,10,9,A);g.E(13,10,5,4,B);g.E(24,9,5,4,B);g.E(19,16,6,3,D);g.P(8,13,B);g.P(30,14,B);g.P(20,6,"#7fe08a");g.P(12,18,D);g.P(28,19,D)}).c,
   canopy:pix(40,34,g=>{const A="#1f7a35",B="#35a04a",D="#17602a";g.E(12,20,10,9,A);g.E(28,20,10,9,A);g.E(20,13,13,11,A);g.E(14,11,6,5,B);g.E(26,10,6,4,B);g.E(20,22,8,4,D);g.E(9,22,3,2,D);g.P(20,5,"#7fe08a");g.P(12,8,"#7fe08a");g.P(29,8,"#7fe08a")}).c,
   trunk:pix(10,16,g=>{g.R(3,1,4,13,"#6b4424");g.R(3,1,1,13,"#8a5a2a");g.R(1,13,8,2,"#6b4424")}).c,
-  stump:pix(12,8,g=>{g.E(6,4,4,2,"#2a2020");g.P(5,3,"#4a3a3a");g.P(7,4,"#ff7a3d")}).c
+  stump:pix(12,8,g=>{g.E(6,4,4,2,"#2a2020");g.P(5,3,"#4a3a3a");g.P(7,4,"#ff7a3d")}).c,
+  pillar_broken:pix(28,16,g=>{const D="#665f58",M="#8b837a",L="#c8c0b4";g.E(14,12,12,4,D);g.R(8,7,8,6,M);g.R(9,6,5,2,L);g.L(8,7,12,3,D);g.L(13,6,17,2,L);g.R(2,11,6,3,M);g.R(20,9,6,4,D);g.P(4,10,L);g.P(23,8,M);g.P(19,13,L)}).c
 };
 
 /* ================= detailed prop sprites (pixel art drawn in code) ================= */
@@ -777,9 +778,9 @@ function movingArenaEnv(f,dt){const A=G.A,t=G.t;
   if(A.tilt&&f.lv===0&&f.roll<=0){const q=Math.sin(t*.68);f.kx+=q*18*dt;if(Math.floor(t/8)!==f.tremN){f.tremN=Math.floor(t/8);f.kx+=q*120;f.ky+=Math.cos(t)*70;G.shake=Math.max(G.shake,5);pop(f.x,f.y-55,"ไททันขยับ!","#ffe066")}}
   let on=null;for(const p of A.lifts)if(Math.hypot(f.x-p.x,f.y-p.y)<24)on=p;if(!on){f.stairLock=0;return}if(f.stairLock)return;
   f.stairLock=1;if(f.lv){f.lv=0}else if(deckAt(A,f.x,f.y,t)){f.lv=1}else return;f.chg=null;f.ifr=Math.max(f.ifr,.2);FX.burst(f.x,f.y-14,"#bfe6ff",18,150,.5);SFX.play("dash");if(f===G.me)VIEW.lvT=.5}
-function movingArenaFx(gG,gA,t){const A=G.A,me=G.me;for(const p of A.platforms){const q=deckXY(p,t),on=(me.lv||0)===1;gG.fillStyle(A.key==="skyforge"?0x56677b:0x8b7358,on?.92:.48).fillRoundedRect(q[0],q[1],p.w,p.h,8);gG.lineStyle(3,A.key==="skyforge"?0xffd84a:0x9fe8ff,on?1:.6).strokeRoundedRect(q[0],q[1],p.w,p.h,8);
-    for(let x=q[0]+18;x<q[0]+p.w-10;x+=32)gG.fillStyle(0xffffff,.18).fillRect(x,q[1]+8,14,3);if(p.mx||p.my)for(let i=0;i<3;i++)emit("streak",q[0]+rnd(0,p.w),q[1]+p.h/2,rnd(-20,20),rnd(-30,30),.25,A.key==="skyforge"?0xffd84a:0x9fe8ff)}
-  for(const p of A.lifts){gG.fillStyle(0x26354a,.9).fillCircle(p.x,p.y,24);gG.lineStyle(2,0xbfe6ff,.8).strokeCircle(p.x,p.y,20+Math.sin(t*5)*2);gA.lineStyle(1,0xffffff,.35).lineBetween(p.x,p.y-50,p.x,p.y+8)}}
+function movingArenaFx(gG,gA,t){const A=G.A,me=G.me;if(!A.mvView){const pre=A.key==="skyforge"?"skyforge":"titanback";A.mvView={decks:A.platforms.map(p=>SCN.add.image(0,0,"arena_"+pre+"_deck").setDepth(D.ENT+UPD-3)),lifts:A.lifts.map(p=>SCN.add.image(p.x,p.y,"arena_"+pre+"_lift").setDisplaySize(104,104).setDepth(D.ENT+UPD-2))}}
+  for(let i=0;i<A.platforms.length;i++){const p=A.platforms[i],q=deckXY(p,t),on=(me.lv||0)===1,o=A.mvView.decks[i];o.setPosition(q[0]+p.w/2,q[1]+p.h/2+5).setDisplaySize(p.w+24,p.h+42).setAlpha(on?1:.78).setDepth(D.ENT+UPD-3+q[1]*.0001);if(p.mx||p.my)for(let k=0;k<2;k++)emit("streak",q[0]+rnd(0,p.w),q[1]+p.h/2,rnd(-20,20),rnd(-30,30),.25,A.key==="skyforge"?0x4fe8ff:0xe85cff)}
+  for(let i=0;i<A.lifts.length;i++){const p=A.lifts[i],o=A.mvView.lifts[i];o.setPosition(p.x,p.y+5).setAlpha(.92+.08*Math.sin(t*4+i)).setScale(.39+.015*Math.sin(t*4+i));gA.lineStyle(2,A.key==="skyforge"?0x55eeff:0xff5ce8,.55).strokeCircle(p.x,p.y,27+Math.sin(t*5+i)*2)}}
 function buildSkyforge(A){
   deck(A,110,90,430,270);deck(A,1160,640,430,270);deck(A,690,155,300,76,0,180,0);deck(A,710,760,280,76,0,170,3.14);
   A.lifts.push({x:210,y:205},{x:1490,y:790});A.lava.push({x:760,y:400,rx:180,ry:92,e:1,cool:0},{x:1040,y:600,rx:150,ry:76,e:1,cool:0});
@@ -908,7 +909,7 @@ function buildCity(A){const T=CITY.T;
   const mir=b=>({x:W-b.x-b.w,y:H-b.y-b.h,w:b.w,h:b.h,doors:b.doors.map(([s,p])=>[{t:"b",b:"t",l:"r",r:"l"}[s],(s==="t"||s==="b"?b.w:b.h)-p]),sty:b.sty+3});
   A.blds=[...B,...B.map(mir)];A.blds.forEach((b,i)=>{b.i=i;b.stair={x:b.x+(i%3===1?b.w-62:58),y:b.y+70}});
   const SK=[{x:480,y:118,w:220,h:CITY.BRW},{x:1200,y:118,w:220,h:CITY.BRW}];A.sky=[...SK,...SK.map(s=>({x:W-s.x-s.w,y:H-s.y-s.h,w:s.w,h:s.h}))];
-  A.sky.forEach((s,i)=>{s.i=i;s.hp=12;s.max=12;s.dead=false});
+  A.sky.forEach((s,i)=>{s.i=i;s.hp=18;s.max=18;s.dead=false});
   /* walls: outline with gaps for doors (level 0) and for bridges (level 1) */
   const seg=(lv,b,side,gaps)=>{const horiz=side==="t"||side==="b",len=horiz?b.w:b.h;let cur=0;const out=[];for(const [g0,g1] of gaps.sort((p,q)=>p[0]-q[0])){if(g0>cur)out.push([cur,g0]);cur=Math.max(cur,g1)}if(cur<len)out.push([cur,len]);
     for(const [s0,s1] of out){if(s1-s0<2)continue;if(side==="t")A.walls.push({x:b.x+s0,y:b.y,w:s1-s0,h:T,lv});else if(side==="b")A.walls.push({x:b.x+s0,y:b.y+b.h-T,w:s1-s0,h:T,lv});
@@ -950,7 +951,8 @@ function buildCity(A){const T=CITY.T;
 const CITYWALL=[{top:[0xc8c0b4,0xb8b0a4],front:[0x9a8e80,0x8a7e70],mortar:0x6a6058,moss:0xa89c8c},{top:[0xd8d4cc,0xc8c4bc],front:[0xa8a49c,0x98948c],mortar:0x787470,moss:0xb8b4ac},
   {top:[0xeee6d6,0xe2dac8],front:[0xc8bca4,0xbcb098],mortar:0xa09480,moss:0xe2dac8}];
 const bldAt=(x,y)=>G.A.blds.find(b=>x>b.x+2&&x<b.x+b.w-2&&y>b.y+2&&y<b.y+b.h-2);
-const onUpper=(x,y)=>G.A.blds.some(b=>x>b.x+CITY.T&&x<b.x+b.w-CITY.T&&y>b.y+CITY.T&&y<b.y+b.h-CITY.T)||G.A.sky.some(s=>!s.dead&&x>=s.x-4&&x<=s.x+s.w+4&&y>=s.y&&y<=s.y+s.h);
+const bridgeAt=(A,x,y,pad=0)=>A.sky.find(s=>!s.dead&&x>=s.x-pad&&x<=s.x+s.w+pad&&y>=s.y-pad&&y<=s.y+s.h+pad);
+const onUpper=(x,y)=>G.A.blds.some(b=>x>b.x+CITY.T&&x<b.x+b.w-CITY.T&&y>b.y+CITY.T&&y<b.y+b.h-CITY.T)||!!bridgeAt(G.A,x,y,8);
 /* can viewer v see thing o (fighter, minion, item, prop) */
 function cityVis(o,v){const bo=bldAt(o.x,o.y),lv=o.lv||0;if(!bo)return true;if((v.lv||0)===1)return lv===1;return lv===0&&bldAt(v.x,v.y)===bo}
 function cityStairs(f,dt){const A=G.A;if(f.lv&&!onUpper(f.x,f.y)){f.lv=0;f.hp=Math.max(0,f.hp-22);f.stun=Math.max(f.stun,.55);f.kx+=rnd(-90,90);f.ky+=rnd(-90,90);pop(f.x,f.y-55,"สะพานพัง!","#ff9a8a",1);FX.boom(f.x,f.y,"metal",38);G.shake=Math.max(G.shake,7);if(f===G.me)VIEW.lvT=.5}
@@ -1188,8 +1190,9 @@ const frozenByTime=f=>!!(G.tstop&&G.t<G.tstop.t&&G.units&&fTeam(f)!==G.tstop.tea
 let W=960,H=600,VW=640,VH=400;const FR=14;
 const bg=document.createElement("canvas");bg.width=W/2;bg.height=H/2;const bgx=bg.getContext("2d");
 function crater(x,y,r,hole){BGD=true;const c=bgx;x=(x/2)|0;y=(y/2)|0;r=(r/2)|0;
-  c.fillStyle="rgba(0,0,0,.28)";c.beginPath();c.ellipse(x,y,r,r*.7,0,0,7);c.fill();c.fillStyle=hole?"rgba(20,12,8,.8)":"rgba(0,0,0,.3)";c.beginPath();c.ellipse(x,y+1,r*.62,r*.42,0,0,7);c.fill();
-  c.fillStyle="rgba(255,255,255,.16)";for(let i=0;i<10;i++){const a=rnd(0,6.28);c.fillRect((x+Math.cos(a)*r)|0,(y+Math.sin(a)*r*.7)|0,1,1)}}
+  const ring=(rr,sy,seed)=>{c.beginPath();for(let i=0;i<16;i++){const a=i/16*Math.PI*2,j=.78+hsh(i,seed,(x+y)|0)*.32,px=x+Math.cos(a)*rr*j,py=y+Math.sin(a)*rr*sy*j+(hole?2:0);i?c.lineTo(px,py):c.moveTo(px,py)}c.closePath();c.fill()};
+  c.fillStyle=hole?"rgba(78,52,40,.78)":"rgba(0,0,0,.28)";ring(r,.72,3);c.fillStyle=hole?"rgba(10,7,12,.94)":"rgba(0,0,0,.38)";ring(r*.68,.62,7);if(hole){c.strokeStyle="rgba(15,8,6,.75)";c.lineWidth=1;for(let i=0;i<9;i++){const a=i/9*Math.PI*2+hsh(i,4,x)*.25,d=r*(.75+hsh(i,8,y)*.35);c.beginPath();c.moveTo(x+Math.cos(a)*r*.55,y+Math.sin(a)*r*.4);c.lineTo(x+Math.cos(a)*d,y+Math.sin(a)*d*.72);c.stroke()}}
+  c.fillStyle="rgba(235,220,195,.34)";for(let i=0;i<14;i++){const a=i/14*Math.PI*2,d=r*(.75+hsh(i,9,x+y)*.3);c.fillRect((x+Math.cos(a)*d)|0,(y+Math.sin(a)*d*.7)|0,1+(i%3===0),1)}}
 function scorch(x,y,r){BGD=true;const c=bgx;c.fillStyle="rgba(15,10,10,.55)";c.beginPath();c.ellipse((x/2)|0,(y/2)|0,r/2,r*.35,0,0,7);c.fill()}
 const inRect=(r,x,y,p)=>x>=r.x-(p||0)&&x<=r.x+r.w+(p||0)&&y>=r.y-(p||0)&&y<=r.y+r.h+(p||0);
 const inEll=(l,x,y,p)=>{const a=(x-l.x)/(l.rx+(p||0)),b=(y-l.y)/(l.ry+(p||0));return a*a+b*b<1};
@@ -1200,11 +1203,11 @@ const wallOpen=(w,x,y,r)=>w.dead||(w.sky&&w.sky.dead)||(w.breach||[]).some(q=>Ma
 const wallAt=(x,y,r,lv)=>{const L=lv==null?(G.wlv||0):lv;return G.A.walls.find(w=>(w.lv||0)===L&&inRect(w,x,y,r)&&!wallOpen(w,x,y,r))};
 function makeHole(x,y,r,lv,id){const A=G.A;if(r<18)return;const h={id:id||"h"+G.t,x:clamp(x,FR+25,W-FR-25),y:clamp(y,FR+30,H-FR-20),r:clamp(r,20,62),lv:lv||0,t:18,arm:.55};
   const old=A.holes.find(q=>(q.lv||0)===h.lv&&Math.hypot(q.x-h.x,q.y-h.y)<Math.max(q.r,h.r)*.65);if(old){old.r=Math.max(old.r,h.r);old.t=18;old.arm=Math.max(old.arm||0,.4);return old}A.holes.push(h);if(A.holes.length>10)A.holes.shift();crater(h.x,h.y,h.r*1.15,1);return h}
-function damageStructures(x,y,r,mv,att){const A=G.A,lv=att&&att.lv||0,power=(mv.breach||0)+(mv.heavy>=9?2:0);if(!power&&!mv.bridge)return;
-  for(const w of A.walls){if((w.lv||0)!==lv||w.dead)continue;const nx=clamp(x,w.x,w.x+w.w),ny=clamp(y,w.y,w.y+w.h);if(Math.hypot(x-nx,y-ny)>r+8)continue;if(w.sky){w.sky.hp-=mv.bridge||power*2;if(w.sky.hp<=0){w.sky.dead=true;FX.mega(w.sky.x+w.sky.w/2,w.sky.y+w.sky.h/2,"metal",70);G.shake=Math.max(G.shake,9)}continue}
+function damageStructures(x,y,r,mv,att){const A=G.A,lv=att&&att.lv||0,power=(mv.breach||0)+(mv.heavy>=9?2:0),bridgePower=mv.bridge||(mv.heavy>=9&&power?power*2:0);if(!power&&!bridgePower)return;
+  for(const w of A.walls){if((w.lv||0)!==lv||w.dead)continue;const nx=clamp(x,w.x,w.x+w.w),ny=clamp(y,w.y,w.y+w.h);if(Math.hypot(x-nx,y-ny)>r+8)continue;if(w.sky)continue;
     if(power){w.breach=w.breach||[];if(!w.breach.some(q=>Math.hypot(q.x-nx,q.y-ny)<18)){w.breach.push({x:nx,y:ny,r:20+power*5});part(nx,ny,"#d8c8b0",18,190,.6);G.shake=Math.max(G.shake,4)}}}
-  for(const b of A.bridges){if(b.dead||!inRect(b,x,y,r))continue;b.hp=(b.hp==null?8:b.hp)-(mv.bridge||power*2);if(b.hp<=0){b.dead=true;FX.mega(b.x+b.w/2,b.y+b.h/2,"water",60);G.shake=Math.max(G.shake,8)}}
-  if(lv===1)for(const s of A.sky){if(s.dead||!inRect(s,x,y,r))continue;s.hp-=mv.bridge||power*2;if(s.hp<=0){s.dead=true;FX.mega(s.x+s.w/2,s.y+s.h/2,"metal",80);G.shake=Math.max(G.shake,10)}}}
+  for(const b of A.bridges){if(b.dead||!inRect(b,x,y,r))continue;b.hp=(b.hp==null?8:b.hp)-(bridgePower||power*2);if(b.hp<=0){b.dead=true;FX.mega(b.x+b.w/2,b.y+b.h/2,"water",60);G.shake=Math.max(G.shake,8)}}
+  if(lv===1&&bridgePower)for(const s of A.sky){if(s.dead||!inRect(s,x,y,r))continue;s.hp-=bridgePower;if(s.hp<=0){s.hp=0;s.dead=true;FX.mega(s.x+s.w/2,s.y+s.h/2,"metal",80);G.shake=Math.max(G.shake,10)}}}
 const inCover=f=>G.zones.some(z=>z.mv.smoke&&Math.hypot(z.x-f.x,z.y-f.y)<z.mv.rad)||G.A.props.some(p=>!p.dead&&((p.k==="bush"&&Math.hypot(p.x-f.x,p.y-f.y)<p.R-4)||(p.k==="tree"&&Math.hypot(p.x-f.x,p.y-14-f.y)<p.R-2)||(PDEF[p.k].hide&&(p.lv||0)===(f.lv||0)&&Math.hypot(p.x-f.x,p.y-f.y)<p.R)));
 const seenBy=(o,f)=>(!G.A.visFn||G.A.visFn(o,f))&&o.under<=0&&!(o.cloak>0&&o.reveal<=0&&Math.hypot(o.x-f.x,o.y-f.y)>70)&&!(inCover(o)&&o.reveal<=0&&o.burn<=0&&Math.hypot(o.x-f.x,o.y-f.y)>90);
 function meltIce(x,y,r){const A=G.A;for(let i=A.ice.length-1;i>=0;i--){const l=A.ice[i];if(inEll(l,x,y,r)){A.ice.splice(i,1);A.water.push(l);repaintRegion("water",l);FX.burst(l.x,l.y,"#e8f4ff",30,l.rx*2.4,.9);SFX.play("dash","water")}}}
@@ -2342,23 +2345,25 @@ function floorCanvas(b){const w=Math.ceil(b.w/2),h=Math.ceil(b.h/2),c=document.c
   const set=(x,y,col)=>{if(x<0||y<0||x>=w||y>=h)return;const i=(y*w+x)*4;d[i]=col[0];d[i+1]=col[1];d[i+2]=col[2];d[i+3]=255};
   const base=[0x8a5a7a,0x5a7a6a,0x7a6a9a][b.sty%3];for(let y=0;y<h;y++)for(let x=0;x<w;x++){let col=shade(cc(base),.9+nz(x/4,y/4,s)*.18);if(((x>>3)+(y>>3))%2===0)col=shade(col,1.06);if(hsh(x,y,s)>.96)col=shade(col,1.15);set(x,y,col)}
   paintStair((x,y,col)=>set(x-Math.floor(b.x/2),y-Math.floor(b.y/2),col),b.stair.x,b.stair.y);g.putImageData(img,0,0);return c}
-function bridgeCanvas(sk){const w=Math.ceil(sk.w/2),h=Math.ceil(sk.h/2)+6,c=document.createElement("canvas");c.width=w;c.height=h;const g=c.getContext("2d");
-  g.fillStyle="rgba(170,225,255,.38)";g.fillRect(0,3,w,h-6);g.fillStyle="rgba(255,255,255,.55)";for(let x=4;x<w;x+=10)g.fillRect(x,3,1,h-6);g.fillStyle="rgba(255,255,255,.35)";for(let x=0;x<w;x+=6)g.fillRect(x,6+((x*3)%(h-12)),3,1);
-  g.fillStyle="#5a6270";g.fillRect(0,0,w,3);g.fillRect(0,h-3,w,3);g.fillStyle="#9aa2b0";g.fillRect(0,0,w,1);g.fillRect(0,h-3,w,1);for(let x=0;x<w;x+=12){g.fillStyle="#3a4250";g.fillRect(x,0,2,3);g.fillRect(x,h-3,2,3)}return c}
+function bridgeCanvas(sk,broken=false){const w=Math.ceil(sk.w/2),h=Math.ceil(sk.h/2)+6,c=document.createElement("canvas");c.width=w;c.height=h;const g=c.getContext("2d"),half=Math.floor(w*.31);
+  const deck=(x0,x1,flip)=>{g.fillStyle="rgba(170,225,255,.42)";g.fillRect(x0,3,x1-x0,h-6);g.fillStyle="rgba(255,255,255,.55)";for(let x=x0+4;x<x1;x+=10)g.fillRect(x,3,1,h-6);g.fillStyle="#4d5665";g.fillRect(x0,0,x1-x0,3);g.fillRect(x0,h-3,x1-x0,3);g.fillStyle="#aab4c2";g.fillRect(x0,0,x1-x0,1);g.fillRect(x0,h-3,x1-x0,1);if(broken){const e=flip?x0:x1-1;g.fillStyle="#222733";for(let y=2;y<h-2;y+=4)g.fillRect(e+(flip?(y%7):-(y%7)),y,flip?7:8,3);g.fillStyle="#dfeaff";for(let y=4;y<h-4;y+=7)g.fillRect(e+(flip?2:-4),y,3,1)}};
+  if(broken){deck(0,half,false);deck(w-half,w,true);g.fillStyle="#303744";for(let i=0;i<9;i++){const x=half-5+((i*17)%(w-half*2+10)),y=4+((i*11)%(h-8));g.fillRect(x,y,2+(i%3),2)}}else deck(0,w,false);return c}
 function cityViewInit(s,A){const V=A.cv={b:[],sk:[]};const tex=(k,cv)=>{if(s.textures.exists(k))s.textures.remove(k);s.textures.addCanvas(k,cv);return k};
   for(const b of A.blds){const o={b,roof:s.add.image(b.x,b.y-28,tex("roof"+b.i,roofCanvas(b))).setOrigin(0).setScale(2).setDepth(D.ENT+ROOFD),
       up:s.add.image(b.x,b.y,tex("up"+b.i,floorCanvas(b))).setOrigin(0).setScale(2).setDepth(D.ENT+UPD).setVisible(false),walls:[]};V.b.push(o)}
-  A.sky.forEach((sk,i)=>V.sk.push(s.add.image(sk.x,sk.y-6,tex("sky"+i,bridgeCanvas(sk))).setOrigin(0).setScale(2).setDepth(D.ENT+UPD+1)));
+  A.sky.forEach((sk,i)=>V.sk.push({intact:s.add.image(sk.x,sk.y-6,tex("sky"+i,bridgeCanvas(sk))).setOrigin(0).setScale(2).setDepth(D.ENT+UPD+1),broken:s.add.image(sk.x,sk.y-6,tex("skyBroken"+i,bridgeCanvas(sk,true))).setOrigin(0).setScale(2).setDepth(D.ENT+UPD+1).setVisible(false)}));
   const tx={fontFamily:'"Chakra Petch",sans-serif',fontSize:"11px",fontStyle:"bold",color:"#ffe066",stroke:"#000",strokeThickness:3};
   for(const o of V.b)o.st=s.add.text(o.b.stair.x,o.b.stair.y-40,"",tx).setOrigin(.5).setDepth(D.TXT-1).setResolution(2).setVisible(false);
+  V.damage=s.add.graphics().setDepth(D.ENT+UPD+22);
   V.dim=s.add.rectangle(W/2,H/2,W+80,H+80,0x05040c).setDepth(D.ENT+UPD-5).setAlpha(0);
   V.lvTxt=s.add.text(0,0,"",{fontFamily:'"Chakra Petch",sans-serif',fontSize:"12px",fontStyle:"bold",color:"#fff",stroke:"#000",strokeThickness:3}).setOrigin(.5).setDepth(D.TXT).setResolution(2)}
 function cityMode(b,me){if((me.lv||0)===1)return"upper";return bldAt(me.x,me.y)===b?"ground":"roof"}
 function cityViewUpd(A){const V=A.cv,me=G.me;if(!V)return;
   for(const o of V.b){const m=cityMode(o.b,me);o.roof.setVisible(m==="roof");o.up.setVisible(m==="upper");
     const near=Math.hypot(me.x-o.b.stair.x,me.y-o.b.stair.y)<520;o.st.setVisible(m!=="roof"&&near).setText(m==="upper"?"▼ ลงชั้น 1":"▲ ขึ้นชั้น 2").setY(o.b.stair.y-38+Math.sin(G.t*4)*3)}
-  V.sk.forEach((o,i)=>o.setVisible(!A.sky[i].dead).setAlpha(A.sky[i].hp<A.sky[i].max ? .55 : 1));
+  V.sk.forEach((o,i)=>{const sk=A.sky[i];o.intact.setVisible(!sk.dead).setAlpha(sk.hp<sk.max ? .62+.2*sk.hp/sk.max : 1);o.broken.setVisible(sk.dead)});
   for(const w of A.walls)if(w.img&&w.lv===1){const b=A.blds.find(b=>inRect(b,w.x+w.w/2,w.y+w.h/2,2));w.img.setVisible(!w.dead&&(!b||cityMode(b,me)==="upper")).setAlpha(w.breach&&w.breach.length?.42:1)}
+  V.damage.clear();for(const w of A.walls){if(!(w.breach&&w.breach.length))continue;const visible=!w.lv||(me.lv||0)===1;if(!visible)continue;for(const q of w.breach){V.damage.fillStyle(0x16131a,.96).lineStyle(3,0x5f554c,.95).beginPath();for(let i=0;i<14;i++){const a=i/14*Math.PI*2,rr=q.r*(.72+hsh(i,w.x+w.y,q.x+q.y)*.35),px=q.x+Math.cos(a)*rr,py=q.y+Math.sin(a)*rr*.7;i?V.damage.lineTo(px,py):V.damage.moveTo(px,py)}V.damage.closePath().fillPath().strokePath();for(let i=0;i<7;i++){const a=i*.9+.3,d=q.r*(.65+(i%3)*.16),x=q.x+Math.cos(a)*d,y=q.y+Math.sin(a)*d*.65;V.damage.fillStyle(i%2?0x8d8174:0xb7aa9b,1).fillRect(x-3,y-2,6+(i%3)*2,4+(i%2)*2);V.damage.lineStyle(1,0x3a332f,.7).lineBetween(q.x+Math.cos(a)*q.r*.45,q.y+Math.sin(a)*q.r*.32,q.x+Math.cos(a)*q.r*1.25,q.y+Math.sin(a)*q.r*.9)}}}
   const k=(me.lv||0)===1?.32:0;V.dim.setAlpha(V.dim.alpha+(k-V.dim.alpha)*.2);
   if(VIEW.lvT>0){VIEW.lvT-=1/60;V.lvTxt.setVisible(true).setPosition(me.x,me.y-90).setText(me.lv?"ชั้น 2":"ชั้น 1").setAlpha(Math.min(1,VIEW.lvT*3))}else V.lvTxt.setVisible(false)}
 /* ================= MOBA view: unit art, units, tower shots, minimap, terrain ================= */
@@ -2464,7 +2469,7 @@ Object.assign(PROP,{
 });
 const VIEW={ready:false,fx:[],keep:new Set(),t:0,camX:0,camY:0,
   reset(){if(!this.ready||!G)return;const s=SCN,A=G.A;s.tweens.killAll();for(const o of s.children.list.slice())if(!this.keep.has(o))o.destroy();
-    this.fx=[];this.st={shots:new Map(),zones:new Map(),waves:new Map(),met:new Map(),lob:new Map(),traps:new Map(),orb:new Map(),tw:new Map(),ults:new Map(),items:new Map(),totem:new Map(),units:new Map()};MV.rt=null;this.cutO=null;if(this.bgTex.width!==bg.width||this.bgTex.height!==bg.height){s.textures.remove("bg");this.bgTex=s.textures.addCanvas("bg",bg);this.bgImg.setTexture("bg")}else this.bgTex.refresh();BGD=false;this.dark.setPosition(W/2,H/2).setSize(W+80,H+80);
+    this.fx=[];this.st={shots:new Map(),zones:new Map(),waves:new Map(),met:new Map(),lob:new Map(),traps:new Map(),orb:new Map(),tw:new Map(),ults:new Map(),items:new Map(),totem:new Map(),units:new Map()};MV.rt=null;this.cutO=null;A.mvView=null;if(this.bgTex.width!==bg.width||this.bgTex.height!==bg.height){s.textures.remove("bg");this.bgTex=s.textures.addCanvas("bg",bg);this.bgImg.setTexture("bg")}else this.bgTex.refresh();BGD=false;this.dark.setPosition(W/2,H/2).setSize(W+80,H+80);
     this.camX=clamp(G.me.x-VW/2,0,W-VW);this.camY=clamp(G.me.y-VH/2,0,H-VH);
     for(const p of A.props){const v=p.v={};
       if(p.k==="tree"){v.a=s.add.image(p.x,p.y+4,"p_trunk").setOrigin(.5,1).setScale(2).setDepth(D.ENT+p.y);v.c=s.add.image(p.x,p.y-44,"p_canopy").setScale(2).setDepth(D.CAN);v.s=s.add.image(p.x,p.y-2,"p_stump").setScale(2).setDepth(D.ENT+p.y-20).setVisible(false)}
@@ -2604,7 +2609,7 @@ const VIEW={ready:false,fx:[],keep:new Set(),t:0,camX:0,camY:0,
       (b,o)=>{const k=clamp(1-b.t/b.full,0,1),lh=b.lh||90,dx=(b.x-b.ox),dy=(b.y-b.oy)-Math.cos(k*Math.PI)*Math.PI*lh;o.setPosition(b.ox+(b.x-b.ox)*k,b.oy+(b.y-b.oy)*k-Math.sin(k*Math.PI)*lh).setRotation(b.lob==="shot_fire"?Math.atan2(dy,dx):G.t*(b.lob==="chili"?9:8));
         if(b.lob==="chili"||b.lob==="shot_fire")emit("soft",o.x+rnd(-4,4),o.y+rnd(-4,4),rnd(-20,20),-rnd(10,40),.35,pick(PALH.fire.slice(1,5)));else if(Math.random()<.5)emit("smoke",o.x,o.y,0,0,.3,0x8a6a4a)});
     for(const p of A.props){const v=p.v;if(!v)continue;if(p.k==="tree"){v.a.setVisible(!p.dead);v.c.setVisible(!p.dead);v.s.setVisible(p.dead);if(!p.dead)v.c.setAlpha(Math.hypot(p.x-me.x,p.y-14-me.y)<p.R+6?.5:.97)}
-      else{const pv=!p.dead&&(!A.visFn||A.visFn(p,me));v.a.setVisible(pv);if(v.sh)v.sh.setVisible(pv);if(PDEF[p.k].hide&&!p.dead)v.a.setAlpha((p.lv||0)===(me.lv||0)&&Math.hypot(p.x-me.x,p.y-me.y)<p.R?.5:1);if(p.k==="bush"&&!p.dead)v.a.setAlpha(Math.hypot(p.x-me.x,p.y-me.y)<p.R-4?.5:1)}}
+      else{const ruin=p.dead&&p.k==="pillar",pv=(ruin||!p.dead)&&(!A.visFn||A.visFn(p,me));v.a.setVisible(pv);if(ruin&&v.a.texture.key!=="p_pillar_broken")v.a.setTexture("p_pillar_broken");if(v.sh)v.sh.setVisible(pv).setAlpha(ruin?.45:1);if(PDEF[p.k].hide&&!p.dead)v.a.setAlpha((p.lv||0)===(me.lv||0)&&Math.hypot(p.x-me.x,p.y-me.y)<p.R?.5:1);if(p.k==="bush"&&!p.dead)v.a.setAlpha(Math.hypot(p.x-me.x,p.y-me.y)<p.R-4?.5:1)}}
     if(A.key!=="city")for(const w of A.walls)if(w.img)w.img.setVisible(!w.dead).setAlpha(w.breach&&w.breach.length?.42:1);
     syncList(G.twalls,st.tw,w=>{const o=s.add.image(w.x,w.y+8,"p_twall").setOrigin(.5,1).setScale(2,0).setDepth(D.ENT+w.y);if(w.tall)o.setTint(0xd8d0b8);if(w.ice){o.setTexture("p_icewall").setAlpha(.92)}return o},(w,o)=>{const k=clamp((G.t-w.born)/.15,0,1);o.setScale(w.tall?2.3:2,(w.tall?3:2)*k).setAlpha(Math.min(1,w.t*2));if(w.tall&&k>0&&!o.fx){o.fx=1;FX.boom(w.x,w.y,"earth",16)}});
     syncList(G.traps,st.traps,t=>s.add.image(t.x,t.y,t.mv.mine?"i_mine":"p_trap").setScale(2).setDepth(D.GFX+5),(t,o)=>{const mine=t.own===me;o.setAlpha(t.arm>0?.5+.4*Math.sin(G.t*30):mine?.95:.42).setScale(2+(t.arm>0?0:.12*Math.sin(G.t*5)))});
@@ -2661,7 +2666,7 @@ const VIEW={ready:false,fx:[],keep:new Set(),t:0,camX:0,camY:0,
 };
 class Battle extends Phaser.Scene{
   constructor(){super("battle")}
-  preload(){for(const k of HERO_SPRITES)this.load.spritesheet("hero_"+k,heroSrc(k),{frameWidth:HERO_FRAME,frameHeight:HERO_FRAME})}
+  preload(){for(const k of HERO_SPRITES)this.load.spritesheet("hero_"+k,heroSrc(k),{frameWidth:HERO_FRAME,frameHeight:HERO_FRAME});for(const a of ["skyforge_deck","skyforge_lift","titanback_deck","titanback_lift"])this.load.image("arena_"+a,"assets/arenas/"+a.replace("_","-")+".png")}
   create(){SCN=this;makeTextures(this);makeUltTex(this);makeItemTex(this);makeShopTex(this);makeUnitTex(this);const cam=this.cameras.main;cam.setZoom(2);cam.centerOn(VW/2,VH/2);VIEW.bx=cam.scrollX;VIEW.by=cam.scrollY;
     VIEW.bgTex=this.textures.addCanvas("bg",bg);VIEW.bgImg=this.add.image(0,0,"bg").setOrigin(0).setScale(2).setDepth(0);
     VIEW.gG=this.add.graphics().setDepth(D.GFX);VIEW.gO=this.add.graphics().setDepth(D.AIR+60);VIEW.gA=this.add.graphics().setDepth(D.AIR+40).setBlendMode("ADD");
